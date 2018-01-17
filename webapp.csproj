@@ -121,6 +121,7 @@
     <TypeScriptCompile Include="neo-ts\neo\Uint256.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Uint64.ts" />
     <TypeScriptCompile Include="neo-ts\neo\UintVariable.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\helper.ts" />
     <TypeScriptCompile Include="old-antshares-sdk\%40static\Blockchain.ts" />
     <TypeScriptCompile Include="old-antshares-sdk\AntShares\BigInteger.ts" />
     <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\AgencyTransaction.ts" />

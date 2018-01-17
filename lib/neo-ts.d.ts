@@ -185,6 +185,17 @@ declare namespace Neo {
         static parse(str: string): Uint256;
     }
 }
+declare module ThinNeo {
+    class Helper {
+        static GetPrivateKeyFromWIF(wif: string): Uint8Array;
+        static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
+        static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
+        static GetAddressFromPublicKey(publicKey: Uint8Array): string;
+        static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
+    }
+}
 declare namespace Neo.Cryptography {
     class Aes {
         private static numberOfRounds;
