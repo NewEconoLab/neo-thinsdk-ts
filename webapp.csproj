@@ -1,0 +1,246 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DB8C2380-CE84-40B8-8988-50E060647D90}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>webapp</RootNamespace>
+    <AssemblyName>webapp</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
+    <TypeScriptModuleKind>AMD</TypeScriptModuleKind>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptRemoveComments>False</TypeScriptRemoveComments>
+    <TypeScriptOutFile />
+    <TypeScriptOutDir />
+    <TypeScriptGeneratesDeclarations>False</TypeScriptGeneratesDeclarations>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptSourceMap>True</TypeScriptSourceMap>
+    <TypeScriptMapRoot />
+    <TypeScriptSourceRoot />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="index.html" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app\tsconfig.json" />
+    <Content Include="neo-ts\tsconfig.json" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="app\app.ts" />
+    <TypeScriptCompile Include="neo-ts\Helper.ts" />
+    <TypeScriptCompile Include="neo-ts\Map.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\BigInteger.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\Aes.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\Base58.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\CryptoKey.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\ECCurve.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\ECDsa.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\ECFieldElement.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\ECPoint.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\Helper.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\RandomNumberGenerator.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\RIPEMD160.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Cryptography\Sha256.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Fixed8.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\BinaryReader.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\BinaryWriter.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\Caching\ITrackable.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\Caching\TrackableCollection.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\Caching\TrackState.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\Helper.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\ISerializable.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\MemoryStream.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\IO\Stream.ts" />
+    <TypeScriptCompile Include="neo-ts\Promise.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Uint160.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Uint256.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Uint64.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\UintVariable.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\%40static\Blockchain.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\BigInteger.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\AgencyTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\AssetType.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Block.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Blockchain.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\ClaimTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\ContractParameterType.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\ContractTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\EnrollmentTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\FunctionCode.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\ICode.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\InvocationTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\ISignable.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\IssueTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\MinerTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Order.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\PublishTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\RegisterTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Scripts\Helper.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Scripts\Script.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Scripts\ScriptBuilder.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Scripts\ScriptOp.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\SignatureContext.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\SplitOrder.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Transaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\TransactionAttribute.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\TransactionAttributeUsage.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\TransactionInput.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\TransactionOutput.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\TransactionType.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Core\Vote.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\Aes.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\Base58.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\CryptoKey.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\ECCurve.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\ECDsa.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\ECFieldElement.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\ECPoint.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\Helper.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\RandomNumberGenerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\RIPEMD160.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Cryptography\Sha256.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Fixed8.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Implementations\Blockchains\RPC\RpcBlockchain.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Implementations\Wallets\IndexedDB\DbContext.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Implementations\Wallets\IndexedDB\DbTransaction.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Implementations\Wallets\IndexedDB\IndexedDBWallet.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Implementations\Wallets\IndexedDB\WalletDataContext.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\BinaryReader.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\BinaryWriter.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\Caching\ITrackable.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\Caching\TrackableCollection.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\Caching\TrackState.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\Helper.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\ISerializable.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\MemoryStream.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\IO\Stream.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\ArrayEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\ConcatEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\DistinctEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\Enumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\ExceptEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\GroupByEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\Helper.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\IntersectEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\OrderByEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\ReverseEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\SelectEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\SkipWhileEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\TakeWhileEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Linq\WhereEnumerator.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Network\Inventory.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Network\RemoteNode.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Network\RPC\RpcClient.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Uint160.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Uint256.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Uint64.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\UintVariable.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Wallets\Account.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Wallets\Coin.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Wallets\CoinState.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Wallets\Contract.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Wallets\ContractParameterType.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\AntShares\Wallets\Wallet.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\Helper.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\Map.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\Promise.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\__event.ts" />
+    <TypeScriptCompile Include="old-antshares-sdk\__extends.ts" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51424</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51424/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
