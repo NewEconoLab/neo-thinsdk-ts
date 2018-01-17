@@ -1,4 +1,7 @@
+/// <reference path="neo-ts.d.ts" />
 declare module Neo {
-    class Helper {
+    class Main {
+        constructor();
+        start(): void;
     }
 }
