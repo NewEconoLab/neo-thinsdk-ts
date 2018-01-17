@@ -1,5 +1,6 @@
 ﻿module ThinNeo {
-
+    declare var scrypt: any;
+    var scrypt_loaded: boolean = false;
     export class Helper {
         public static GetPrivateKeyFromWIF(wif: string): Uint8Array {
             if (wif == null) throw new Error("null wif");
@@ -138,6 +139,104 @@
                 //var hash = sha256.ComputeHash(message);
                 return ecdsa.verify(message, signature);
             }
+        }
+
+
+        public static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n = 16384, r = 8, p = 8) {
+
+            var pp = scrypt.getAvailableMod();
+            scrypt.setResPath('lib/asset');
+
+            var ready = () => {
+                var param = {
+                    N: n,   // 时空成本
+                    r: r,       // 块大小
+                    P: p       // 并发维度
+                };
+
+                var opt = {
+                    maxPassLen: 32, // 缓冲区大小分配
+                    maxSaltLen: 32,
+                    maxDkLen: 32,
+                    maxThread: 1    // 最多使用的线程数
+                };
+
+                try {
+                    scrypt.config(param, opt);
+                } catch (err) {
+                    console.warn('config err: ', err);
+                }
+                //scrypt.onready();
+            };
+
+            scrypt.onload = () => {
+
+                console.log("scrypt.onload");
+                scrypt_loaded = true;
+                ready();
+            }
+            scrypt.onerror = (err) => {
+                console.warn('scrypt err:', err);
+            }
+            scrypt.oncomplete = (dk) =>{
+                console.log('done', scrypt.binToHex(dk));
+            };
+            scrypt.onprogress =  (percent)=> {
+                console.log('onprogress');
+            };
+            scrypt.onready = () => {
+                var pubkey = Helper.GetPublicKeyFromPrivateKey(prikey);
+                var script_hash = Helper.GetPublicKeyScriptHashFromPublicKey(pubkey);
+                var address = Helper.GetAddressFromScriptHash(script_hash);
+                var addrbin = scrypt.strToBin(address);
+
+
+                var b1 = Neo.Cryptography.Sha256.computeHash(addrbin);
+                b1 = Neo.Cryptography.Sha256.computeHash(b1);
+                var b2 = new Uint8Array(b1);
+
+                var addresshash = b2.subarray(0, 4);
+                var passbin = scrypt.strToBin(passphrase);
+                scrypt.hash(passbin, addresshash, 32);
+            }
+            if (scrypt_loaded == false) {
+                scrypt.load("asmjs");
+            }
+            else {
+                ready();
+            }
+
+            return;
+
+            //var address = unescape(Helper.GetAddressFromScriptHash(script_hash));
+            //let utf8 = unescape(encodeURIComponent(address));
+
+            //let addrbin = new Uint8Array(utf8.length);
+            //for (let i = 0; i < utf8.length; i++)
+            //    addrbin[i] = utf8.charCodeAt(i);
+
+            //utf8 = unescape(encodeURIComponent(passphrase));
+            //let passbin = new Uint8Array(utf8.length);
+            //for (let i = 0; i < utf8.length; i++)
+            //    passbin[i] = utf8.charCodeAt(i);
+
+            //var b1 = Neo.Cryptography.Sha256.computeHash(addrbin);
+            //b1 = Neo.Cryptography.Sha256.computeHash(b1);
+            //var b2 = new Uint8Array(b1);
+
+            //var addresshash = b2.subarray(0, 4);
+            //var derivedkey = Neo.Cryptography.de SCrypt.DeriveKey(passbin, addresshash, 16384, 8, 8, 64);
+            //byte[] derivedhalf1 = derivedkey.Take(32).ToArray();
+            //byte[] derivedhalf2 = derivedkey.Skip(32).ToArray();
+            //var xorinfo = XOR(prikey, derivedhalf1);
+            //byte[] encryptedkey = AES256Encrypt(xorinfo, derivedhalf2);
+            //byte[] buffer = new byte[39];
+            //buffer[0] = 0x01;
+            //buffer[1] = 0x42;
+            //buffer[2] = 0xe0;
+            //Buffer.BlockCopy(addresshash, 0, buffer, 3, addresshash.Length);
+            //Buffer.BlockCopy(encryptedkey, 0, buffer, 7, encryptedkey.Length);
+            //return Base58CheckEncode(buffer);
         }
     }
 }

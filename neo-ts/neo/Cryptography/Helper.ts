@@ -11,7 +11,8 @@ interface Uint8Array {
     base64UrlEncode(): string;
 }
 declare function escape(s:string): string;
-declare function unescape(s:string): string;
+declare function unescape(s: string): string;
+
 namespace Neo.Cryptography {
     String.prototype.base58Decode = function (): Uint8Array {
         return Base58.decode(this);

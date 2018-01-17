@@ -20,6 +20,7 @@ module NeoTest {
             this.addMenuItem(new Test_WifDecode());
             this.addMenuItem(new Test_Sign());
             this.addText("钱包相关Wallet");
+            this.addMenuItem(new Test_Nep2());
 
             this.addText("交易相关Transaction");
 
