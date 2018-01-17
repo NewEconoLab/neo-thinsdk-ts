@@ -61,6 +61,7 @@ module Neo {
                 for (var i = 0; i < 4; i++) {
                     if (checked[i] != check[i]) {
                         spanCheck.textContent += "[Error Addr]";
+                        error = true;
                         break;
                     }
                 }
