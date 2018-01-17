@@ -13,10 +13,30 @@ module NeoTest {
         divMenu: HTMLDivElement;
         start(): void {
             this.createMenu();
+            this.addText("NEO-ThinSDK(typescript)");
+            this.addLink("Github", "https://github.com/NewEconoLab/neo-thinsdk-ts");
+            this.addText("基本签名运算");
             this.addMenuItem(new Test_CheckAddress());
             this.addMenuItem(new Test_WifDecode());
             this.addMenuItem(new Test_Sign());
-      }
+            this.addText("钱包相关");
+
+            this.addText("交易相关");
+
+        }
+        addText(str: string) {
+            var link = document.createElement("a");
+            link.textContent = str;
+            this.divMenu.appendChild(link);
+            this.divMenu.appendChild(document.createElement("hr"));//newline         
+        }
+        addLink(str: string, url: string) {
+            var link = document.createElement("a");
+            link.textContent = str;
+            link.href = url;
+            this.divMenu.appendChild(link);
+            this.divMenu.appendChild(document.createElement("hr"));//newline         
+        }
         addMenuItem(item: ITestItem) {
             var link = document.createElement("a");
             link.textContent = item.getName();

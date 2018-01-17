@@ -19,7 +19,7 @@ module NeoTest {
             div.appendChild(input);
             input.style.width = "500px";
             input.style.position = "absoulte";
-            input.value = "";
+            input.value = "L2CmHCqgeNHL1i9XFhTLzUXsdr5LGjag4d56YY98FqEi4j5d83Mv";
 
             div.appendChild(document.createElement("hr"));//newline
 
