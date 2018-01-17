@@ -57,29 +57,24 @@ module Neo {
                 var checked = new Uint8Array(hashd);
                 spanCheck.textContent = "checked:" + checked.toHexString();
 
-                for (var i = 0; i < 4; i++)
-                {
-                    if (checked[i] != check[i])
-                    {
+                for (var i = 0; i < 4; i++) {
+                    if (checked[i] != check[i]) {
                         spanCheck.textContent += "[Error Addr]";
                         break;
                     }
                 }
 
                 var newarray = new Uint8Array(25);
-                for (var i = 0; i < 25; i++)
-                {
-                    if (i < 21)
-                    {
+                for (var i = 0; i < 25; i++) {
+                    if (i < 21) {
                         newarray[i] = array[i];
                     }
-                    else
-                    {
+                    else {
                         newarray[i] = checked[i - 21];
                     }
                 }
                 var newaddr = Neo.Cryptography.Base58.encode(newarray);
-                spanNewAddr.textContent = newaddr;
+                spanNewAddr.textContent = "error addr:" + newaddr;
             }
         }
     }
