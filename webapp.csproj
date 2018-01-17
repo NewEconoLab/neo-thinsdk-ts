@@ -76,6 +76,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="app\test_sign.ts" />
     <TypeScriptCompile Include="app\test_wifdecode.ts" />
     <TypeScriptCompile Include="app\test_checkaddress.ts" />
     <Compile Include="Properties\AssemblyInfo.cs" />

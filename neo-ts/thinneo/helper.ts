@@ -62,7 +62,7 @@
             }
             return Neo.Cryptography.Base58.encode(alldata);
         }
-        public static GetAddressFromPublicKey(publicKey: Uint8Array): string{
+        public static GetAddressFromPublicKey(publicKey: Uint8Array): string {
             var scripthash = Helper.GetPublicKeyScriptHashFromPublicKey(publicKey);
             return Helper.GetAddressFromScriptHash(scripthash);
         }
@@ -85,6 +85,59 @@
                 }
             }
             return hash;
+        }
+
+
+        public static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array {
+
+            var PublicKey = Neo.Cryptography.ECPoint.multiply(Neo.Cryptography.ECCurve.secp256r1.G, privateKey);
+            var pubkey = PublicKey.encodePoint(false).subarray(1, 64);
+
+            //var PublicKey = ThinNeo.Cryptography.ECC.ECCurve.Secp256r1.G * prikey;
+            //var pubkey = PublicKey.EncodePoint(false).Skip(1).ToArray();
+
+            var key = new Neo.Cryptography.ECDsaCryptoKey(PublicKey, privateKey);
+            var ecdsa = new Neo.Cryptography.ECDsa(key);
+            ////using(var ecdsa = System.Security.Cryptography.ECDsa.Create(new System.Security.Cryptography.ECParameters
+            //{
+            //        Curve = System.Security.Cryptography.ECCurve.NamedCurves.nistP256,
+            //        D = prikey,
+            //        Q = new System.Security.Cryptography.ECPoint
+            //    {
+            //        X = pubkey.Take(32).ToArray(),
+            //        Y = pubkey.Skip(32).ToArray()
+            //    }
+            //}))
+            {
+                //var hash = Neo.Cryptography.Sha256.computeHash(message);
+                return new Uint8Array(ecdsa.sign(message));
+            }
+        }
+        public static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array) {
+            var PublicKey = Neo.Cryptography.ECPoint.decodePoint(pubkey, Neo.Cryptography.ECCurve.secp256r1);
+            var usepk = PublicKey.encodePoint(false).subarray(1, 64);
+            var key = new Neo.Cryptography.ECDsaCryptoKey(PublicKey);
+            var ecdsa = new Neo.Cryptography.ECDsa(key);
+
+            //byte[] first = { 0x45, 0x43, 0x53, 0x31, 0x20, 0x00, 0x00, 0x00 };
+            //usepk = first.Concat(usepk).ToArray();
+
+            //using (System.Security.Cryptography.CngKey key = System.Security.Cryptography.CngKey.Import(usepk, System.Security.Cryptography.CngKeyBlobFormat.EccPublicBlob))
+            //using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
+
+            //using(var ecdsa = System.Security.Cryptography.ECDsa.Create(new System.Security.Cryptography.ECParameters
+            //{
+            //        Curve = System.Security.Cryptography.ECCurve.NamedCurves.nistP256,
+            //        Q = new System.Security.Cryptography.ECPoint
+            //    {
+            //        X = usepk.Take(32).ToArray(),
+            //        Y = usepk.Skip(32).ToArray()
+            //    }
+            //}))
+            {
+                //var hash = sha256.ComputeHash(message);
+                return ecdsa.verify(message, signature);
+            }
         }
     }
 }

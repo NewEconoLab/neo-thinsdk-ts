@@ -15,7 +15,8 @@ module NeoTest {
             this.createMenu();
             this.addMenuItem(new Test_CheckAddress());
             this.addMenuItem(new Test_WifDecode());
-        }
+            this.addMenuItem(new Test_Sign());
+      }
         addMenuItem(item: ITestItem) {
             var link = document.createElement("a");
             link.textContent = item.getName();

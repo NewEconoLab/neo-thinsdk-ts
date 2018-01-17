@@ -13,6 +13,15 @@ declare module NeoTest {
     }
 }
 declare module NeoTest {
+    class Test_Sign implements ITestItem {
+        constructor();
+        getName(): string;
+        privateKey: Uint8Array;
+        publicKey: Uint8Array;
+        start(div: HTMLDivElement): void;
+    }
+}
+declare module NeoTest {
     class Test_WifDecode implements ITestItem {
         constructor();
         getName(): string;

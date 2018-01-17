@@ -1,12 +1,14 @@
 ﻿///<reference path="../lib/neo-ts.d.ts"/>
 
 module NeoTest {
-    export class Test_WifDecode implements ITestItem {
+    export class Test_Sign implements ITestItem {
         constructor() {
         }
         getName(): string {
-            return "WifDecode";
+            return "Sign&Vertify";
         }
+        privateKey: Uint8Array;
+        publicKey: Uint8Array;
         start(div: HTMLDivElement): void {
 
             var span = document.createElement("span");
@@ -19,7 +21,8 @@ module NeoTest {
             div.appendChild(input);
             input.style.width = "500px";
             input.style.position = "absoulte";
-            input.value = "";
+            input.multiple = true;
+            input.value = "L2CmHCqgeNHL1i9XFhTLzUXsdr5LGjag4d56YY98FqEi4j5d83Mv";
 
             div.appendChild(document.createElement("hr"));//newline
 
@@ -43,8 +46,34 @@ module NeoTest {
 
             var btn = document.createElement("button");
             div.appendChild(btn);
-            btn.textContent = "decode";
+            btn.textContent = "use wif";
 
+
+
+            div.appendChild(document.createElement("hr"));//newline
+
+            var message = document.createElement("textarea");
+            div.appendChild(message);
+            message.value = "010203ff1122abcd";
+            message.style.width = "500px";
+            message.style.height = "100px";
+            div.appendChild(document.createElement("hr"));//newline
+
+            var btnsign = document.createElement("button");
+            div.appendChild(btnsign);
+            btnsign.textContent = "sign";
+
+            var btnvertify = document.createElement("button");
+            div.appendChild(btnvertify);
+            btnvertify.textContent = "vertify";
+            div.appendChild(document.createElement("hr"));//newline
+
+            var signdata = document.createElement("textarea");
+            div.appendChild(signdata);
+            signdata.value = "";
+            signdata.style.width = "500px";
+            signdata.style.height = "100px";
+            div.appendChild(document.createElement("hr"));//newline
 
             btn.onclick = () => {
 
@@ -74,6 +103,23 @@ module NeoTest {
                 catch (e) {
                     spanAddress.textContent = e.message;
                 }
+                this.privateKey = prikey;
+                this.publicKey = pubkey;
+            }
+
+            btnsign.onclick = () => {
+                var str = message.value as string;
+                var msg = str.hexToBytes();
+                var sign = ThinNeo.Helper.Sign(msg, this.privateKey);
+                signdata.value = sign.toHexString();
+            }
+            btnvertify.onclick = () => {
+                var str = message.value as string;
+                var msg = str.hexToBytes();
+                var str2 = signdata.value as string;
+                var data = str2.hexToBytes();
+                var v = ThinNeo.Helper.VerifySignature(msg, data, this.publicKey);
+                alert("vertify=" + v);
             }
         }
     }
