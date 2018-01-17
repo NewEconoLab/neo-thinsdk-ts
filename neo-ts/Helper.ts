@@ -9,7 +9,7 @@ interface Array<T>
 interface ArrayConstructor
 {
     copy<T>(src: ArrayLike<T>, srcOffset: number, dst: ArrayLike<T>, dstOffset: number, count: number): void;
-    from<T>(arr: ArrayLike<T>): Array<T>;
+    fromArray<T>(arr: ArrayLike<T>): Array<T>;
 }
 
 interface String
@@ -33,7 +33,7 @@ Array.copy = function <T>(src: ArrayLike<T>, srcOffset: number, dst: ArrayLike<T
         (<any>dst)[i + dstOffset] = src[i + srcOffset];
 }
 
-Array.from = Array.from || function <T>(arr: ArrayLike<T>): Array<T>
+Array.fromArray = function <T>(arr: ArrayLike<T>): Array<T>
 {
     let array = new Array<T>(arr.length);
     for (let i = 0; i < array.length; i++)

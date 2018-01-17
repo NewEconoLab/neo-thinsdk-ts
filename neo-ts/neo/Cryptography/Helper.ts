@@ -61,23 +61,23 @@ namespace Neo.Cryptography {
     w.crypto.subtle = window.crypto.subtle || w.crypto.webkitSubtle;
     if (window.crypto.subtle == null && w.msCrypto) {
         (window as any).crypto.subtle = {
-            decrypt: (a, b, c) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.decrypt(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            deriveBits: (a, b, c) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.deriveBits(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            deriveKey: (a, b, c, d, e) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.deriveKey(a, b, c, d, e) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            digest: (a, b) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.digest(a, b); op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            encrypt: (a, b, c) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.encrypt(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            exportKey: (a, b) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.exportKey(a, b) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            generateKey: (a, b, c) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.generateKey(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            importKey: (a, b, c, d, e) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.importKey(a, b, c, d, e) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            sign: (a, b, c) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.sign(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            unwrapKey: (a, b, c, d, e, f, g) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.unwrapKey(a, b, c, d, e, f, g) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            verify: (a, b, c, d) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.verify(a, b, c, d) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
-            wrapKey: (a, b, c, d) => new Promise((resolve, reject) => { let op = w.msCrypto.subtle.wrapKey(a, b, c, d) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            decrypt: (a, b, c) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.decrypt(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            deriveBits: (a, b, c) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.deriveBits(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            deriveKey: (a, b, c, d, e) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.deriveKey(a, b, c, d, e) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            digest: (a, b) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.digest(a, b); op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            encrypt: (a, b, c) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.encrypt(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            exportKey: (a, b) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.exportKey(a, b) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            generateKey: (a, b, c) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.generateKey(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            importKey: (a, b, c, d, e) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.importKey(a, b, c, d, e) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            sign: (a, b, c) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.sign(a, b, c) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            unwrapKey: (a, b, c, d, e, f, g) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.unwrapKey(a, b, c, d, e, f, g) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            verify: (a, b, c, d) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.verify(a, b, c, d) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
+            wrapKey: (a, b, c, d) => new NeoPromise((resolve, reject) => { let op = w.msCrypto.subtle.wrapKey(a, b, c, d) as any; op.oncomplete = () => resolve(op.result); op.onerror = e => reject(e); }),
         };
     }
     if (window.crypto.subtle == null) {
         (window as any).crypto.subtle = {
-            decrypt: (algorithm, key, data) => new Promise((resolve, reject) => {
+            decrypt: (algorithm, key, data) => new NeoPromise((resolve, reject) => {
                 if (typeof algorithm === "string" || algorithm.name != "AES-CBC" || !algorithm.iv || algorithm.iv.byteLength != 16 || data.byteLength % 16 != 0) {
                     reject(new RangeError());
                     return;
@@ -92,7 +92,7 @@ namespace Neo.Cryptography {
             }),
             deriveBits: null,
             deriveKey: null,
-            digest: (algorithm, data) => new Promise((resolve, reject) => {
+            digest: (algorithm, data) => new NeoPromise((resolve, reject) => {
                 if (getAlgorithmName(algorithm) != "SHA-256") {
                     reject(new RangeError());
                     return;
@@ -104,7 +104,7 @@ namespace Neo.Cryptography {
                     reject(e);
                 }
             }),
-            encrypt: (algorithm, key, data) => new Promise((resolve, reject) => {
+            encrypt: (algorithm, key, data) => new NeoPromise((resolve, reject) => {
                 if (typeof algorithm === "string" || algorithm.name != "AES-CBC" || !algorithm.iv || algorithm.iv.byteLength != 16) {
                     reject(new RangeError());
                     return;
@@ -117,7 +117,7 @@ namespace Neo.Cryptography {
                     reject(e);
                 }
             }),
-            exportKey: (format, key) => new Promise((resolve, reject) => {
+            exportKey: (format, key) => new NeoPromise((resolve, reject) => {
                 if (format != "jwk" || !(key instanceof AesCryptoKey)) {
                     reject(new RangeError());
                     return;
@@ -136,7 +136,7 @@ namespace Neo.Cryptography {
                     reject(e);
                 }
             }),
-            generateKey: (algorithm, extractable, keyUsages) => new Promise((resolve, reject) => {
+            generateKey: (algorithm, extractable, keyUsages) => new NeoPromise((resolve, reject) => {
                 if (typeof algorithm === "string" || algorithm.name != "AES-CBC" || (algorithm.length != 128 && algorithm.length != 192 && algorithm.length != 256)) {
                     reject(new RangeError());
                     return;
@@ -148,7 +148,7 @@ namespace Neo.Cryptography {
                     reject(e);
                 }
             }),
-            importKey: (format, keyData, algorithm, extractable, keyUsages) => new Promise((resolve, reject) => {
+            importKey: (format, keyData, algorithm, extractable, keyUsages) => new NeoPromise((resolve, reject) => {
                 if ((format != "raw" && format != "jwk") || getAlgorithmName(algorithm) != "AES-CBC") {
                     reject(new RangeError());
                     return;
@@ -172,7 +172,7 @@ namespace Neo.Cryptography {
         let digest_old = window.crypto.subtle.digest;
         window.crypto.subtle.digest = (algorithm, data) => {
             if (getAlgorithmName(algorithm) != "RIPEMD-160") return digest_old.call(window.crypto.subtle, algorithm, data);
-            return new Promise<ArrayBuffer>((resolve, reject) => {
+            return new NeoPromise<ArrayBuffer>((resolve, reject) => {
                 try {
                     resolve(RIPEMD160.computeHash(data));
                 }
@@ -187,7 +187,7 @@ namespace Neo.Cryptography {
         let exportKey_old = window.crypto.subtle.exportKey;
         window.crypto.subtle.exportKey = (format, key) => {
             if (key.algorithm.name != "ECDSA") return exportKey_old.call(window.crypto.subtle, format, key);
-            return new Promise((resolve, reject) => {
+            return new NeoPromise((resolve, reject) => {
                 let k = key as ECDsaCryptoKey;
                 if (format != "jwk" || (k.algorithm as any).namedCurve != "P-256")
                     reject(new RangeError());
@@ -221,7 +221,7 @@ namespace Neo.Cryptography {
         let generateKey_old = window.crypto.subtle.generateKey;
         window.crypto.subtle.generateKey = (algorithm, extractable, keyUsages) => {
             if (getAlgorithmName(algorithm) != "ECDSA") return generateKey_old.call(window.crypto.subtle, algorithm, extractable, keyUsages);
-            return new Promise((resolve, reject) => {
+            return new NeoPromise((resolve, reject) => {
                 if ((algorithm as any).namedCurve != "P-256")
                     reject(new RangeError());
                 else
@@ -236,7 +236,7 @@ namespace Neo.Cryptography {
         let importKey_old = window.crypto.subtle.importKey;
         window.crypto.subtle.importKey = (format, keyData, algorithm, extractable, keyUsages) => {
             if (getAlgorithmName(algorithm) != "ECDSA") return importKey_old.call(window.crypto.subtle, format, keyData, algorithm, extractable, keyUsages);
-            return new Promise((resolve, reject) => {
+            return new NeoPromise((resolve, reject) => {
                 if (format != "jwk" || (algorithm as any).namedCurve != "P-256")
                     reject(new RangeError());
                 else
@@ -262,7 +262,7 @@ namespace Neo.Cryptography {
         let sign_old = window.crypto.subtle.sign;
         window.crypto.subtle.sign = (algorithm, key, data) => {
             if (getAlgorithmName(algorithm as any) != "ECDSA") return sign_old.call(window.crypto.subtle, algorithm, key, data);
-            return new Promise((resolve, reject) => {
+            return new NeoPromise((resolve, reject) => {
                 if ((algorithm as any).hash.name != "SHA-256" || key.algorithm.name != "ECDSA")
                     reject(new RangeError());
                 else
@@ -278,7 +278,7 @@ namespace Neo.Cryptography {
         let verify_old = window.crypto.subtle.verify;
         window.crypto.subtle.verify = (algorithm, key, signature, data) => {
             if (getAlgorithmName(algorithm as any) != "ECDSA") return verify_old.call(window.crypto.subtle, algorithm, key, signature, data);
-            return new Promise((resolve, reject) => {
+            return new NeoPromise((resolve, reject) => {
                 if ((algorithm as any).hash.name != "SHA-256" || key.algorithm.name != "ECDSA")
                     reject(new RangeError());
                 else

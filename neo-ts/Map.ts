@@ -1,4 +1,4 @@
-class Map<TKey, TValue>
+class NeoMap<TKey, TValue>
 {
     private _map = new Object();
     private _size = 0;
@@ -20,7 +20,7 @@ class Map<TKey, TValue>
         return delete this._map[<any>key];
     }
 
-    public forEach(callback: (value: TValue, key: TKey, map: Map<TKey, TValue>) => void): void
+    public forEach(callback: (value: TValue, key: TKey, map: NeoMap<TKey, TValue>) => void): void
     {
         for (let key in this._map)
             callback(this._map[key], <any>key, this);

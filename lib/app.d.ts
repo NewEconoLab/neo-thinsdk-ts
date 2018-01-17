@@ -2,6 +2,6 @@
 declare module Neo {
     class Main {
         constructor();
-        start(): void;
+        start(div: HTMLDivElement): void;
     }
 }

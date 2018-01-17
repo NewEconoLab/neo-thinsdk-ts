@@ -14,6 +14,7 @@
 
         public constructor(private output: Stream)
         {
+            
         }
 
         public close(): void

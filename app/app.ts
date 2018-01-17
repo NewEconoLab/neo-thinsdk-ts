@@ -4,42 +4,43 @@ module Neo {
         constructor() {
             console.log("hello world");
         }
+        
+        start(div: HTMLDivElement): void {
 
-        start(): void {
             var span = document.createElement("span");
-            document.body.appendChild(span);
+            div.appendChild(span);
             span.textContent = "type a Neo address below";
 
-            document.body.appendChild(document.createElement("hr"));//newline
+            div.appendChild(document.createElement("hr"));//newline
 
             var input = document.createElement("input");
-            document.body.appendChild(input);
+            div.appendChild(input);
             input.style.width = "500px";
             input.style.position = "absoulte";
             input.value = "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj";
 
-            document.body.appendChild(document.createElement("hr"));//newline
+            div.appendChild(document.createElement("hr"));//newline
 
             var spanDecode = document.createElement("span");
-            document.body.appendChild(spanDecode);
+            div.appendChild(spanDecode);
             spanDecode.textContent = "decodebase58:";
 
-            document.body.appendChild(document.createElement("hr"));//newline
+            div.appendChild(document.createElement("hr"));//newline
 
             var spanCheck = document.createElement("span");
-            document.body.appendChild(spanCheck);
+            div.appendChild(spanCheck);
             spanCheck.textContent = "check:";
 
-            document.body.appendChild(document.createElement("hr"));//newline
+            div.appendChild(document.createElement("hr"));//newline
 
             var spanNewAddr = document.createElement("span");
-            document.body.appendChild(spanNewAddr);
+            div.appendChild(spanNewAddr);
             spanNewAddr.textContent = "newaddr:";
 
-            document.body.appendChild(document.createElement("hr"));//newline
+            div.appendChild(document.createElement("hr"));//newline
 
             var btn = document.createElement("button");
-            document.body.appendChild(btn);
+            div.appendChild(btn);
             btn.textContent = "check";
             btn.onclick = () => {
                 var array: Uint8Array = Neo.Cryptography.Base58.decode(input.value);
@@ -87,8 +88,22 @@ module Neo {
             }
         }
     }
+    class Menu {
+        constructor() {
+            console.log("hello world");
+        }
+        div: HTMLDivElement;
+        start(): void {
+            var body = document.body;
+           
+            this.div = document.createElement("div");
+            document.body.appendChild(this.div);
+            var main = new Main();
+            main.start(this.div);
+        }
+    }
     window.onload = () => {
-        var main = new Main();
+        var main = new Menu();
         main.start();
     };
 }

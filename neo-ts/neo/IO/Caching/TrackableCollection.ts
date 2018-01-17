@@ -2,7 +2,7 @@ namespace Neo.IO.Caching
 {
     export class TrackableCollection<TKey, TItem extends ITrackable<TKey>>
     {
-        private _map = new Map<TKey, TItem>();
+        private _map = new NeoMap<TKey, TItem>();
 
         constructor(items?: ArrayLike<TItem>)
         {
