@@ -4,6 +4,7 @@ module Neo {
         constructor() {
             console.log("hello world");
         }
+
         start(): void {
             var span = document.createElement("span");
             document.body.appendChild(span);

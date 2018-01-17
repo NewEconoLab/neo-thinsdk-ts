@@ -183,6 +183,196 @@ declare namespace Neo {
         static parse(str: string): Uint256;
     }
 }
+declare namespace Neo.Cryptography {
+    class Aes {
+        private static numberOfRounds;
+        private static rcon;
+        private static S;
+        private static Si;
+        private static T1;
+        private static T2;
+        private static T3;
+        private static T4;
+        private static T5;
+        private static T6;
+        private static T7;
+        private static T8;
+        private static U1;
+        private static U2;
+        private static U3;
+        private static U4;
+        private _Ke;
+        private _Kd;
+        private _lastCipherblock;
+        readonly mode: string;
+        constructor(key: ArrayBuffer | ArrayBufferView, iv: ArrayBuffer | ArrayBufferView);
+        private static convertToInt32(bytes);
+        decrypt(ciphertext: ArrayBuffer | ArrayBufferView): ArrayBuffer;
+        decryptBlock(ciphertext: Uint8Array, plaintext: Uint8Array): void;
+        encrypt(plaintext: ArrayBuffer | ArrayBufferView): ArrayBuffer;
+        encryptBlock(plaintext: Uint8Array, ciphertext: Uint8Array): void;
+    }
+}
+declare namespace Neo.Cryptography {
+    class Base58 {
+        static Alphabet: string;
+        static decode(input: string): Uint8Array;
+        static encode(input: Uint8Array): string;
+    }
+}
+declare namespace Neo.Cryptography {
+    class CryptoKey {
+        type: string;
+        extractable: boolean;
+        algorithm: Algorithm;
+        usages: string[];
+        constructor(type: string, extractable: boolean, algorithm: Algorithm, usages: string[]);
+    }
+    class AesCryptoKey extends Neo.Cryptography.CryptoKey {
+        private _key_bytes;
+        constructor(_key_bytes: Uint8Array);
+        static create(length: number): AesCryptoKey;
+        export(): Uint8Array;
+        static import(keyData: ArrayBuffer | ArrayBufferView): AesCryptoKey;
+    }
+    class ECDsaCryptoKey extends CryptoKey {
+        publicKey: ECPoint;
+        privateKey: Uint8Array;
+        constructor(publicKey: ECPoint, privateKey?: Uint8Array);
+    }
+}
+declare namespace Neo.Cryptography {
+    class ECCurve {
+        Q: BigInteger;
+        A: ECFieldElement;
+        B: ECFieldElement;
+        N: BigInteger;
+        Infinity: ECPoint;
+        G: ECPoint;
+        static readonly secp256k1: ECCurve;
+        static readonly secp256r1: ECCurve;
+        constructor(Q: BigInteger, A: BigInteger, B: BigInteger, N: BigInteger, G: Uint8Array);
+    }
+}
+declare namespace Neo.Cryptography {
+    class ECDsa {
+        private key;
+        constructor(key: ECDsaCryptoKey);
+        private static calculateE(n, message);
+        static generateKey(curve: ECCurve): {
+            privateKey: ECDsaCryptoKey;
+            publicKey: ECDsaCryptoKey;
+        };
+        sign(message: ArrayBuffer | ArrayBufferView): ArrayBuffer;
+        private static sumOfTwoMultiplies(P, k, Q, l);
+        verify(message: ArrayBuffer | ArrayBufferView, signature: ArrayBuffer | ArrayBufferView): boolean;
+    }
+}
+declare namespace Neo.Cryptography {
+    class ECFieldElement {
+        value: BigInteger;
+        private curve;
+        constructor(value: BigInteger, curve: ECCurve);
+        add(other: ECFieldElement): ECFieldElement;
+        compareTo(other: ECFieldElement): number;
+        divide(other: ECFieldElement): ECFieldElement;
+        equals(other: ECFieldElement): boolean;
+        private static fastLucasSequence(p, P, Q, k);
+        multiply(other: ECFieldElement): ECFieldElement;
+        negate(): ECFieldElement;
+        sqrt(): ECFieldElement;
+        square(): ECFieldElement;
+        subtract(other: ECFieldElement): ECFieldElement;
+    }
+}
+declare namespace Neo.Cryptography {
+    class ECPoint {
+        x: ECFieldElement;
+        y: ECFieldElement;
+        curve: ECCurve;
+        constructor(x: ECFieldElement, y: ECFieldElement, curve: ECCurve);
+        static add(x: ECPoint, y: ECPoint): ECPoint;
+        compareTo(other: ECPoint): number;
+        static decodePoint(encoded: Uint8Array, curve: ECCurve): ECPoint;
+        private static decompressPoint(yTilde, X1, curve);
+        static deserializeFrom(reader: IO.BinaryReader, curve: ECCurve): ECPoint;
+        encodePoint(commpressed: boolean): Uint8Array;
+        equals(other: ECPoint): boolean;
+        static fromUint8Array(arr: Uint8Array, curve: ECCurve): ECPoint;
+        isInfinity(): boolean;
+        static multiply(p: ECPoint, n: Uint8Array | BigInteger): ECPoint;
+        negate(): ECPoint;
+        static parse(str: string, curve: ECCurve): ECPoint;
+        static subtract(x: ECPoint, y: ECPoint): ECPoint;
+        toString(): string;
+        twice(): ECPoint;
+        private static windowNaf(width, k);
+    }
+}
+declare namespace Neo.Cryptography {
+    class RandomNumberGenerator {
+        private static _entropy;
+        private static _strength;
+        private static _started;
+        private static _stopped;
+        private static _key;
+        private static addEntropy(data, strength);
+        static getRandomValues<T extends Int8Array | Uint8ClampedArray | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array>(array: T): T;
+        private static getWeakRandomValues(array);
+        private static processDeviceMotionEvent(event);
+        private static processEvent(event);
+        private static processMouseEvent(event);
+        private static processTouchEvent(event);
+        static startCollectors(): void;
+        private static stopCollectors();
+    }
+}
+interface String {
+    base58Decode(): Uint8Array;
+    base64UrlDecode(): Uint8Array;
+    toAesKey(): PromiseLike<ArrayBuffer>;
+}
+interface Uint8Array {
+    base58Encode(): string;
+    base64UrlEncode(): string;
+}
+declare function escape(s: string): string;
+declare function unescape(s: string): string;
+declare namespace Neo.Cryptography {
+}
+declare namespace Neo.Cryptography {
+    class RIPEMD160 {
+        private static zl;
+        private static zr;
+        private static sl;
+        private static sr;
+        private static hl;
+        private static hr;
+        private static bytesToWords(bytes);
+        private static wordsToBytes(words);
+        private static processBlock(H, M, offset);
+        private static f1(x, y, z);
+        private static f2(x, y, z);
+        private static f3(x, y, z);
+        private static f4(x, y, z);
+        private static f5(x, y, z);
+        private static rotl(x, n);
+        static computeHash(data: ArrayBuffer | ArrayBufferView): ArrayBuffer;
+    }
+}
+declare namespace Neo.Cryptography {
+    class Sha256 {
+        private static K;
+        static computeHash(data: ArrayBuffer | ArrayBufferView): ArrayBuffer;
+        private static ROTR(n, x);
+        private static Σ0(x);
+        private static Σ1(x);
+        private static σ0(x);
+        private static σ1(x);
+        private static Ch(x, y, z);
+        private static Maj(x, y, z);
+    }
+}
 declare namespace Neo.IO {
     class BinaryReader {
         private input;
@@ -340,195 +530,5 @@ declare namespace Neo.IO.Caching {
         Added = 1,
         Changed = 2,
         Deleted = 3,
-    }
-}
-declare namespace Neo.Cryptography {
-    class Aes {
-        private static numberOfRounds;
-        private static rcon;
-        private static S;
-        private static Si;
-        private static T1;
-        private static T2;
-        private static T3;
-        private static T4;
-        private static T5;
-        private static T6;
-        private static T7;
-        private static T8;
-        private static U1;
-        private static U2;
-        private static U3;
-        private static U4;
-        private _Ke;
-        private _Kd;
-        private _lastCipherblock;
-        readonly mode: string;
-        constructor(key: ArrayBuffer | ArrayBufferView, iv: ArrayBuffer | ArrayBufferView);
-        private static convertToInt32(bytes);
-        decrypt(ciphertext: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-        decryptBlock(ciphertext: Uint8Array, plaintext: Uint8Array): void;
-        encrypt(plaintext: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-        encryptBlock(plaintext: Uint8Array, ciphertext: Uint8Array): void;
-    }
-}
-declare namespace Neo.Cryptography {
-    class Base58 {
-        static Alphabet: string;
-        static decode(input: string): Uint8Array;
-        static encode(input: Uint8Array): string;
-    }
-}
-declare namespace Neo.Cryptography {
-    class CryptoKey {
-        type: string;
-        extractable: boolean;
-        algorithm: Algorithm;
-        usages: string[];
-        constructor(type: string, extractable: boolean, algorithm: Algorithm, usages: string[]);
-    }
-    class AesCryptoKey extends Neo.Cryptography.CryptoKey {
-        private _key_bytes;
-        constructor(_key_bytes: Uint8Array);
-        static create(length: number): AesCryptoKey;
-        export(): Uint8Array;
-        static import(keyData: ArrayBuffer | ArrayBufferView): AesCryptoKey;
-    }
-    class ECDsaCryptoKey extends CryptoKey {
-        publicKey: ECPoint;
-        privateKey: Uint8Array;
-        constructor(publicKey: ECPoint, privateKey?: Uint8Array);
-    }
-}
-declare namespace Neo.Cryptography {
-    class ECCurve {
-        Q: BigInteger;
-        A: ECFieldElement;
-        B: ECFieldElement;
-        N: BigInteger;
-        Infinity: ECPoint;
-        G: ECPoint;
-        static readonly secp256k1: ECCurve;
-        static readonly secp256r1: ECCurve;
-        constructor(Q: BigInteger, A: BigInteger, B: BigInteger, N: BigInteger, G: Uint8Array);
-    }
-}
-declare namespace Neo.Cryptography {
-    class ECDsa {
-        private key;
-        constructor(key: ECDsaCryptoKey);
-        private static calculateE(n, message);
-        static generateKey(curve: ECCurve): {
-            privateKey: ECDsaCryptoKey;
-            publicKey: ECDsaCryptoKey;
-        };
-        sign(message: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-        private static sumOfTwoMultiplies(P, k, Q, l);
-        verify(message: ArrayBuffer | ArrayBufferView, signature: ArrayBuffer | ArrayBufferView): boolean;
-    }
-}
-declare namespace Neo.Cryptography {
-    class ECFieldElement {
-        value: BigInteger;
-        private curve;
-        constructor(value: BigInteger, curve: ECCurve);
-        add(other: ECFieldElement): ECFieldElement;
-        compareTo(other: ECFieldElement): number;
-        divide(other: ECFieldElement): ECFieldElement;
-        equals(other: ECFieldElement): boolean;
-        private static fastLucasSequence(p, P, Q, k);
-        multiply(other: ECFieldElement): ECFieldElement;
-        negate(): ECFieldElement;
-        sqrt(): ECFieldElement;
-        square(): ECFieldElement;
-        subtract(other: ECFieldElement): ECFieldElement;
-    }
-}
-declare namespace Neo.Cryptography {
-    class ECPoint {
-        x: ECFieldElement;
-        y: ECFieldElement;
-        curve: ECCurve;
-        constructor(x: ECFieldElement, y: ECFieldElement, curve: ECCurve);
-        static add(x: ECPoint, y: ECPoint): ECPoint;
-        compareTo(other: ECPoint): number;
-        static decodePoint(encoded: Uint8Array, curve: ECCurve): ECPoint;
-        private static decompressPoint(yTilde, X1, curve);
-        static deserializeFrom(reader: IO.BinaryReader, curve: ECCurve): ECPoint;
-        encodePoint(commpressed: boolean): Uint8Array;
-        equals(other: ECPoint): boolean;
-        static fromUint8Array(arr: Uint8Array, curve: ECCurve): ECPoint;
-        isInfinity(): boolean;
-        static multiply(p: ECPoint, n: Uint8Array | BigInteger): ECPoint;
-        negate(): ECPoint;
-        static parse(str: string, curve: ECCurve): ECPoint;
-        static subtract(x: ECPoint, y: ECPoint): ECPoint;
-        toString(): string;
-        twice(): ECPoint;
-        private static windowNaf(width, k);
-    }
-}
-declare namespace Neo.Cryptography {
-    class RandomNumberGenerator {
-        private static _entropy;
-        private static _strength;
-        private static _started;
-        private static _stopped;
-        private static _key;
-        private static addEntropy(data, strength);
-        static getRandomValues(array: ArrayBufferView): ArrayBufferView;
-        private static getWeakRandomValues(array);
-        private static processDeviceMotionEvent(event);
-        private static processEvent(event);
-        private static processMouseEvent(event);
-        private static processTouchEvent(event);
-        static startCollectors(): void;
-        private static stopCollectors();
-    }
-}
-interface String {
-    base58Decode(): Uint8Array;
-    base64UrlDecode(): Uint8Array;
-    toAesKey(): PromiseLike<ArrayBuffer>;
-}
-interface Uint8Array {
-    base58Encode(): string;
-    base64UrlEncode(): string;
-}
-declare function escape(s: string): string;
-declare function unescape(s: string): string;
-declare namespace Neo.Cryptography {
-}
-declare namespace Neo.Cryptography {
-    class RIPEMD160 {
-        private static zl;
-        private static zr;
-        private static sl;
-        private static sr;
-        private static hl;
-        private static hr;
-        private static bytesToWords(bytes);
-        private static wordsToBytes(words);
-        private static processBlock(H, M, offset);
-        private static f1(x, y, z);
-        private static f2(x, y, z);
-        private static f3(x, y, z);
-        private static f4(x, y, z);
-        private static f5(x, y, z);
-        private static rotl(x, n);
-        static computeHash(data: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-    }
-}
-declare namespace Neo.Cryptography {
-    class Sha256 {
-        private static K;
-        static computeHash(data: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-        private static ROTR(n, x);
-        private static Σ0(x);
-        private static Σ1(x);
-        private static σ0(x);
-        private static σ1(x);
-        private static Ch(x, y, z);
-        private static Maj(x, y, z);
     }
 }

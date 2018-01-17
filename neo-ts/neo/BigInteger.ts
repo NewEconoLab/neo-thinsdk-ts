@@ -54,14 +54,14 @@ namespace Neo
             {
                 this.fromString(value);
             }
+            else if (value instanceof Uint8Array) {
+                this.fromUint8Array(value);
+            }
             else if (value instanceof ArrayBuffer)
             {
                 this.fromUint8Array(new Uint8Array(value));
             }
-            else if (value instanceof Uint8Array)
-            {
-                this.fromUint8Array(value);
-            }
+
         }
 
         public static add(x: number | BigInteger, y: number | BigInteger): BigInteger
