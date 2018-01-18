@@ -158,7 +158,7 @@
                     maxPassLen: 32, // 缓冲区大小分配
                     maxSaltLen: 32,
                     maxDkLen: 32,
-                    maxThread: 1    // 最多使用的线程数
+                    maxThread: 4    // 最多使用的线程数
                 };
 
                 try {
