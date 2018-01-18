@@ -52,6 +52,20 @@ declare class NeoPromise<T> implements PromiseLike<T> {
     static resolve<T>(value: T | PromiseLike<T>): PromiseLike<T>;
     then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
 }
+declare module ThinNeo {
+    class Helper {
+        static GetPrivateKeyFromWIF(wif: string): Uint8Array;
+        static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
+        static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
+        static GetAddressFromPublicKey(publicKey: Uint8Array): string;
+        static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
+        static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
+        static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
+        static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n?: number, r?: number, p?: number): void;
+    }
+}
 declare namespace Neo {
     abstract class UintVariable {
         protected _bits: Uint32Array;
@@ -185,18 +199,163 @@ declare namespace Neo {
         static parse(str: string): Uint256;
     }
 }
-declare module ThinNeo {
-    class Helper {
-        static GetPrivateKeyFromWIF(wif: string): Uint8Array;
-        static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
-        static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
-        static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
-        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
-        static GetAddressFromPublicKey(publicKey: Uint8Array): string;
-        static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
-        static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
-        static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
-        static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n?: number, r?: number, p?: number): void;
+declare namespace Neo.IO {
+    class BinaryReader {
+        private input;
+        private _buffer;
+        private array_uint8;
+        private array_int8;
+        private array_uint16;
+        private array_int16;
+        private array_uint32;
+        private array_int32;
+        private array_float32;
+        private array_float64;
+        constructor(input: Stream);
+        close(): void;
+        private fillBuffer(buffer, count);
+        read(buffer: ArrayBuffer, index: number, count: number): number;
+        readBoolean(): boolean;
+        readByte(): number;
+        readBytes(count: number): ArrayBuffer;
+        readDouble(): number;
+        readFixed8(): Fixed8;
+        readInt16(): number;
+        readInt32(): number;
+        readSByte(): number;
+        readSerializable(T: Function): ISerializable;
+        readSerializableArray(T: Function): ISerializable[];
+        readSingle(): number;
+        readUint16(): number;
+        readUint160(): Uint160;
+        readUint256(): Uint256;
+        readUint32(): number;
+        readUint64(): Uint64;
+        readVarBytes(max?: number): ArrayBuffer;
+        readVarInt(max?: number): number;
+        readVarString(): string;
+    }
+}
+declare namespace Neo.IO {
+    class BinaryWriter {
+        private output;
+        private _buffer;
+        private array_uint8;
+        private array_int8;
+        private array_uint16;
+        private array_int16;
+        private array_uint32;
+        private array_int32;
+        private array_float32;
+        private array_float64;
+        constructor(output: Stream);
+        close(): void;
+        seek(offset: number, origin: SeekOrigin): number;
+        write(buffer: ArrayBuffer, index?: number, count?: number): void;
+        writeBoolean(value: boolean): void;
+        writeByte(value: number): void;
+        writeDouble(value: number): void;
+        writeFixed8(value: Fixed8): void;
+        writeInt16(value: number): void;
+        writeInt32(value: number): void;
+        writeSByte(value: number): void;
+        writeSerializableArray(array: ISerializable[]): void;
+        writeSingle(value: number): void;
+        writeUint16(value: number): void;
+        writeUint32(value: number): void;
+        writeUintVariable(value: UintVariable): void;
+        writeVarBytes(value: ArrayBuffer): void;
+        writeVarInt(value: number): void;
+        writeVarString(value: string): void;
+    }
+}
+interface Uint8Array {
+    asSerializable(T: Function): Neo.IO.ISerializable;
+}
+interface Uint8ArrayConstructor {
+    fromSerializable(obj: Neo.IO.ISerializable): Uint8Array;
+}
+declare namespace Neo.IO {
+    interface ISerializable {
+        deserialize(reader: BinaryReader): void;
+        serialize(writer: BinaryWriter): void;
+    }
+}
+declare namespace Neo.IO {
+    enum SeekOrigin {
+        Begin = 0,
+        Current = 1,
+        End = 2,
+    }
+    abstract class Stream {
+        private _array;
+        abstract canRead(): boolean;
+        abstract canSeek(): boolean;
+        abstract canWrite(): boolean;
+        close(): void;
+        abstract length(): number;
+        abstract position(): number;
+        abstract read(buffer: ArrayBuffer, offset: number, count: number): number;
+        readByte(): number;
+        abstract seek(offset: number, origin: SeekOrigin): number;
+        abstract setLength(value: number): void;
+        abstract write(buffer: ArrayBuffer, offset: number, count: number): void;
+        writeByte(value: number): void;
+    }
+}
+declare namespace Neo.IO {
+    class MemoryStream extends Stream {
+        private _buffers;
+        private _origin;
+        private _position;
+        private _length;
+        private _capacity;
+        private _expandable;
+        private _writable;
+        constructor(capacity?: number);
+        constructor(buffer: ArrayBuffer, writable?: boolean);
+        constructor(buffer: ArrayBuffer, index: number, count: number, writable?: boolean);
+        canRead(): boolean;
+        canSeek(): boolean;
+        canWrite(): boolean;
+        capacity(): number;
+        private findBuffer(position);
+        length(): number;
+        position(): number;
+        read(buffer: ArrayBuffer, offset: number, count: number): number;
+        private readInternal(dst, srcPos);
+        seek(offset: number, origin: SeekOrigin): number;
+        setLength(value: number): void;
+        toArray(): ArrayBuffer;
+        write(buffer: ArrayBuffer, offset: number, count: number): void;
+    }
+}
+declare namespace Neo.IO.Caching {
+    interface ITrackable<TKey> {
+        key: TKey;
+        trackState: TrackState;
+    }
+}
+declare namespace Neo.IO.Caching {
+    class TrackableCollection<TKey, TItem extends ITrackable<TKey>> {
+        private _map;
+        constructor(items?: ArrayLike<TItem>);
+        add(item: TItem): void;
+        clear(): void;
+        commit(): void;
+        forEach(callback: (value: TItem, key: TKey, collection: TrackableCollection<TKey, TItem>) => void): void;
+        get(key: TKey): TItem;
+        getChangeSet(): TItem[];
+        has(key: TKey): boolean;
+        remove(key: TKey): void;
+    }
+}
+declare namespace Neo.IO.Caching {
+    enum TrackState {
+        None = 0,
+        Added = 1,
+        Changed = 2,
+        Deleted = 3,
     }
 }
 declare namespace Neo.Cryptography {
@@ -387,164 +546,5 @@ declare namespace Neo.Cryptography {
         private static σ1(x);
         private static Ch(x, y, z);
         private static Maj(x, y, z);
-    }
-}
-declare namespace Neo.IO {
-    class BinaryReader {
-        private input;
-        private _buffer;
-        private array_uint8;
-        private array_int8;
-        private array_uint16;
-        private array_int16;
-        private array_uint32;
-        private array_int32;
-        private array_float32;
-        private array_float64;
-        constructor(input: Stream);
-        close(): void;
-        private fillBuffer(buffer, count);
-        read(buffer: ArrayBuffer, index: number, count: number): number;
-        readBoolean(): boolean;
-        readByte(): number;
-        readBytes(count: number): ArrayBuffer;
-        readDouble(): number;
-        readFixed8(): Fixed8;
-        readInt16(): number;
-        readInt32(): number;
-        readSByte(): number;
-        readSerializable(T: Function): ISerializable;
-        readSerializableArray(T: Function): ISerializable[];
-        readSingle(): number;
-        readUint16(): number;
-        readUint160(): Uint160;
-        readUint256(): Uint256;
-        readUint32(): number;
-        readUint64(): Uint64;
-        readVarBytes(max?: number): ArrayBuffer;
-        readVarInt(max?: number): number;
-        readVarString(): string;
-    }
-}
-declare namespace Neo.IO {
-    class BinaryWriter {
-        private output;
-        private _buffer;
-        private array_uint8;
-        private array_int8;
-        private array_uint16;
-        private array_int16;
-        private array_uint32;
-        private array_int32;
-        private array_float32;
-        private array_float64;
-        constructor(output: Stream);
-        close(): void;
-        seek(offset: number, origin: SeekOrigin): number;
-        write(buffer: ArrayBuffer, index?: number, count?: number): void;
-        writeBoolean(value: boolean): void;
-        writeByte(value: number): void;
-        writeDouble(value: number): void;
-        writeFixed8(value: Fixed8): void;
-        writeInt16(value: number): void;
-        writeInt32(value: number): void;
-        writeSByte(value: number): void;
-        writeSerializableArray(array: ISerializable[]): void;
-        writeSingle(value: number): void;
-        writeUint16(value: number): void;
-        writeUint32(value: number): void;
-        writeUintVariable(value: UintVariable): void;
-        writeVarBytes(value: ArrayBuffer): void;
-        writeVarInt(value: number): void;
-        writeVarString(value: string): void;
-    }
-}
-interface Uint8Array {
-    asSerializable(T: Function): Neo.IO.ISerializable;
-}
-interface Uint8ArrayConstructor {
-    fromSerializable(obj: Neo.IO.ISerializable): Uint8Array;
-}
-declare namespace Neo.IO {
-    interface ISerializable {
-        deserialize(reader: BinaryReader): void;
-        serialize(writer: BinaryWriter): void;
-    }
-}
-declare namespace Neo.IO {
-    enum SeekOrigin {
-        Begin = 0,
-        Current = 1,
-        End = 2,
-    }
-    abstract class Stream {
-        private _array;
-        abstract canRead(): boolean;
-        abstract canSeek(): boolean;
-        abstract canWrite(): boolean;
-        close(): void;
-        abstract length(): number;
-        abstract position(): number;
-        abstract read(buffer: ArrayBuffer, offset: number, count: number): number;
-        readByte(): number;
-        abstract seek(offset: number, origin: SeekOrigin): number;
-        abstract setLength(value: number): void;
-        abstract write(buffer: ArrayBuffer, offset: number, count: number): void;
-        writeByte(value: number): void;
-    }
-}
-declare namespace Neo.IO {
-    class MemoryStream extends Stream {
-        private _buffers;
-        private _origin;
-        private _position;
-        private _length;
-        private _capacity;
-        private _expandable;
-        private _writable;
-        constructor(capacity?: number);
-        constructor(buffer: ArrayBuffer, writable?: boolean);
-        constructor(buffer: ArrayBuffer, index: number, count: number, writable?: boolean);
-        canRead(): boolean;
-        canSeek(): boolean;
-        canWrite(): boolean;
-        capacity(): number;
-        private findBuffer(position);
-        length(): number;
-        position(): number;
-        read(buffer: ArrayBuffer, offset: number, count: number): number;
-        private readInternal(dst, srcPos);
-        seek(offset: number, origin: SeekOrigin): number;
-        setLength(value: number): void;
-        toArray(): ArrayBuffer;
-        write(buffer: ArrayBuffer, offset: number, count: number): void;
-    }
-}
-declare namespace Neo.IO.Caching {
-    interface ITrackable<TKey> {
-        key: TKey;
-        trackState: TrackState;
-    }
-}
-declare namespace Neo.IO.Caching {
-    class TrackableCollection<TKey, TItem extends ITrackable<TKey>> {
-        private _map;
-        constructor(items?: ArrayLike<TItem>);
-        add(item: TItem): void;
-        clear(): void;
-        commit(): void;
-        forEach(callback: (value: TItem, key: TKey, collection: TrackableCollection<TKey, TItem>) => void): void;
-        get(key: TKey): TItem;
-        getChangeSet(): TItem[];
-        has(key: TKey): boolean;
-        remove(key: TKey): void;
-    }
-}
-declare namespace Neo.IO.Caching {
-    enum TrackState {
-        None = 0,
-        Added = 1,
-        Changed = 2,
-        Deleted = 3,
     }
 }

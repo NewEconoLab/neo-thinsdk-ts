@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\app.ts" />
+    <TypeScriptCompile Include="app\test3_nep2_sign.ts" />
     <TypeScriptCompile Include="lib\app.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
     <TypeScriptCompile Include="neo-ts\Helper.ts" />
@@ -236,7 +237,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51424</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
