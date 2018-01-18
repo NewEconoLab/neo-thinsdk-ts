@@ -76,7 +76,12 @@
     <Content Include="lib\app.js" />
     <Content Include="lib\asset\asmjs.js" />
     <Content Include="lib\asset\flash.swf" />
+    <Content Include="lib\component\aes.js" />
+    <Content Include="lib\component\mode-ecb.js" />
+    <Content Include="lib\component\pad-nopadding.js" />
+    <Content Include="lib\component\pad-zeropadding.js" />
     <Content Include="lib\neo-ts.js" />
+    <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
     <Content Include="Web.config" />
   </ItemGroup>

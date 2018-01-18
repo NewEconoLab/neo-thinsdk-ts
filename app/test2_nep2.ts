@@ -22,26 +22,26 @@ module NeoTest {
 
             div.appendChild(document.createElement("hr"));//newline
 
-            var spanDecode = document.createElement("span");
-            div.appendChild(spanDecode);
-            spanDecode.textContent = "password:";
+            var title1 = document.createElement("span");
+            div.appendChild(title1);
+            title1.textContent = "password:";
             var inputPass = document.createElement("input");
             div.appendChild(inputPass);
             inputPass.style.width = "300px";
             inputPass.style.position = "absoulte";
             inputPass.value = "";
-            div.appendChild(document.createElement("hr"));//newline
 
-            var spanPubkey = document.createElement("span");
-            div.appendChild(spanPubkey);
-            spanPubkey.textContent = "pubkey:";
 
             div.appendChild(document.createElement("hr"));//newline
 
             var spanAddress = document.createElement("span");
             div.appendChild(spanAddress);
             spanAddress.textContent = "address:";
+            div.appendChild(document.createElement("hr"));//newline
 
+            var spanNep2 = document.createElement("span");
+            div.appendChild(spanNep2);
+            spanNep2.textContent = "Nep2:";
             div.appendChild(document.createElement("hr"));//newline
 
             var btn = document.createElement("button");
@@ -55,21 +55,24 @@ module NeoTest {
                 var address: string;
                 try {
                     prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(input.value);
-                    ThinNeo.Helper.GetNep2FromPrivateKey(prikey, "paswword");
+                    var n = 16384;
+                    var r = 8;
+                    var p = 8
+                    ThinNeo.Helper.GetNep2FromPrivateKey(prikey, inputPass.value, n, r, p, (info, result) => {
+                        spanNep2.textContent = "info=" + info + " result=" + result;
+
+                        console.log("result=" + "info=" + info + " result=" + result);
+                    });
 
                     var hexstr = prikey.toHexString();
-                    spanDecode.textContent = hexstr;
                 }
                 catch (e) {
-                    spanDecode.textContent = e.message;
                 }
                 try {
                     pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
                     var hexstr = pubkey.toHexString();
-                    spanPubkey.textContent = hexstr;
                 }
                 catch (e) {
-                    spanPubkey.textContent = e.message;
                 }
                 try {
                     address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
