@@ -99,6 +99,7 @@
     <Content Include="neo-ts\tsconfig.json" />
     <Content Include="lib\app.js.map" />
     <Content Include="lib\neo-ts.js.map" />
+    <Content Include="readme.md" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

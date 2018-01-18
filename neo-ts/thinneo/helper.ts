@@ -300,7 +300,7 @@
             };
             scrypt.onready = () => {
                 var pubkey = Helper.GetPublicKeyFromPrivateKey(prikey);
-                var script_hash = Helper.Hash160(pubkey);
+                var script_hash = Helper.GetPublicKeyScriptHashFromPublicKey(pubkey);
                 var address = Helper.GetAddressFromScriptHash(script_hash);
                 var addrbin = scrypt.strToBin(address);
 
@@ -395,7 +395,7 @@
                 }
 
                 var pubkey = Helper.GetPublicKeyFromPrivateKey(prikey);
-                var script_hash = Helper.Hash160(pubkey);
+                var script_hash = Helper.GetPublicKeyScriptHashFromPublicKey(pubkey);
                 var address = Helper.GetAddressFromScriptHash(script_hash);
                 var addrbin = scrypt.strToBin(address);
 

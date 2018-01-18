@@ -63,11 +63,15 @@ module NeoTest {
                         //spanNep2.textContent = "info=" + info + " result=" + result;
                         console.log("result=" + "info=" + info + " result=" + result);
                         prikey = result as Uint8Array;
-                        var hexstr = prikey.toHexString();
-                        var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
-                        var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-                        spanAddress.textContent = address;
-                        spanWif.textContent = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
+                        if (prikey != null) {
+                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                            spanAddress.textContent = address;
+                            spanWif.textContent = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
+                        }
+                        else {
+                            spanWif.textContent = "result=" + "info=" + info + " result=" + result;
+                        }
                     });
 
                 }
