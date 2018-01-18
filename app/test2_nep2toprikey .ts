@@ -4,7 +4,7 @@ module NeoTest {
         constructor() {
         }
         getName(): string {
-            return "*Nep2->Prikey";
+            return "Nep2->Prikey";
         }
         start(div: HTMLDivElement): void {
             var span = document.createElement("span");

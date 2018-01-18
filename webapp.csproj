@@ -76,6 +76,7 @@
     <Content Include="lib\app.js" />
     <Content Include="lib\asset\asmjs.js" />
     <Content Include="lib\asset\flash.swf" />
+    <Content Include="lib\base64js.min.js" />
     <Content Include="lib\component\aes.js" />
     <Content Include="lib\component\mode-ecb.js" />
     <Content Include="lib\component\pad-nopadding.js" />
