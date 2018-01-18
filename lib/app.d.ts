@@ -35,3 +35,10 @@ declare module NeoTest {
         start(div: HTMLDivElement): void;
     }
 }
+declare module NeoTest {
+    class Test_Nep2_sign implements ITestItem {
+        constructor();
+        getName(): string;
+        start(div: HTMLDivElement): void;
+    }
+}
