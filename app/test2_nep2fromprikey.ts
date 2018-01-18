@@ -1,10 +1,10 @@
 ﻿///<reference path="../lib/neo-ts.d.ts"/>
 module NeoTest {
-    export class Test_Nep2 implements ITestItem {
+    export class Test_Nep2FromPrikey implements ITestItem {
         constructor() {
         }
         getName(): string {
-            return "*Nep2";
+            return "Prikey->Nep2";
         }
         start(div: HTMLDivElement): void {
             var span = document.createElement("span");
@@ -60,7 +60,6 @@ module NeoTest {
                     var p = 8
                     ThinNeo.Helper.GetNep2FromPrivateKey(prikey, inputPass.value, n, r, p, (info, result) => {
                         spanNep2.textContent = "info=" + info + " result=" + result;
-
                         console.log("result=" + "info=" + info + " result=" + result);
                     });
 

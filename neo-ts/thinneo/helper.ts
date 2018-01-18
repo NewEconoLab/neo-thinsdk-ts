@@ -26,6 +26,24 @@
             var privateKey = data.subarray(1, 1 + 32);
             return privateKey;
         }
+
+        public static GetWifFromPrivateKey(prikey: Uint8Array): string {
+            var data = new Uint8Array(38);
+            data[0] = 0x80;
+            data[33] = 0x01;
+            for (var i = 0; i < 32; i++) {
+                data[i + 1] = prikey[i];
+            }
+
+            var realdata = data.subarray(0, data.length - 4);
+            var _checksum = Neo.Cryptography.Sha256.computeHash(realdata);
+            var checksum = new Uint8Array(Neo.Cryptography.Sha256.computeHash(_checksum));
+            for (var i = 0; i < 4; i++) {
+                data[34 + i] = checksum[i];
+            }
+            var wif = Neo.Cryptography.Base58.encode(data);
+            return wif;
+        }
         public static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array {
             var pkey = Neo.Cryptography.ECPoint.multiply(Neo.Cryptography.ECCurve.secp256r1.G, privateKey);
             return pkey.encodePoint(true);
@@ -166,7 +184,7 @@
 
             var keys = CryptoJS.enc.Utf8.parse("1234123412341234");
             keys.sigBytes = key.length;
-            keys.words = new Array<number>(src.length / 4);
+            keys.words = new Array<number>(key.length / 4);
             for (var i = 0; i < key.length / 4; i++) {
                 keys.words[i] = key[i * 4 + 3] + key[i * 4 + 2] * 256 + key[i * 4 + 1] * 256 * 256 + key[i * 4 + 0] * 256 * 256 * 256;
             }
@@ -178,7 +196,26 @@
             var str: string = encryptedkey.ciphertext.toString();
             return str.hexToBytes();
         }
-        public static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n = 16384, r = 8, p = 8, callback: (info: string, result: string) => void) {
+        public static Aes256Decrypt_u8(encryptedkey: Uint8Array, key: Uint8Array): Uint8Array {
+
+
+            var keys = CryptoJS.enc.Utf8.parse("1234123412341234");
+            keys.sigBytes = key.length;
+            keys.words = new Array<number>(key.length / 4);
+            for (var i = 0; i < key.length / 4; i++) {
+                keys.words[i] = key[i * 4 + 3] + key[i * 4 + 2] * 256 + key[i * 4 + 1] * 256 * 256 + key[i * 4 + 0] * 256 * 256 * 256;
+            }
+
+            var base64key = Base64.fromByteArray(encryptedkey);
+            var srcs = CryptoJS.AES.decrypt(base64key, keys, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.NoPadding
+            });
+            var str: string = srcs.toString();
+            return str.hexToBytes();
+
+        }
+        public static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n = 16384, r = 8, p = 8, callback: (info: string, result: string) => void): void {
 
             var pp = scrypt.getAvailableMod();
             scrypt.setResPath('lib/asset');
@@ -249,9 +286,9 @@
                 var u8hash = new Uint8Array(b1);
                 var outbuf = new Uint8Array(39 + 4);
                 for (var i = 0; i < 39; i++) {
-                    outbuf[i]=  buffer[i] ;
+                    outbuf[i] = buffer[i];
                 }
-                for (var i = 39; i < 39+4; i++) {
+                for (var i = 39; i < 39 + 4; i++) {
                     outbuf[i] = u8hash[i - 39];
                 }
 
@@ -286,6 +323,114 @@
             return;
 
 
+        }
+        public static GetPrivateKeyFromNep2(nep2: string, passphrase: string, n = 16384, r = 8, p = 8, callback: (info: string, result: string | Uint8Array) => void) {
+            var data = Neo.Cryptography.Base58.decode(nep2);
+            if (data.length != 39 + 4) {
+                callback("error", "data.length error");
+                return;
+            }
+
+            if (data[0] != 0x01 || data[1] != 0x42 || data[2] != 0xe0) {
+                callback("error", "dataheader error");
+                return;
+            }
+
+            var hash = data.subarray(39, 39 + 4);
+            var buffer = data.subarray(0, 39);
+
+            var b1 = Neo.Cryptography.Sha256.computeHash(buffer);
+            b1 = Neo.Cryptography.Sha256.computeHash(b1);
+            var u8hash = new Uint8Array(b1);
+            for (var i = 0; i < 4; i++) {
+                if (u8hash[i] != hash[i]) {
+                    callback("error", "data hash error");
+                    return;
+                }
+            }
+
+            var addresshash = buffer.subarray(3, 3 + 4);
+            var encryptedkey = buffer.subarray(7, 7 + 32);
+
+            var pp = scrypt.getAvailableMod();
+            scrypt.setResPath('lib/asset');
+
+            var ready = () => {
+                var param = {
+                    N: n,   // 时空成本
+                    r: r,       // 块大小
+                    P: p       // 并发维度
+                };
+
+                var opt = {
+                    maxPassLen: 32, // 缓冲区大小分配
+                    maxSaltLen: 32,
+                    maxDkLen: 64,
+                    maxThread: 4    // 最多使用的线程数
+                };
+
+                try {
+                    scrypt.config(param, opt);
+                } catch (err) {
+                    console.warn('config err: ', err);
+                }
+                //scrypt.onready();
+            };
+            scrypt.onload = () => {
+
+                console.log("scrypt.onload");
+                scrypt_loaded = true;
+                ready();
+            }
+            scrypt.oncomplete = (dk) => {
+                console.log('done', scrypt.binToHex(dk));
+                var u8dk = new Uint8Array(dk);
+                var derivedhalf1 = u8dk.subarray(0, 32);
+                var derivedhalf2 = u8dk.subarray(32, 64);
+
+                var u8xor = Helper.Aes256Decrypt_u8(encryptedkey, derivedhalf2);
+                var prikey = new Uint8Array(u8xor.length);
+                for (var i = 0; i < 32; i++) {
+                    prikey[i] = u8xor[i] ^ derivedhalf1[i];
+                }
+
+                var pubkey = Helper.GetPublicKeyFromPrivateKey(prikey);
+                var script_hash = Helper.Hash160(pubkey);
+                var address = Helper.GetAddressFromScriptHash(script_hash);
+                var addrbin = scrypt.strToBin(address);
+
+                var b1 = Neo.Cryptography.Sha256.computeHash(addrbin);
+                b1 = Neo.Cryptography.Sha256.computeHash(b1);
+                var b2 = new Uint8Array(b1);
+
+                var addresshashgot = b2.subarray(0, 4);
+                for (var i = 0; i < 4; i++) {
+                    if (addresshash[i] != b2[i]) {
+                        callback("error", "nep2 hash not match.");
+
+                        return;
+                    }
+                }
+                callback("finish", prikey);
+
+            };
+            scrypt.onerror = (err) => {
+                console.warn('scrypt err:', err);
+                callback("error", err);
+            }
+            scrypt.onprogress = (percent) => {
+                console.log('onprogress');
+            };
+            scrypt.onready = () => {
+                var passbin = scrypt.strToBin(passphrase);
+                scrypt.hash(passbin, addresshash, 64);
+            }
+            if (scrypt_loaded == false) {
+                scrypt.load("asmjs");
+            }
+            else {
+                ready();
+            }
         }
     }
 }

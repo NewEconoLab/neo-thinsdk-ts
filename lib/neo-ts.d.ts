@@ -185,9 +185,25 @@ declare namespace Neo {
         static parse(str: string): Uint256;
     }
 }
+declare namespace ThinNeo {
+    class Base64 {
+        static lookup: any[];
+        static revLookup: any[];
+        static code: string;
+        static binited: boolean;
+        static init(): void;
+        static placeHoldersCount(b64: string): number;
+        static byteLength(b64: string): number;
+        static toByteArray(b64: string): Uint8Array;
+        static tripletToBase64(num: any): any;
+        static encodeChunk(uint8: any, start: any, end: any): string;
+        static fromByteArray(uint8: Uint8Array): string;
+    }
+}
 declare module ThinNeo {
     class Helper {
         static GetPrivateKeyFromWIF(wif: string): Uint8Array;
+        static GetWifFromPrivateKey(prikey: Uint8Array): string;
         static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
         static Hash160(data: Uint8Array): Uint8Array;
         static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
@@ -199,7 +215,9 @@ declare module ThinNeo {
         static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
         static Aes256Encrypt(src: string, key: string): string;
         static Aes256Encrypt_u8(src: Uint8Array, key: Uint8Array): Uint8Array;
+        static Aes256Decrypt_u8(encryptedkey: Uint8Array, key: Uint8Array): Uint8Array;
         static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string) => void): void;
+        static GetPrivateKeyFromNep2(nep2: string, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string | Uint8Array) => void): void;
     }
 }
 declare namespace Neo.Cryptography {

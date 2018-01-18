@@ -29,14 +29,14 @@ declare module NeoTest {
     }
 }
 declare module NeoTest {
-    class Test_Nep2 implements ITestItem {
+    class Test_Nep2FromPrikey implements ITestItem {
         constructor();
         getName(): string;
         start(div: HTMLDivElement): void;
     }
 }
 declare module NeoTest {
-    class Test_Nep2_sign implements ITestItem {
+    class Test_Nep2ToPrikey implements ITestItem {
         constructor();
         getName(): string;
         start(div: HTMLDivElement): void;
