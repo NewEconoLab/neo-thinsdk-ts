@@ -110,8 +110,8 @@
     <TypeScriptCompile Include="app\app.ts" />
     <TypeScriptCompile Include="lib\app.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
-    <TypeScriptCompile Include="neo-ts\Helper.ts" />
-    <TypeScriptCompile Include="neo-ts\Map.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Helper.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Map.ts" />
     <TypeScriptCompile Include="neo-ts\neo\BigInteger.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Cryptography\Aes.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\Base64.ts" />
@@ -135,7 +135,7 @@
     <TypeScriptCompile Include="neo-ts\neo\IO\ISerializable.ts" />
     <TypeScriptCompile Include="neo-ts\neo\IO\MemoryStream.ts" />
     <TypeScriptCompile Include="neo-ts\neo\IO\Stream.ts" />
-    <TypeScriptCompile Include="neo-ts\Promise.ts" />
+    <TypeScriptCompile Include="neo-ts\neo\Promise.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Uint160.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Uint256.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Uint64.ts" />

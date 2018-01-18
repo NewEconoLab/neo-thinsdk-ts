@@ -1,57 +1,3 @@
-declare type Func<T, TResult> = (arg: T) => TResult;
-declare type Action<T> = Func<T, void>;
-interface Array<T> {
-    fill(value: T, start?: number, end?: number): any;
-}
-interface ArrayConstructor {
-    copy<T>(src: ArrayLike<T>, srcOffset: number, dst: ArrayLike<T>, dstOffset: number, count: number): void;
-    fromArray<T>(arr: ArrayLike<T>): Array<T>;
-}
-interface String {
-    hexToBytes(): Uint8Array;
-}
-interface Uint8Array {
-    toHexString(): string;
-}
-interface Uint8ArrayConstructor {
-    fromArrayBuffer(buffer: ArrayBuffer | ArrayBufferView): Uint8Array;
-}
-declare class NeoMap<TKey, TValue> {
-    private _map;
-    private _size;
-    readonly size: number;
-    clear(): void;
-    delete(key: TKey): boolean;
-    forEach(callback: (value: TValue, key: TKey, map: NeoMap<TKey, TValue>) => void): void;
-    get(key: TKey): TValue;
-    has(key: TKey): boolean;
-    set(key: TKey, value: TValue): void;
-}
-declare type PromiseExecutor<T> = (resolve: Action<T | PromiseLike<T>>, reject: Action<any>) => void;
-declare enum PromiseState {
-    pending = 0,
-    fulfilled = 1,
-    rejected = 2,
-}
-declare class NeoPromise<T> implements PromiseLike<T> {
-    private _state;
-    private _callback_attached;
-    private _value;
-    private _reason;
-    private _onFulfilled;
-    private _onRejected;
-    private _next_promise;
-    private _tag;
-    constructor(executor: PromiseExecutor<T>);
-    static all(iterable: NeoPromise<any>[]): NeoPromise<any[]>;
-    catch<TResult>(onRejected: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
-    private checkState();
-    private reject(reason);
-    static reject(reason: any): PromiseLike<any>;
-    private resolve(value);
-    static resolve<T>(value: T | PromiseLike<T>): PromiseLike<T>;
-    then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
-}
 declare namespace Neo {
     abstract class UintVariable {
         protected _bits: Uint32Array;
@@ -170,6 +116,60 @@ declare namespace Neo {
         deserialize(reader: IO.BinaryReader): void;
         serialize(writer: IO.BinaryWriter): void;
     }
+}
+declare type Func<T, TResult> = (arg: T) => TResult;
+declare type Action<T> = Func<T, void>;
+interface Array<T> {
+    fill(value: T, start?: number, end?: number): any;
+}
+interface ArrayConstructor {
+    copy<T>(src: ArrayLike<T>, srcOffset: number, dst: ArrayLike<T>, dstOffset: number, count: number): void;
+    fromArray<T>(arr: ArrayLike<T>): Array<T>;
+}
+interface String {
+    hexToBytes(): Uint8Array;
+}
+interface Uint8Array {
+    toHexString(): string;
+}
+interface Uint8ArrayConstructor {
+    fromArrayBuffer(buffer: ArrayBuffer | ArrayBufferView): Uint8Array;
+}
+declare class NeoMap<TKey, TValue> {
+    private _map;
+    private _size;
+    readonly size: number;
+    clear(): void;
+    delete(key: TKey): boolean;
+    forEach(callback: (value: TValue, key: TKey, map: NeoMap<TKey, TValue>) => void): void;
+    get(key: TKey): TValue;
+    has(key: TKey): boolean;
+    set(key: TKey, value: TValue): void;
+}
+declare type PromiseExecutor<T> = (resolve: Action<T | PromiseLike<T>>, reject: Action<any>) => void;
+declare enum PromiseState {
+    pending = 0,
+    fulfilled = 1,
+    rejected = 2,
+}
+declare class NeoPromise<T> implements PromiseLike<T> {
+    private _state;
+    private _callback_attached;
+    private _value;
+    private _reason;
+    private _onFulfilled;
+    private _onRejected;
+    private _next_promise;
+    private _tag;
+    constructor(executor: PromiseExecutor<T>);
+    static all(iterable: NeoPromise<any>[]): NeoPromise<any[]>;
+    catch<TResult>(onRejected: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
+    private checkState();
+    private reject(reason);
+    static reject(reason: any): PromiseLike<any>;
+    private resolve(value);
+    static resolve<T>(value: T | PromiseLike<T>): PromiseLike<T>;
+    then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
 }
 declare namespace Neo {
     class Uint160 extends UintVariable {
