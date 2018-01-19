@@ -20,7 +20,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
-    <TypeScriptToolsVersion>2.6</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,6 +84,10 @@
     <Content Include="lib\neo-ts.js" />
     <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
+    <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\avm2asm.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\byteReader.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\opcode.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\op.ts" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
