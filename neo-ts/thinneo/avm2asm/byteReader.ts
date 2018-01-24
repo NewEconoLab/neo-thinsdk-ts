@@ -13,7 +13,7 @@
         public ReadBytes(count: number): Uint8Array {
             var _data = new Uint8Array(count);
             for (var i = 0; i < count; i++)
-                _data[i] = this.data[this.addr + count];
+                _data[i] = this.data[this.addr + i];
             this.addr += count;
             return _data;
         }
