@@ -231,6 +231,8 @@ declare module ThinNeo {
         static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
         static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
         static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
+        static String2Bytes(str: any): Uint8Array;
+        static Bytes2String(_arr: Uint8Array): string;
         static Aes256Encrypt(src: string, key: string): string;
         static Aes256Encrypt_u8(src: Uint8Array, key: Uint8Array): Uint8Array;
         static Aes256Decrypt_u8(encryptedkey: Uint8Array, key: Uint8Array): Uint8Array;
@@ -343,6 +345,28 @@ declare module ThinNeo {
         SWITCH = 208,
         THROW = 240,
         THROWIFNOT = 241,
+    }
+}
+declare namespace ThinNeo {
+    class ScriptBuilder {
+        writer: number[];
+        Offset: number;
+        constructor();
+        _WriteUint8(num: number): void;
+        _WriteUint16(num: number): void;
+        _WriteUint32(num: number): void;
+        _WriteUint8Array(nums: Uint8Array): void;
+        _ConvertInt16ToBytes(num: number): Uint8Array;
+        Emit(op: OpCode, arg?: Uint8Array): ScriptBuilder;
+        EmitAppCall(scriptHash: Uint8Array, useTailCall?: boolean): ScriptBuilder;
+        EmitJump(op: OpCode, offset: number): ScriptBuilder;
+        EmitPushNumber(number: Neo.BigInteger): ScriptBuilder;
+        EmitPushBool(data: boolean): ScriptBuilder;
+        EmitPushBytes(data: Uint8Array): ScriptBuilder;
+        EmitPushString(data: string): ScriptBuilder;
+        EmitSysCall(api: string): ScriptBuilder;
+        ToArray(): Uint8Array;
+        EmitParamJson(param: any): ScriptBuilder;
     }
 }
 declare namespace Neo.Cryptography {

@@ -26,6 +26,7 @@ module NeoTest {
             this.addText("交易相关Transaction");
             this.addText("合约相关Contract");
             this.addMenuItem(new Test_ASM2AVM());
+            this.addMenuItem(new Test_ScriptBuilder());
 
         }
         addText(str: string) {

@@ -55,9 +55,14 @@ Uint8Array.fromArrayBuffer = function (buffer: ArrayBuffer | ArrayBufferView): U
 String.prototype.hexToBytes = function (): Uint8Array
 {
     if ((this.length & 1) != 0) throw new RangeError();
-    let bytes = new Uint8Array(this.length / 2);
-    for (let i = 0; i < bytes.length; i++)
-        bytes[i] = parseInt(this.substr(i * 2, 2), 16);
+    var str = this;
+    if (this.length >= 2 && this[0] == '0' && this[1] == 'x')
+        str = this.substr(2);
+    let bytes = new Uint8Array(str.length / 2);
+    for (let i = 0; i < bytes.length; i++) {
+        
+        bytes[i] = parseInt(str.substr(i * 2, 2), 16);
+    }
     return bytes;
 }
 

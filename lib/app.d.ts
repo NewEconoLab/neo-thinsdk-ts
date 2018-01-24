@@ -56,3 +56,10 @@ declare module NeoTest {
         start(div: HTMLDivElement): void;
     }
 }
+declare module NeoTest {
+    class Test_ScriptBuilder implements ITestItem {
+        constructor();
+        getName(): string;
+        start(div: HTMLDivElement): void;
+    }
+}
