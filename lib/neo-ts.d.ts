@@ -186,6 +186,24 @@ declare namespace Neo {
     }
 }
 declare namespace ThinNeo {
+    class nep6account {
+        address: string;
+        nep2key: string;
+        getPrivateKey(scrypt: nep6ScryptParameters, password: string, callback: (info: string, result: string | Uint8Array) => void): void;
+    }
+    class nep6ScryptParameters {
+        N: number;
+        r: number;
+        p: number;
+    }
+    class nep6wallet {
+        scrypt: nep6ScryptParameters;
+        accounts: nep6account[];
+        fromJsonStr(jsonstr: string): void;
+        toJson(): any;
+    }
+}
+declare namespace ThinNeo {
     class Base64 {
         static lookup: any[];
         static revLookup: any[];

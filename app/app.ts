@@ -22,6 +22,7 @@ module NeoTest {
             this.addText("钱包相关Wallet");
             this.addMenuItem(new Test_Nep2FromPrikey());
             this.addMenuItem(new Test_Nep2ToPrikey());
+            this.addMenuItem(new Test_Nep6());
             this.addText("交易相关Transaction");
 
         }

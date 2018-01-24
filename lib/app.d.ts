@@ -42,3 +42,10 @@ declare module NeoTest {
         start(div: HTMLDivElement): void;
     }
 }
+declare module NeoTest {
+    class Test_Nep6 implements ITestItem {
+        constructor();
+        getName(): string;
+        start(div: HTMLDivElement): void;
+    }
+}

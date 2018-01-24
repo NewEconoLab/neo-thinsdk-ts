@@ -84,10 +84,12 @@
     <Content Include="lib\neo-ts.js" />
     <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
+    <TypeScriptCompile Include="app\test2_nep6.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\avm2asm.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\byteReader.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\opcode.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\op.ts" />
+    <TypeScriptCompile Include="neo-ts\nep6\nep6wallet.ts" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
