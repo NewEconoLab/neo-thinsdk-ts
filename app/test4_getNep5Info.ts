@@ -47,6 +47,10 @@ module NeoTest {
             div.appendChild(btn2);
             btn2.textContent = "get balance";
 
+            var addr = document.createElement("input");
+            div.appendChild(addr);
+            addr.value = "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj";
+
             div.appendChild(document.createElement("hr"));//newline
 
             //info1
@@ -120,8 +124,7 @@ module NeoTest {
 
                             //find decimals 他的type 有可能是 Integer 或者ByteArray
                             if (stack[2].type == "Integer") {
-
-                                this.nep5decimals = stack[2].value;
+                                this.nep5decimals = (new Neo.BigInteger(stack[2].value as string)).toInt32();
                             }
                             else if (stack[2].type == "ByteArray") {
                                 var bs = (stack[2].value as string).hexToBytes();
@@ -135,10 +138,60 @@ module NeoTest {
 
                         }
                     }
-                    );
+                        );
                 }
                 catch (e) {
                 }
+
+            }
+
+            btn2.onclick = () => {
+                var sb = new ThinNeo.ScriptBuilder();
+                sb.EmitParamJson(["(addr)" + addr.value]);//参数倒序入
+                sb.EmitParamJson("(str)balanceOf");//参数倒序入 //name//totalSupply//symbol//decimals
+                var shash = sid.value.hexToBytes();
+                sb.EmitAppCall(shash.reverse());//nep5脚本
+
+                var data = sb.ToArray();
+                info1.textContent = data.toHexString();
+
+                var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+                fetch(url, { "method": "get" }).then((r) => {
+                    return r.json();
+                }).then((r) => {
+                    info1.textContent = JSON.stringify(r);
+                    try {
+                        var state = r.result.state as string;
+                        info2.textContent = "";
+                        if (state.includes("HALT")) {
+                            info2.textContent += "Succ\n";
+                        }
+                        var stack = r.result.stack as any[];
+
+                        var bnum = new Neo.BigInteger(0);
+                        //find decimals 他的type 有可能是 Integer 或者ByteArray
+                        if (stack[0].type == "Integer") {
+
+                            bnum = new Neo.BigInteger(stack[0].value);
+                        }
+                        else if (stack[0].type == "ByteArray") {
+                            var bs = (stack[0].value as string).hexToBytes();
+                            bnum = new Neo.BigInteger(bs);
+                        }
+                        var v = 1;
+                        for (var i = 0; i < this.nep5decimals; i++) {
+                            v *= 10;
+                        }
+                        var intv = bnum.divide(v).toInt32();
+                        var smallv = bnum.mod(v).toInt32() / v;
+                        info2.textContent += "count=" + (intv + smallv);
+
+                    }
+                    catch (e) {
+
+                    }
+                }
+                    );
 
             }
         }
