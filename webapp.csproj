@@ -84,6 +84,7 @@
     <Content Include="lib\neo-ts.js" />
     <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
+    <TypeScriptCompile Include="app\test4_getNep5Info.ts" />
     <TypeScriptCompile Include="app\test4_scriptbuilder.ts" />
     <TypeScriptCompile Include="app\test4_asm2avm.ts" />
     <TypeScriptCompile Include="app\test2_nep6.ts" />

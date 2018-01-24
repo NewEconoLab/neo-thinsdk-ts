@@ -27,6 +27,7 @@ module NeoTest {
             this.addText("合约相关Contract");
             this.addMenuItem(new Test_ASM2AVM());
             this.addMenuItem(new Test_ScriptBuilder());
+            this.addMenuItem(new Test_GetNep5Info());
 
         }
         addText(str: string) {

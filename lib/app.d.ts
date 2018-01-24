@@ -57,6 +57,15 @@ declare module NeoTest {
     }
 }
 declare module NeoTest {
+    class Test_GetNep5Info implements ITestItem {
+        constructor();
+        getName(): string;
+        makeRpcUrl(url: string, method: string, ..._params: any[]): string;
+        nep5decimals: number;
+        start(div: HTMLDivElement): void;
+    }
+}
+declare module NeoTest {
     class Test_ScriptBuilder implements ITestItem {
         constructor();
         getName(): string;
