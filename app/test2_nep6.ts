@@ -71,20 +71,32 @@ module NeoTest {
 
             btn.onclick = () => {
                 try {
+                    //getPrivateKey 是异步方法，且同时只能执行一个
                     info2.textContent = "";
-                    for (var i = 0; i < wallet.accounts.length; i++) {
-                        wallet.accounts[i].getPrivateKey(wallet.scrypt, inputPass.value, (info, result) => {
-                            if (info == "finish") {
-                                var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result as Uint8Array);
-                                var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-                                var hexkey = (result as Uint8Array).toHexString();
-                                info2.textContent += info + "|" + address + " key=" + hexkey;
-                            }
-                            else {
-                                info2.textContent += info + "|" + result;
-                            }
-                        });
-                    }
+                    var istart = 0;
+                    var getkey: (n: number) => void = null;
+
+                    getkey = (keyindex: number) => {
+                        if (istart < wallet.accounts.length) {
+
+
+                            wallet.accounts[keyindex].getPrivateKey(wallet.scrypt, inputPass.value, (info, result) => {
+                                if (info == "finish") {
+                                    var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result as Uint8Array);
+                                    var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                                    var hexkey = (result as Uint8Array).toHexString();
+                                    info2.textContent += info + "|" + address + " key=" + hexkey;
+                                }
+                                else {
+                                    info2.textContent += info + "|" + result;
+                                }
+                                istart++;
+                                getkey(istart);
+                            });
+                        }
+                    };
+                    getkey(0);
+
                 }
                 catch (e) {
                 }
