@@ -24,6 +24,8 @@ module NeoTest {
             this.addMenuItem(new Test_Nep2ToPrikey());
             this.addMenuItem(new Test_Nep6());
             this.addText("交易相关Transaction");
+            this.addText("合约相关Contract");
+            this.addMenuItem(new Test_ASM2AVM());
 
         }
         addText(str: string) {

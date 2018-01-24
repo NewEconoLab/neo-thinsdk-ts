@@ -56,7 +56,7 @@
             if (this.code > OpCode.PUSHBYTES1 && this.code < OpCode.PUSHBYTES75)
                 return name + "PUSHBYTES" + (this.code - OpCode.PUSHBYTES1);
             else
-                return name + this.code.toString();
+                return name + OpCode[this.code].toString();
         }
     }
 
