@@ -102,6 +102,7 @@
     <TypeScriptCompile Include="app\test2_nep2fromprikey.ts" />
     <TypeScriptCompile Include="app\test1_wifdecode.ts" />
     <TypeScriptCompile Include="app\test1_checkaddress.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\TransAction.ts" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

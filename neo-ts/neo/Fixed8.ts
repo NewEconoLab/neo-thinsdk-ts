@@ -109,13 +109,13 @@ namespace Neo
         public deserialize(reader: IO.BinaryReader): void
         {
             //TODO
-            //this.data = reader.ReadInt64();
+            this.data = reader.readUint64();
         }
 
         public serialize(writer: IO.BinaryWriter): void
         {
             //TODO
-            //writer.writeUint64(this.data);
+            writer.writeFixed8(this);
         }
     }
 }

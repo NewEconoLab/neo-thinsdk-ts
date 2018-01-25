@@ -68,6 +68,13 @@
             scripthash = Neo.Cryptography.RIPEMD160.computeHash(scripthash);
             return new Uint8Array(scripthash);
         }
+        public static GetScriptHashFromScript(script: Uint8Array): Uint8Array {
+            var scripthash = Neo.Cryptography.Sha256.computeHash(script);
+            scripthash = Neo.Cryptography.RIPEMD160.computeHash(scripthash);
+            return new Uint8Array(scripthash);
+
+        }
+         
         public static GetAddressFromScriptHash(scripthash: Uint8Array): string {
             var data = new Uint8Array(scripthash.length + 1);
             data[0] = 0x17;

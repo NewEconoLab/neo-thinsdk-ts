@@ -226,6 +226,7 @@ declare module ThinNeo {
         static Hash160(data: Uint8Array): Uint8Array;
         static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
         static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetScriptHashFromScript(script: Uint8Array): Uint8Array;
         static GetAddressFromScriptHash(scripthash: Uint8Array): string;
         static GetAddressFromPublicKey(publicKey: Uint8Array): string;
         static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
@@ -367,6 +368,103 @@ declare namespace ThinNeo {
         EmitSysCall(api: string): ScriptBuilder;
         ToArray(): Uint8Array;
         EmitParamJson(param: any): ScriptBuilder;
+    }
+}
+declare namespace ThinNeo {
+    enum TransactionType {
+        MinerTransaction = 0,
+        IssueTransaction = 1,
+        ClaimTransaction = 2,
+        EnrollmentTransaction = 32,
+        RegisterTransaction = 64,
+        ContractTransaction = 128,
+        PublishTransaction = 208,
+        InvocationTransaction = 209,
+    }
+    enum TransactionAttributeUsage {
+        ContractHash = 0,
+        ECDH02 = 2,
+        ECDH03 = 3,
+        Script = 32,
+        Vote = 48,
+        DescriptionUrl = 129,
+        Description = 144,
+        Hash1 = 161,
+        Hash2 = 162,
+        Hash3 = 163,
+        Hash4 = 164,
+        Hash5 = 165,
+        Hash6 = 166,
+        Hash7 = 167,
+        Hash8 = 168,
+        Hash9 = 169,
+        Hash10 = 170,
+        Hash11 = 171,
+        Hash12 = 172,
+        Hash13 = 173,
+        Hash14 = 174,
+        Hash15 = 175,
+        Remark = 240,
+        Remark1 = 241,
+        Remark2 = 242,
+        Remark3 = 243,
+        Remark4 = 244,
+        Remark5 = 245,
+        Remark6 = 246,
+        Remark7 = 247,
+        Remark8 = 248,
+        Remark9 = 249,
+        Remark10 = 250,
+        Remark11 = 251,
+        Remark12 = 252,
+        Remark13 = 253,
+        Remark14 = 254,
+        Remark15 = 255,
+    }
+    class Attribute {
+        usage: TransactionAttributeUsage;
+        data: Uint8Array;
+    }
+    class TransactionOutput {
+        assetId: Uint8Array;
+        value: Neo.Fixed8;
+        toAddress: Uint8Array;
+    }
+    class TransactionInput {
+        hash: Uint8Array;
+        index: number;
+    }
+    class Witness {
+        InvocationScript: Uint8Array;
+        VerificationScript: Uint8Array;
+        readonly Address: string;
+    }
+    interface IExtData {
+        Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
+        Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
+    }
+    class InvokeTransData implements IExtData {
+        script: Uint8Array;
+        gas: Neo.Fixed8;
+        Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
+        Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
+    }
+    class Transaction {
+        type: TransactionType;
+        version: number;
+        attributes: Attribute[];
+        inputs: TransactionInput[];
+        outputs: TransactionOutput[];
+        witnesses: Witness[];
+        SerializeUnsigned(writer: Neo.IO.BinaryWriter): void;
+        Serialize(writer: Neo.IO.BinaryWriter): void;
+        extdata: IExtData;
+        Deserialize(ms: Neo.IO.BinaryReader): void;
+        GetMessage(): Uint8Array;
+        GetRawData(): Uint8Array;
+        AddWitness(signdata: Uint8Array, pubkey: Uint8Array, addrs: string): void;
+        AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array): void;
+        GetHash(): Uint8Array;
     }
 }
 declare namespace Neo.Cryptography {
