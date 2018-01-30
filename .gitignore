@@ -2,3 +2,5 @@
 /obj
 /.vs
 /webapp.csproj.user
+/wallet_test/bin
+/wallet_test/obj
