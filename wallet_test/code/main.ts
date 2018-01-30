@@ -3,6 +3,7 @@ namespace what {
     export class Main {
         other: lightsPanel.panel;
         panel2: lightsPanel.panel;
+        panel3: lightsPanel.panel;
         Start(): void {
             console.log("hello there.");
             var panel = document.getElementById("panel") as HTMLDivElement;
@@ -25,6 +26,9 @@ namespace what {
             lightsPanel.QuickDom.addA(this.other, "Begin Test Typescript Wallet", "");
 
             this.panel2 = lightsPanel.panelMgr.instance().createPanel("panel2");
+
+            this.panel3 = lightsPanel.panelMgr.instance().createPanel("panel3");
+
         }
     }
     window.onload = () => {

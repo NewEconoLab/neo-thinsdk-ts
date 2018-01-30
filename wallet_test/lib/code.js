@@ -19,6 +19,7 @@ var what;
             this.other.divContent.textContent = "";
             lightsPanel.QuickDom.addA(this.other, "Begin Test Typescript Wallet", "");
             this.panel2 = lightsPanel.panelMgr.instance().createPanel("panel2");
+            this.panel3 = lightsPanel.panelMgr.instance().createPanel("panel3");
         };
         return Main;
     }());

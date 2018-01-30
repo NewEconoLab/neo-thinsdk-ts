@@ -2,6 +2,7 @@ declare namespace what {
     class Main {
         other: lightsPanel.panel;
         panel2: lightsPanel.panel;
+        panel3: lightsPanel.panel;
         Start(): void;
     }
 }
