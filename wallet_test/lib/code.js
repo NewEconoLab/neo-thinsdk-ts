@@ -1237,7 +1237,7 @@ var what;
         }
         init(main) {
             this.main = main;
-            this.panel = lightsPanel.panelMgr.instance().createPanel("Function （** not finish）");
+            this.panel = lightsPanel.panelMgr.instance().createPanel("Function");
             this.panel.divRoot.style.left = "30px";
             this.panel.divRoot.style.top = "200px";
             this.panel.floatWidth = 300;
@@ -1249,7 +1249,7 @@ var what;
             lightsPanel.QuickDom.addSpan(this.panel, "Transfer");
             lightsPanel.QuickDom.addElement(this.panel, "br");
             lightsPanel.QuickDom.addSpan(this.panel, "Target");
-            lightsPanel.QuickDom.addTextInput(this.panel, "");
+            var target = lightsPanel.QuickDom.addTextInput(this.panel, "AdzQq1DmnHq86yyDUkU3jKdHwLUe2MLAVv");
             lightsPanel.QuickDom.addElement(this.panel, "br");
             lightsPanel.QuickDom.addSpan(this.panel, "Asset Type:");
             var select = document.createElement("select");
@@ -1261,9 +1261,17 @@ var what;
             }
             lightsPanel.QuickDom.addElement(this.panel, "br");
             lightsPanel.QuickDom.addSpan(this.panel, "Count");
-            lightsPanel.QuickDom.addTextInput(this.panel, "");
+            var count = lightsPanel.QuickDom.addTextInput(this.panel, "");
             lightsPanel.QuickDom.addElement(this.panel, "br");
-            lightsPanel.QuickDom.addButton(this.panel, "MakeTransaction");
+            var btn = lightsPanel.QuickDom.addButton(this.panel, "MakeTransaction");
+            btn.onclick = () => {
+                var targetaddr = target.value;
+                var asset = select.childNodes[select.selectedIndex].text;
+                var assetid = what.CoinTool.name2assetID[asset];
+                var _count = Neo.Fixed8.parse(count.value);
+                var tran = what.CoinTool.makeTran(this.main.panelUTXO.assets, targetaddr, assetid, _count);
+                this.main.panelTransaction.setTran(tran);
+            };
             lightsPanel.QuickDom.addElement(this.panel, "br");
         }
     }
@@ -1394,6 +1402,30 @@ var what;
             this.panel.onFloat();
             this.panel.divContent.textContent = "";
         }
+        setTran(tran) {
+            this.panel.divContent.textContent = "";
+            lightsPanel.QuickDom.addSpan(this.panel, "type=" + tran.type.toString());
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addSpan(this.panel, "version=" + tran.version);
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addSpan(this.panel, "inputcount=" + tran.inputs.length);
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            for (var i = 0; i < tran.inputs.length; i++) {
+                lightsPanel.QuickDom.addSpan(this.panel, "    input[" + i + "]" + tran.inputs[i].hash.toHexString() + "(" + tran.inputs[i].index + ")");
+                lightsPanel.QuickDom.addElement(this.panel, "br");
+            }
+            lightsPanel.QuickDom.addSpan(this.panel, "outputcount=" + tran.outputs.length);
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            for (var i = 0; i < tran.outputs.length; i++) {
+                lightsPanel.QuickDom.addSpan(this.panel, "    outputs[" + i + "]" + ThinNeo.Helper.GetAddressFromScriptHash(tran.outputs[i].toAddress));
+                lightsPanel.QuickDom.addElement(this.panel, "br");
+                lightsPanel.QuickDom.addSpan(this.panel, "    " + tran.outputs[i].assetId.toHexString() + "=" + tran.outputs[i].value.toString());
+                lightsPanel.QuickDom.addElement(this.panel, "br");
+            }
+            var txid = tran.GetHash().toHexString();
+            lightsPanel.QuickDom.addSpan(this.panel, "this TXID=" + txid);
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+        }
     }
     what.panel_Transaction = panel_Transaction;
 })(what || (what = {}));
@@ -1431,6 +1463,7 @@ var what;
                         this.assets[asset] = [];
                     }
                     var utxo = new UTXO();
+                    utxo.addr = item.addr;
                     utxo.asset = asset;
                     utxo.n = n;
                     utxo.txid = txid;
@@ -1506,6 +1539,52 @@ var what;
                     CoinTool.name2assetID[name] = id;
                 }
             });
+        }
+        static makeTran(utxos, targetaddr, assetid, sendcount) {
+            if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
+                throw new Error("can not send zero.");
+            var tran = new ThinNeo.Transaction();
+            tran.type = ThinNeo.TransactionType.ContractTransaction;
+            tran.version = 0;
+            tran.extdata = null;
+            tran.inputs = [];
+            var scraddr = "";
+            utxos[assetid].sort((a, b) => {
+                return a.count.compareTo(b.count);
+            });
+            var us = utxos[assetid];
+            var count = Neo.Fixed8.Zero;
+            for (var i = 0; i < us.length; i++) {
+                var input = new ThinNeo.TransactionInput();
+                input.hash = us[i].txid.hexToBytes().reverse();
+                input.index = us[i].n;
+                tran.inputs.push(input);
+                count = count.add(us[i].count);
+                scraddr = us[i].addr;
+                if (count.compareTo(sendcount) > 0) {
+                    break;
+                }
+            }
+            if (count.compareTo(sendcount) > 0) {
+                tran.outputs = [];
+                var output = new ThinNeo.TransactionOutput();
+                output.assetId = assetid.hexToBytes().reverse();
+                output.value = sendcount;
+                output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
+                tran.outputs.push(output);
+                var change = count.subtract(sendcount);
+                if (change.compareTo(Neo.Fixed8.Zero) > 0) {
+                    var outputchange = new ThinNeo.TransactionOutput();
+                    outputchange.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(scraddr);
+                    outputchange.value = change;
+                    outputchange.assetId = assetid.hexToBytes().reverse();
+                    tran.outputs.push(outputchange);
+                }
+            }
+            else {
+                throw new Error("no enough money.");
+            }
+            return tran;
         }
     }
     CoinTool.id_GAS = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";

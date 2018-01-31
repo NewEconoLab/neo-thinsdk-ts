@@ -167,7 +167,6 @@ declare namespace what {
         constructor();
         panel: lightsPanel.panel;
         main: Main;
-        target: HTMLInputElement;
         init(main: Main): void;
     }
 }
@@ -202,8 +201,8 @@ declare namespace what {
         constructor();
         panel: lightsPanel.panel;
         main: Main;
-        target: HTMLInputElement;
         init(main: Main): void;
+        setTran(tran: ThinNeo.Transaction): void;
     }
 }
 declare namespace what {
@@ -219,6 +218,7 @@ declare namespace what {
         refresh(): Promise<void>;
     }
     class UTXO {
+        addr: string;
         txid: string;
         n: number;
         asset: string;
@@ -236,6 +236,9 @@ declare namespace what {
             [id: string]: string;
         };
         static initAllAsset(): Promise<void>;
+        static makeTran(utxos: {
+            [id: string]: UTXO[];
+        }, targetaddr: string, assetid: string, sendcount: Neo.Fixed8): ThinNeo.Transaction;
     }
 }
 declare namespace what {

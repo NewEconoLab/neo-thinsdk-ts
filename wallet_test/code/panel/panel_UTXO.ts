@@ -46,6 +46,7 @@ namespace what
                     this.assets[asset] = [];
                 }
                 var utxo = new UTXO();
+                utxo.addr = item.addr;
                 utxo.asset = asset;
                 utxo.n = n;
                 utxo.txid = txid;
@@ -58,6 +59,7 @@ namespace what
     }
     export class UTXO
     {
+        addr: string;
         txid: string;
         n: number;
         asset: string;

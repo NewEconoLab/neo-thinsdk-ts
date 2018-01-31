@@ -36,5 +36,67 @@
                 CoinTool.name2assetID[name] = id;
             }
         }
+
+
+        static makeTran(utxos: { [id: string]: UTXO[] }, targetaddr: string, assetid: string, sendcount: Neo.Fixed8): ThinNeo.Transaction
+        {
+            if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
+                throw new Error("can not send zero.");
+            var tran = new ThinNeo.Transaction();
+            tran.type = ThinNeo.TransactionType.ContractTransaction;
+            tran.version = 0;//0 or 1
+            tran.extdata = null;
+
+            tran.inputs = [];
+            var scraddr: string = "";
+            utxos[assetid].sort((a, b) =>
+            {
+                return a.count.compareTo(b.count);
+            });
+            var us = utxos[assetid];
+            var count: Neo.Fixed8 = Neo.Fixed8.Zero;
+            for (var i = 0; i < us.length; i++)
+            {
+                var input = new ThinNeo.TransactionInput();
+                input.hash = us[i].txid.hexToBytes().reverse();
+                input.index = us[i].n;
+                tran.inputs.push(input);
+                count = count.add(us[i].count);
+                scraddr = us[i].addr;
+                if (count.compareTo(sendcount) > 0)
+                {
+                    break;
+                }
+            }
+            if (count.compareTo(sendcount) > 0)//输入大于0
+            {
+                tran.outputs = [];
+                //输出
+                var output = new ThinNeo.TransactionOutput();
+                output.assetId = assetid.hexToBytes().reverse();
+                output.value = sendcount;
+                output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
+                tran.outputs.push(output);
+
+
+                //找零
+                var change = count.subtract(sendcount);
+                if (change.compareTo(Neo.Fixed8.Zero) > 0)
+                {
+                    var outputchange = new ThinNeo.TransactionOutput();
+                    outputchange.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(scraddr);
+                    outputchange.value = change;
+                    outputchange.assetId = assetid.hexToBytes().reverse();
+                    tran.outputs.push(outputchange);
+
+                }
+            }
+            else
+            {
+                throw new Error("no enough money.");
+            }
+            return tran;
+        }
+
     }
 }
