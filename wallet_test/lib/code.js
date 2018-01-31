@@ -16,6 +16,12 @@ var what;
             lightsPanel.panelMgr.instance().setbackImg("res/back1.jpg");
             this.panelState = new what.panel_State();
             this.panelState.init(this);
+            this.panelLoadKey = new what.panel_LoadKey();
+            this.panelLoadKey.init(this);
+            this.panelFunction = new what.panel_Function();
+            this.panelFunction.init(this);
+            this.panelTransaction = new what.panel_Transaction();
+            this.panelTransaction.init(this);
         }
         update() {
             this.panelState.update();
@@ -1012,6 +1018,103 @@ var lightsPanel;
 })(lightsPanel || (lightsPanel = {}));
 var what;
 (function (what) {
+    class panel_Function {
+        constructor() {
+        }
+        init(main) {
+            this.main = main;
+            this.panel = lightsPanel.panelMgr.instance().createPanel("Function （** not finish）");
+            this.panel.divRoot.style.left = "30px";
+            this.panel.divRoot.style.top = "200px";
+            this.panel.floatWidth = 300;
+            this.panel.floatHeight = 150;
+            this.panel.canDrag = true;
+            this.panel.canScale = true;
+            this.panel.onFloat();
+            this.panel.divContent.textContent = "";
+            lightsPanel.QuickDom.addSpan(this.panel, "Transfer");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addSpan(this.panel, "Target");
+            lightsPanel.QuickDom.addTextInput(this.panel, "");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addSpan(this.panel, "Type:");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addSpan(this.panel, "Count");
+            lightsPanel.QuickDom.addTextInput(this.panel, "");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addButton(this.panel, "MakeTransaction");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+        }
+    }
+    what.panel_Function = panel_Function;
+})(what || (what = {}));
+var what;
+(function (what) {
+    class panel_LoadKey {
+        constructor() {
+        }
+        init(main) {
+            this.main = main;
+            this.panel = lightsPanel.panelMgr.instance().createPanel("Key Info");
+            this.panel.divRoot.style.left = "400px";
+            this.panel.divRoot.style.top = "30px";
+            this.panel.floatWidth = 400;
+            this.panel.floatHeight = 150;
+            this.panel.canDrag = true;
+            this.panel.canScale = true;
+            this.panel.onFloat();
+            this.panel.divContent.textContent = "";
+            lightsPanel.QuickDom.addSpan(this.panel, "Load NEP6 File");
+            var file = document.createElement("input");
+            this.panel.divContent.appendChild(file);
+            file.type = "file";
+            var wallet;
+            var reader = new FileReader();
+            reader.onload = (e) => {
+                var walletstr = reader.result;
+                wallet = new ThinNeo.nep6wallet();
+                wallet.fromJsonStr(walletstr);
+                this.keylist.textContent = "";
+                for (var i = 0; i < wallet.accounts.length; i++) {
+                    if (wallet.accounts[i].nep2key != null) {
+                        var nepkey = wallet.accounts[i].nep2key;
+                        var s = wallet.scrypt;
+                        var btn = document.createElement("button");
+                        btn.textContent = "use " + wallet.accounts[i].address;
+                        btn.onclick = () => {
+                            var pass = prompt("password?");
+                            ThinNeo.Helper.GetPrivateKeyFromNep2(nepkey, pass, s.N, s.r, s.p, (info, result) => {
+                                if (info == "finish") {
+                                    this.setKey(result);
+                                }
+                            });
+                        };
+                        this.keylist.appendChild(btn);
+                    }
+                }
+            };
+            file.onchange = (ev) => {
+                if (file.files[0].name.includes(".json")) {
+                    reader.readAsText(file.files[0]);
+                }
+            };
+            this.keylist = document.createElement("div");
+            this.panel.divContent.appendChild(this.keylist);
+            this.panel.divContent.appendChild(document.createElement("br"));
+            this.spanKey = lightsPanel.QuickDom.addSpan(this.panel, "");
+        }
+        setKey(key) {
+            this.prikey = key;
+            var pub = ThinNeo.Helper.GetPublicKeyFromPrivateKey(this.prikey);
+            var addr = ThinNeo.Helper.GetAddressFromPublicKey(pub);
+            this.keylist.textContent = "";
+            this.spanKey.textContent = "usekey= " + addr;
+        }
+    }
+    what.panel_LoadKey = panel_LoadKey;
+})(what || (what = {}));
+var what;
+(function (what) {
     class panel_State {
         constructor() {
         }
@@ -1047,6 +1150,26 @@ var what;
         }
     }
     what.panel_State = panel_State;
+})(what || (what = {}));
+var what;
+(function (what) {
+    class panel_Transaction {
+        constructor() {
+        }
+        init(main) {
+            this.main = main;
+            this.panel = lightsPanel.panelMgr.instance().createPanel("Transaction （** not finish）");
+            this.panel.divRoot.style.left = "400px";
+            this.panel.divRoot.style.top = "200px";
+            this.panel.floatWidth = 1000;
+            this.panel.floatHeight = 600;
+            this.panel.canDrag = true;
+            this.panel.canScale = true;
+            this.panel.onFloat();
+            this.panel.divContent.textContent = "";
+        }
+    }
+    what.panel_Transaction = panel_Transaction;
 })(what || (what = {}));
 var lightsPanel;
 (function (lightsPanel) {

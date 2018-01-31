@@ -1,6 +1,10 @@
+/// <reference path="neo-ts.d.ts" />
 declare namespace what {
     class Main {
         panelState: panel_State;
+        panelLoadKey: panel_LoadKey;
+        panelFunction: panel_Function;
+        panelTransaction: panel_Transaction;
         start(): void;
         update(): void;
     }
@@ -109,6 +113,27 @@ declare namespace lightsPanel {
     }
 }
 declare namespace what {
+    class panel_Function {
+        constructor();
+        panel: lightsPanel.panel;
+        main: Main;
+        target: HTMLInputElement;
+        init(main: Main): void;
+    }
+}
+declare namespace what {
+    class panel_LoadKey {
+        constructor();
+        panel: lightsPanel.panel;
+        main: Main;
+        keylist: HTMLDivElement;
+        prikey: Uint8Array;
+        spanKey: HTMLSpanElement;
+        init(main: Main): void;
+        setKey(key: Uint8Array): void;
+    }
+}
+declare namespace what {
     class panel_State {
         constructor();
         panel: lightsPanel.panel;
@@ -118,6 +143,15 @@ declare namespace what {
         spanRPCHeight: HTMLSpanElement;
         init(main: Main): void;
         update(): Promise<void>;
+    }
+}
+declare namespace what {
+    class panel_Transaction {
+        constructor();
+        panel: lightsPanel.panel;
+        main: Main;
+        target: HTMLInputElement;
+        init(main: Main): void;
     }
 }
 declare namespace lightsPanel {
