@@ -82,7 +82,7 @@ module NeoTest {
 
 
 
-            btn.onclick = () => {
+            btn.onclick = async () => {
                 try {
                     //拼接三次调用
                     var sb = new ThinNeo.ScriptBuilder();
@@ -104,53 +104,52 @@ module NeoTest {
 
                     var data = sb.ToArray();
                     info1.textContent = data.toHexString();
+                    var body = this.makeRpcPostBody("invokescript", data.toHexString());
+                    var url = "http://47.96.168.8:20332";
+                    var response = await fetch(url, { "method": "post", "body": JSON.stringify(body) });
+                    var r = await response.json();
 
-                    var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
-                    fetch(url, { "method": "get" }).then((r) => {
-                        return r.json();
-                    }).then((r) => {
-                        info1.textContent = JSON.stringify(r);
-                        try {
-                            var state = r.result.state as string;
-                            info2.textContent = "";
-                            if (state.includes("HALT")) {
-                                info2.textContent += "Succ\n";
-                            }
-                            var stack = r.result.stack as any[];
-                            //find name 他的type 有可能是string 或者ByteArray
-                            if (stack[0].type == "String")
-                                info2.textContent += "name=" + stack[0].value + "\n";
-                            else if (stack[0].type == "ByteArray") {
-                                var bs = (stack[0].value as string).hexToBytes();
-                                var str = ThinNeo.Helper.Bytes2String(bs);
-                                info2.textContent += "name=" + str + "\n";
-                            }
-                            //find symbol 他的type 有可能是string 或者ByteArray
-                            if (stack[1].type == "String")
-                                info2.textContent += "symbol=" + stack[1].value + "\n";
-                            else if (stack[1].type == "ByteArray") {
-                                var bs = (stack[1].value as string).hexToBytes();
-                                var str = ThinNeo.Helper.Bytes2String(bs);
-                                info2.textContent += "symbol=" + str + "\n";
-                            }
-
-                            //find decimals 他的type 有可能是 Integer 或者ByteArray
-                            if (stack[2].type == "Integer") {
-                                this.nep5decimals = (new Neo.BigInteger(stack[2].value as string)).toInt32();
-                            }
-                            else if (stack[2].type == "ByteArray") {
-                                var bs = (stack[2].value as string).hexToBytes();
-                                var num = new Neo.BigInteger(bs);
-                                this.nep5decimals = num.toInt32();
-                            }
-                            info2.textContent += "decimals=" + this.nep5decimals + "\n";
-
+                    info1.textContent = JSON.stringify(r);
+                    try {
+                        var state = r.result.state as string;
+                        info2.textContent = "";
+                        if (state.includes("HALT")) {
+                            info2.textContent += "Succ\n";
                         }
-                        catch (e) {
-
+                        var stack = r.result.stack as any[];
+                        //find name 他的type 有可能是string 或者ByteArray
+                        if (stack[0].type == "String")
+                            info2.textContent += "name=" + stack[0].value + "\n";
+                        else if (stack[0].type == "ByteArray") {
+                            var bs = (stack[0].value as string).hexToBytes();
+                            var str = ThinNeo.Helper.Bytes2String(bs);
+                            info2.textContent += "name=" + str + "\n";
                         }
+                        //find symbol 他的type 有可能是string 或者ByteArray
+                        if (stack[1].type == "String")
+                            info2.textContent += "symbol=" + stack[1].value + "\n";
+                        else if (stack[1].type == "ByteArray") {
+                            var bs = (stack[1].value as string).hexToBytes();
+                            var str = ThinNeo.Helper.Bytes2String(bs);
+                            info2.textContent += "symbol=" + str + "\n";
+                        }
+
+                        //find decimals 他的type 有可能是 Integer 或者ByteArray
+                        if (stack[2].type == "Integer") {
+                            this.nep5decimals = (new Neo.BigInteger(stack[2].value as string)).toInt32();
+                        }
+                        else if (stack[2].type == "ByteArray") {
+                            var bs = (stack[2].value as string).hexToBytes();
+                            var num = new Neo.BigInteger(bs);
+                            this.nep5decimals = num.toInt32();
+                        }
+                        info2.textContent += "decimals=" + this.nep5decimals + "\n";
+
                     }
-                        );
+                    catch (e) {
+
+                    }
+
                 }
                 catch (e) {
                 }
@@ -169,7 +168,7 @@ module NeoTest {
 
                 var body = this.makeRpcPostBody("invokescript", data.toHexString());
                 var url = "http://47.96.168.8:20332";
-                var response = await fetch(url, { "method": "post", "body": JSON.stringify( body) });
+                var response = await fetch(url, { "method": "post", "body": JSON.stringify(body) });
                 var r = await response.json();
 
                 info1.textContent = JSON.stringify(r);
