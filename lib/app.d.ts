@@ -61,6 +61,7 @@ declare module NeoTest {
         constructor();
         getName(): string;
         makeRpcUrl(url: string, method: string, ..._params: any[]): string;
+        makeRpcPostBody(method: string, ..._params: any[]): {};
         nep5decimals: number;
         start(div: HTMLDivElement): void;
     }

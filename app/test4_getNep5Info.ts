@@ -22,6 +22,18 @@ module NeoTest {
             urlout += "]";
             return urlout;
         }
+        makeRpcPostBody(method: string, ..._params: any[]): {} {
+            var body = {};
+            body["jsonrpc"] = "2.0";
+            body["id"] = 1;
+            body["method"] = method;
+            var params = [];
+            for (var i = 0; i < _params.length; i++) {
+                params.push(_params[i]);
+            }
+            body["params"] = params;
+            return body;
+        }
         nep5decimals: number = 0;
         start(div: HTMLDivElement): void {
             //title
@@ -145,7 +157,7 @@ module NeoTest {
 
             }
 
-            btn2.onclick = () => {
+            btn2.onclick = async () => {
                 var sb = new ThinNeo.ScriptBuilder();
                 sb.EmitParamJson(["(addr)" + addr.value]);//参数倒序入
                 sb.EmitParamJson("(str)balanceOf");//参数倒序入 //name//totalSupply//symbol//decimals
@@ -155,44 +167,42 @@ module NeoTest {
                 var data = sb.ToArray();
                 info1.textContent = data.toHexString();
 
-                var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
-                fetch(url, { "method": "get" }).then((r) => {
-                    return r.json();
-                }).then((r) => {
-                    info1.textContent = JSON.stringify(r);
-                    try {
-                        var state = r.result.state as string;
-                        info2.textContent = "";
-                        if (state.includes("HALT")) {
-                            info2.textContent += "Succ\n";
-                        }
-                        var stack = r.result.stack as any[];
+                var body = this.makeRpcPostBody("invokescript", data.toHexString());
+                var url = "http://47.96.168.8:20332";
+                var response = await fetch(url, { "method": "post", "body": JSON.stringify( body) });
+                var r = await response.json();
 
-                        var bnum = new Neo.BigInteger(0);
-                        //find decimals 他的type 有可能是 Integer 或者ByteArray
-                        if (stack[0].type == "Integer") {
-
-                            bnum = new Neo.BigInteger(stack[0].value);
-                        }
-                        else if (stack[0].type == "ByteArray") {
-                            var bs = (stack[0].value as string).hexToBytes();
-                            bnum = new Neo.BigInteger(bs);
-                        }
-                        var v = 1;
-                        for (var i = 0; i < this.nep5decimals; i++) {
-                            v *= 10;
-                        }
-                        var intv = bnum.divide(v).toInt32();
-                        var smallv = bnum.mod(v).toInt32() / v;
-                        info2.textContent += "count=" + (intv + smallv);
-
+                info1.textContent = JSON.stringify(r);
+                try {
+                    var state = r.result.state as string;
+                    info2.textContent = "";
+                    if (state.includes("HALT")) {
+                        info2.textContent += "Succ\n";
                     }
-                    catch (e) {
+                    var stack = r.result.stack as any[];
 
+                    var bnum = new Neo.BigInteger(0);
+                    //find decimals 他的type 有可能是 Integer 或者ByteArray
+                    if (stack[0].type == "Integer") {
+
+                        bnum = new Neo.BigInteger(stack[0].value);
                     }
+                    else if (stack[0].type == "ByteArray") {
+                        var bs = (stack[0].value as string).hexToBytes();
+                        bnum = new Neo.BigInteger(bs);
+                    }
+                    var v = 1;
+                    for (var i = 0; i < this.nep5decimals; i++) {
+                        v *= 10;
+                    }
+                    var intv = bnum.divide(v).toInt32();
+                    var smallv = bnum.mod(v).toInt32() / v;
+                    info2.textContent += "count=" + (intv + smallv);
+
                 }
-                    );
+                catch (e) {
 
+                }
             }
         }
     }
