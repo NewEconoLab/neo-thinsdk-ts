@@ -11,6 +11,7 @@ namespace what
         panel: lightsPanel.panel;
         main: Main;
         tree: lightsPanel.treeView;
+        assets: { [id: string]: UTXO[] }
         async init(main: Main)
         {
             this.main = main;
@@ -32,26 +33,10 @@ namespace what
         async refresh()
         {
             var utxos = await WWW.api_getUTXO(this.main.panelLoadKey.address);
-            this.tree.updateData(new Filter(utxos));
-        }
-    }
-    class UTXO
-    {
-        txid: string;
-        n: number;
-        asset: string;
-        count: Neo.Fixed8;
-    }
-    class Filter implements lightsPanel.ITreeViewFilter
-    {
-
-        assets: { [id: string]: UTXO[] }
-        constructor(json: any)
-        {
             this.assets = {};
-            for (var i in json)
+            for (var i in utxos)
             {
-                var item = json[i];
+                var item = utxos[i];
                 var txid = item.txid;
                 var n = item.n;
                 var asset = item.asset;
@@ -67,6 +52,24 @@ namespace what
                 utxo.count = Neo.Fixed8.parse(count);
                 this.assets[asset].push(utxo);
             }
+
+            this.tree.updateData(new Filter(this.assets));
+        }
+    }
+    export class UTXO
+    {
+        txid: string;
+        n: number;
+        asset: string;
+        count: Neo.Fixed8;
+    }
+    class Filter implements lightsPanel.ITreeViewFilter
+    {
+
+        assets: { [id: string]: UTXO[] };
+        constructor(assets: { [id: string]: UTXO[] })
+        {
+            this.assets = assets;
         }
         getChildren(rootObj: any): { name: string, txtcolor: string }[]
         {

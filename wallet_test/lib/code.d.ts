@@ -212,8 +212,17 @@ declare namespace what {
         panel: lightsPanel.panel;
         main: Main;
         tree: lightsPanel.treeView;
+        assets: {
+            [id: string]: UTXO[];
+        };
         init(main: Main): Promise<void>;
         refresh(): Promise<void>;
+    }
+    class UTXO {
+        txid: string;
+        n: number;
+        asset: string;
+        count: Neo.Fixed8;
     }
 }
 declare namespace what {

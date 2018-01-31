@@ -1420,32 +1420,34 @@ var what;
         refresh() {
             return __awaiter(this, void 0, void 0, function* () {
                 var utxos = yield what.WWW.api_getUTXO(this.main.panelLoadKey.address);
-                this.tree.updateData(new Filter(utxos));
+                this.assets = {};
+                for (var i in utxos) {
+                    var item = utxos[i];
+                    var txid = item.txid;
+                    var n = item.n;
+                    var asset = item.asset;
+                    var count = item.value;
+                    if (this.assets[asset] == undefined) {
+                        this.assets[asset] = [];
+                    }
+                    var utxo = new UTXO();
+                    utxo.asset = asset;
+                    utxo.n = n;
+                    utxo.txid = txid;
+                    utxo.count = Neo.Fixed8.parse(count);
+                    this.assets[asset].push(utxo);
+                }
+                this.tree.updateData(new Filter(this.assets));
             });
         }
     }
     what.panel_UTXO = panel_UTXO;
     class UTXO {
     }
+    what.UTXO = UTXO;
     class Filter {
-        constructor(json) {
-            this.assets = {};
-            for (var i in json) {
-                var item = json[i];
-                var txid = item.txid;
-                var n = item.n;
-                var asset = item.asset;
-                var count = item.value;
-                if (this.assets[asset] == undefined) {
-                    this.assets[asset] = [];
-                }
-                var utxo = new UTXO();
-                utxo.asset = asset;
-                utxo.n = n;
-                utxo.txid = txid;
-                utxo.count = Neo.Fixed8.parse(count);
-                this.assets[asset].push(utxo);
-            }
+        constructor(assets) {
+            this.assets = assets;
         }
         getChildren(rootObj) {
             if (rootObj == null) {
