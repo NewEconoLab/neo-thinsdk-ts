@@ -1,39 +1,26 @@
 ﻿
 namespace what {
     export class Main {
-        other: lightsPanel.panel;
-        panel2: lightsPanel.panel;
-        panel3: lightsPanel.panel;
-        Start(): void {
-            console.log("hello there.");
-            var panel = document.getElementById("panel") as HTMLDivElement;
-            lightsPanel.panelMgr.instance().init(panel);
-
-
+        panelState: panel_State;//显示 api状态的面板
+        start(): void {
+            setTimeout(() => { this.update() }, 1000);
+            var divpanel = document.getElementById("panel") as HTMLDivElement;
+            lightsPanel.panelMgr.instance().init(divpanel);
             lightsPanel.panelMgr.instance().setbackImg("res/back1.jpg");
-            this.other = lightsPanel.panelMgr.instance().createPanel("SamplePanel ");
 
-            this.other.divRoot.style.left = "30px";
-            this.other.divRoot.style.top = "30px";
-            this.other.floatWidth = 300;
-            this.other.floatHeight = 100;
-            this.other.canDrag = true;
-            this.other.canScale = true;
+            this.panelState = new panel_State();
+            this.panelState.init(this);
+        }
 
-            this.other.onFloat();
-            this.other.divContent.textContent = "";
-
-            lightsPanel.QuickDom.addA(this.other, "Begin Test Typescript Wallet", "");
-
-            this.panel2 = lightsPanel.panelMgr.instance().createPanel("panel2");
-
-            this.panel3 = lightsPanel.panelMgr.instance().createPanel("panel3");
-
+        update(): void {
+            //console.log("hello there.");
+            this.panelState.update();
+            setTimeout(() => { this.update() }, 1000);
         }
     }
     window.onload = () => {
         var main = new Main();
-        main.Start();
+        main.start();
 
 
     }

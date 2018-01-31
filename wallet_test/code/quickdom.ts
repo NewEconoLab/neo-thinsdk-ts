@@ -25,6 +25,12 @@
                 e.href = href;
             return e;
         }
+        static addSpan(panel: panel | HTMLDivElement, text: string): HTMLSpanElement
+        {
+            var e = QuickDom.addElement(panel, "Span") as HTMLSpanElement;
+            e.textContent = text;
+            return e;
+        }
         static addSpace(panel: panel | HTMLDivElement, width: number): HTMLDivElement
         {
             var e = QuickDom.addElement(panel, "div") as HTMLDivElement;

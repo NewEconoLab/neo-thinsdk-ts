@@ -1,3 +1,11 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var NeoTest;
 (function (NeoTest) {
     class Menu {
@@ -622,6 +630,18 @@ var NeoTest;
             urlout += "]";
             return urlout;
         }
+        makeRpcPostBody(method, ..._params) {
+            var body = {};
+            body["jsonrpc"] = "2.0";
+            body["id"] = 1;
+            body["method"] = method;
+            var params = [];
+            for (var i = 0; i < _params.length; i++) {
+                params.push(_params[i]);
+            }
+            body["params"] = params;
+            return body;
+        }
         start(div) {
             var span = document.createElement("span");
             div.appendChild(span);
@@ -654,7 +674,7 @@ var NeoTest;
             info2.style.width = "500px";
             info2.style.height = "100px";
             div.appendChild(document.createElement("hr"));
-            btn.onclick = () => {
+            btn.onclick = () => __awaiter(this, void 0, void 0, function* () {
                 try {
                     var sb = new ThinNeo.ScriptBuilder();
                     sb.EmitParamJson(JSON.parse("[]"));
@@ -671,61 +691,10 @@ var NeoTest;
                     sb.EmitAppCall(shash.reverse());
                     var data = sb.ToArray();
                     info1.textContent = data.toHexString();
-                    var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
-                    fetch(url, { "method": "get" }).then((r) => {
-                        return r.json();
-                    }).then((r) => {
-                        info1.textContent = JSON.stringify(r);
-                        try {
-                            var state = r.result.state;
-                            info2.textContent = "";
-                            if (state.includes("HALT")) {
-                                info2.textContent += "Succ\n";
-                            }
-                            var stack = r.result.stack;
-                            if (stack[0].type == "String")
-                                info2.textContent += "name=" + stack[0].value + "\n";
-                            else if (stack[0].type == "ByteArray") {
-                                var bs = stack[0].value.hexToBytes();
-                                var str = ThinNeo.Helper.Bytes2String(bs);
-                                info2.textContent += "name=" + str + "\n";
-                            }
-                            if (stack[1].type == "String")
-                                info2.textContent += "symbol=" + stack[1].value + "\n";
-                            else if (stack[1].type == "ByteArray") {
-                                var bs = stack[1].value.hexToBytes();
-                                var str = ThinNeo.Helper.Bytes2String(bs);
-                                info2.textContent += "symbol=" + str + "\n";
-                            }
-                            if (stack[2].type == "Integer") {
-                                this.nep5decimals = (new Neo.BigInteger(stack[2].value)).toInt32();
-                            }
-                            else if (stack[2].type == "ByteArray") {
-                                var bs = stack[2].value.hexToBytes();
-                                var num = new Neo.BigInteger(bs);
-                                this.nep5decimals = num.toInt32();
-                            }
-                            info2.textContent += "decimals=" + this.nep5decimals + "\n";
-                        }
-                        catch (e) {
-                        }
-                    });
-                }
-                catch (e) {
-                }
-            };
-            btn2.onclick = () => {
-                var sb = new ThinNeo.ScriptBuilder();
-                sb.EmitParamJson(["(addr)" + addr.value]);
-                sb.EmitParamJson("(str)balanceOf");
-                var shash = sid.value.hexToBytes();
-                sb.EmitAppCall(shash.reverse());
-                var data = sb.ToArray();
-                info1.textContent = data.toHexString();
-                var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
-                fetch(url, { "method": "get" }).then((r) => {
-                    return r.json();
-                }).then((r) => {
+                    var body = this.makeRpcPostBody("invokescript", data.toHexString());
+                    var url = "http://47.96.168.8:20332";
+                    var response = yield fetch(url, { "method": "post", "body": JSON.stringify(body) });
+                    var r = yield response.json();
                     info1.textContent = JSON.stringify(r);
                     try {
                         var state = r.result.state;
@@ -734,26 +703,75 @@ var NeoTest;
                             info2.textContent += "Succ\n";
                         }
                         var stack = r.result.stack;
-                        var bnum = new Neo.BigInteger(0);
-                        if (stack[0].type == "Integer") {
-                            bnum = new Neo.BigInteger(stack[0].value);
-                        }
+                        if (stack[0].type == "String")
+                            info2.textContent += "name=" + stack[0].value + "\n";
                         else if (stack[0].type == "ByteArray") {
                             var bs = stack[0].value.hexToBytes();
-                            bnum = new Neo.BigInteger(bs);
+                            var str = ThinNeo.Helper.Bytes2String(bs);
+                            info2.textContent += "name=" + str + "\n";
                         }
-                        var v = 1;
-                        for (var i = 0; i < this.nep5decimals; i++) {
-                            v *= 10;
+                        if (stack[1].type == "String")
+                            info2.textContent += "symbol=" + stack[1].value + "\n";
+                        else if (stack[1].type == "ByteArray") {
+                            var bs = stack[1].value.hexToBytes();
+                            var str = ThinNeo.Helper.Bytes2String(bs);
+                            info2.textContent += "symbol=" + str + "\n";
                         }
-                        var intv = bnum.divide(v).toInt32();
-                        var smallv = bnum.mod(v).toInt32() / v;
-                        info2.textContent += "count=" + (intv + smallv);
+                        if (stack[2].type == "Integer") {
+                            this.nep5decimals = (new Neo.BigInteger(stack[2].value)).toInt32();
+                        }
+                        else if (stack[2].type == "ByteArray") {
+                            var bs = stack[2].value.hexToBytes();
+                            var num = new Neo.BigInteger(bs);
+                            this.nep5decimals = num.toInt32();
+                        }
+                        info2.textContent += "decimals=" + this.nep5decimals + "\n";
                     }
                     catch (e) {
                     }
-                });
-            };
+                }
+                catch (e) {
+                }
+            });
+            btn2.onclick = () => __awaiter(this, void 0, void 0, function* () {
+                var sb = new ThinNeo.ScriptBuilder();
+                sb.EmitParamJson(["(addr)" + addr.value]);
+                sb.EmitParamJson("(str)balanceOf");
+                var shash = sid.value.hexToBytes();
+                sb.EmitAppCall(shash.reverse());
+                var data = sb.ToArray();
+                info1.textContent = data.toHexString();
+                var body = this.makeRpcPostBody("invokescript", data.toHexString());
+                var url = "http://47.96.168.8:20332";
+                var response = yield fetch(url, { "method": "post", "body": JSON.stringify(body) });
+                var r = yield response.json();
+                info1.textContent = JSON.stringify(r);
+                try {
+                    var state = r.result.state;
+                    info2.textContent = "";
+                    if (state.includes("HALT")) {
+                        info2.textContent += "Succ\n";
+                    }
+                    var stack = r.result.stack;
+                    var bnum = new Neo.BigInteger(0);
+                    if (stack[0].type == "Integer") {
+                        bnum = new Neo.BigInteger(stack[0].value);
+                    }
+                    else if (stack[0].type == "ByteArray") {
+                        var bs = stack[0].value.hexToBytes();
+                        bnum = new Neo.BigInteger(bs);
+                    }
+                    var v = 1;
+                    for (var i = 0; i < this.nep5decimals; i++) {
+                        v *= 10;
+                    }
+                    var intv = bnum.divide(v).toInt32();
+                    var smallv = bnum.mod(v).toInt32() / v;
+                    info2.textContent += "count=" + (intv + smallv);
+                }
+                catch (e) {
+                }
+            });
         }
     }
     NeoTest.Test_GetNep5Info = Test_GetNep5Info;

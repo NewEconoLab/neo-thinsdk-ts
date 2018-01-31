@@ -1,45 +1,44 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var what;
 (function (what) {
-    var Main = (function () {
-        function Main() {
-        }
-        Main.prototype.Start = function () {
-            console.log("hello there.");
-            var panel = document.getElementById("panel");
-            lightsPanel.panelMgr.instance().init(panel);
+    class Main {
+        start() {
+            setTimeout(() => { this.update(); }, 1000);
+            var divpanel = document.getElementById("panel");
+            lightsPanel.panelMgr.instance().init(divpanel);
             lightsPanel.panelMgr.instance().setbackImg("res/back1.jpg");
-            this.other = lightsPanel.panelMgr.instance().createPanel("SamplePanel ");
-            this.other.divRoot.style.left = "30px";
-            this.other.divRoot.style.top = "30px";
-            this.other.floatWidth = 300;
-            this.other.floatHeight = 100;
-            this.other.canDrag = true;
-            this.other.canScale = true;
-            this.other.onFloat();
-            this.other.divContent.textContent = "";
-            lightsPanel.QuickDom.addA(this.other, "Begin Test Typescript Wallet", "");
-            this.panel2 = lightsPanel.panelMgr.instance().createPanel("panel2");
-            this.panel3 = lightsPanel.panelMgr.instance().createPanel("panel3");
-        };
-        return Main;
-    }());
+            this.panelState = new what.panel_State();
+            this.panelState.init(this);
+        }
+        update() {
+            this.panelState.update();
+            setTimeout(() => { this.update(); }, 1000);
+        }
+    }
     what.Main = Main;
-    window.onload = function () {
+    window.onload = () => {
         var main = new Main();
-        main.Start();
+        main.start();
     };
 })(what || (what = {}));
 var lightsPanel;
 (function (lightsPanel) {
-    var direction;
+    let direction;
     (function (direction) {
         direction[direction["H_Left"] = 0] = "H_Left";
         direction[direction["H_Right"] = 1] = "H_Right";
         direction[direction["V_Top"] = 2] = "V_Top";
         direction[direction["V_Bottom"] = 3] = "V_Bottom";
     })(direction = lightsPanel.direction || (lightsPanel.direction = {}));
-    var panel = (function () {
-        function panel(div) {
+    class panel {
+        constructor(div) {
             this.divRoot = null;
             this.subPanels = null;
             this.divTitle = null;
@@ -62,12 +61,11 @@ var lightsPanel;
                 }
             }
         }
-        panel.prototype.setTitleText = function (txt) {
+        setTitleText(txt) {
             var a = this.divTitle.children[1];
             a.text = txt;
-        };
-        panel.prototype.setTitle = function (txt, img) {
-            if (img === void 0) { img = null; }
+        }
+        setTitle(txt, img = null) {
             var a = this.divTitle.children[1];
             a.text = txt;
             var i = this.divTitle.children[0];
@@ -79,8 +77,8 @@ var lightsPanel;
                 if (img != "-")
                     i.src = img;
             }
-        };
-        panel.prototype.splitWith = function (p, dir, v) {
+        }
+        splitWith(p, dir, v) {
             var parent = this.container;
             var pc = null;
             if (this.container.subPanels.length < this.container.maxPanelCount) {
@@ -120,8 +118,8 @@ var lightsPanel;
             pc.addSubPanel(p);
             pc.onSplit(dir, v);
             return;
-        };
-        panel.prototype.onDock = function (container) {
+        }
+        onDock(container) {
             this.container = container;
             this.isFloat = false;
             this.divRoot.style.boxShadow = "0px";
@@ -129,8 +127,8 @@ var lightsPanel;
             this.btnClose.hidden = true;
             this.divResize.hidden = true;
             this.divTitle.style.cursor = "auto";
-        };
-        panel.prototype.makeMini = function (width, height) {
+        }
+        makeMini(width, height) {
             this.canDock = false;
             this.canScale = false;
             this.floatWidth = width;
@@ -143,8 +141,8 @@ var lightsPanel;
             this.divRoot.style.bottom = "auto";
             this.divRoot.style.width = this.floatWidth + "px";
             this.divRoot.style.height = this.floatHeight + "px";
-        };
-        panel.prototype.onFloat = function () {
+        }
+        onFloat() {
             this.isFloat = true;
             this.divRoot.style.boxShadow = "1px 1px 3px #292929";
             this.btnFloat.hidden = true;
@@ -193,38 +191,33 @@ var lightsPanel;
             this.divRoot.style.bottom = "auto";
             this.divRoot.style.width = this.floatWidth + "px";
             this.divRoot.style.height = this.floatHeight + "px";
-        };
-        panel.prototype.toCenter = function () {
+        }
+        toCenter() {
             if (this.isFloat == false)
                 return;
             this.divRoot.style.left = (panelMgr.instance().width - this.floatWidth) / 2 + "px";
             this.divRoot.style.top = (panelMgr.instance().height - this.floatHeight) / 2 + "px";
-        };
-        panel.prototype.show = function () {
+        }
+        show() {
             this.divRoot.hidden = false;
-        };
-        panel.prototype.hide = function () {
+        }
+        hide() {
             this.divRoot.hidden = true;
-        };
-        return panel;
-    }());
+        }
+    }
     lightsPanel.panel = panel;
-    var panelContainer = (function () {
-        function panelContainer(div) {
+    class panelContainer {
+        constructor(div) {
             this.divRoot = null;
             this.subPanels = [];
             this.divScale = null;
             this.divRoot = div;
             this.divRoot["inv"] = this;
         }
-        Object.defineProperty(panelContainer.prototype, "maxPanelCount", {
-            get: function () {
-                return 2;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        panelContainer.prototype.onSplit = function (dir, v) {
+        get maxPanelCount() {
+            return 2;
+        }
+        onSplit(dir, v) {
             if (dir == direction.H_Left || dir == direction.H_Right) {
                 this.scalew = v;
                 this.scaleh = 1;
@@ -234,8 +227,8 @@ var lightsPanel;
                 this.scaleh = v;
             }
             this._doSplit();
-        };
-        panelContainer.prototype._doSplit = function () {
+        }
+        _doSplit() {
             var mgr = panelMgr.instance();
             if (this.divScale == null) {
                 this.divScale = document.createElement("div");
@@ -292,12 +285,11 @@ var lightsPanel;
             else {
                 throw new Error("无效数据");
             }
-        };
-        panelContainer.prototype.onDock = function (container) {
+        }
+        onDock(container) {
             this.container = container;
-        };
-        panelContainer.prototype.addSubPanel = function (p, pos) {
-            if (pos === void 0) { pos = -1; }
+        }
+        addSubPanel(p, pos = -1) {
             if (p.divRoot.parentElement != null) {
                 p.divRoot.parentElement.removeChild(p.divRoot);
             }
@@ -311,8 +303,8 @@ var lightsPanel;
                 this.subPanels[pos] = p;
             }
             p.onDock(this);
-        };
-        panelContainer.prototype.removeSubPanel = function (p) {
+        }
+        removeSubPanel(p) {
             var i = this.subPanels.indexOf(p);
             if (i >= 0) {
                 this.subPanels.splice(i, 1);
@@ -329,25 +321,24 @@ var lightsPanel;
                 if (this.divScale != null)
                     this.divScale.hidden = true;
             }
-        };
-        panelContainer.prototype._fillStyle = function (div) {
+        }
+        _fillStyle(div) {
             div.style.left = "0px";
             div.style.top = "0px";
             div.style.width = "auto";
             div.style.height = "auto";
             div.style.right = "0px";
             div.style.bottom = "0px";
-        };
-        panelContainer.prototype.fill = function (p) {
+        }
+        fill(p) {
             this.addSubPanel(p);
             this._fillStyle(p.divRoot);
             p.onDock(this);
-        };
-        return panelContainer;
-    }());
+        }
+    }
     lightsPanel.panelContainer = panelContainer;
-    var panelMgr = (function () {
-        function panelMgr() {
+    class panelMgr {
+        constructor() {
             this.urlfill = "data:image/png;base64,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";
             this.urlleft = "data:image/png;base64,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";
             this.divRoot = null;
@@ -362,30 +353,21 @@ var lightsPanel;
             this.overDiv_BottomImg = null;
             this.backimg = null;
         }
-        panelMgr.instance = function () {
+        static instance() {
             if (panelMgr.g_this == null)
                 panelMgr.g_this = new panelMgr();
             return panelMgr.g_this;
-        };
-        Object.defineProperty(panelMgr.prototype, "width", {
-            get: function () {
-                return this.divRoot.clientWidth;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(panelMgr.prototype, "height", {
-            get: function () {
-                return this.divRoot.clientHeight;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        panelMgr.prototype.setbackImg = function (url) {
+        }
+        get width() {
+            return this.divRoot.clientWidth;
+        }
+        get height() {
+            return this.divRoot.clientHeight;
+        }
+        setbackImg(url) {
             this.backimg.src = url;
-        };
-        panelMgr.prototype.init = function (div) {
-            var _this = this;
+        }
+        init(div) {
             this.divRoot = div;
             this.backimg = document.createElement("img");
             this.backimg.style.position = "absoutle";
@@ -418,57 +400,57 @@ var lightsPanel;
             var dialog = null;
             var overobj = null;
             var btouch = false;
-            var onDown = function (ele, clientX, clientY) {
+            var onDown = (ele, clientX, clientY) => {
                 var stin = ele["className"];
                 var stinp = "";
                 if ((ele instanceof HTMLButtonElement) == false)
                     stinp = ele.parentElement["className"];
-                _this.overDiv_Show.hidden = true;
-                _this.overDiv_FillImg.hidden = true;
-                _this.overDiv_LeftImg.hidden = true;
-                _this.overDiv_RightImg.hidden = true;
-                _this.overDiv_TopImg.hidden = true;
-                _this.overDiv_BottomImg.hidden = true;
+                this.overDiv_Show.hidden = true;
+                this.overDiv_FillImg.hidden = true;
+                this.overDiv_LeftImg.hidden = true;
+                this.overDiv_RightImg.hidden = true;
+                this.overDiv_TopImg.hidden = true;
+                this.overDiv_BottomImg.hidden = true;
                 if (stin == "dialog-title") {
                     var float = ele.parentElement["inv"].isFloat;
                     var drag = ele.parentElement["inv"].canDrag;
                     if (float == false || drag == false)
                         return;
-                    var p = _this._calcClientPos(ele);
+                    var p = this._calcClientPos(ele);
                     px = clientX - p.x;
                     py = clientY - p.y;
                     mode = 1;
                     dialog = ele.parentElement;
-                    _this._moveTop(dialog);
-                    _this.overDiv.hidden = false;
+                    this._moveTop(dialog);
+                    this.overDiv.hidden = false;
                 }
                 else if (stinp == "dialog-title") {
                     var float = ele.parentElement.parentElement["inv"].isFloat;
                     var drag = ele.parentElement.parentElement["inv"].canDrag;
                     if (float == false || drag == false)
                         return;
-                    var p = _this._calcClientPos(ele);
+                    var p = this._calcClientPos(ele);
                     px = clientX - p.x;
                     py = clientY - p.y;
                     mode = 1;
                     dialog = ele.parentElement.parentElement;
-                    _this._moveTop(dialog);
-                    _this.overDiv.hidden = false;
+                    this._moveTop(dialog);
+                    this.overDiv.hidden = false;
                 }
                 else if (stin == "dialog-resize") {
                     var float = ele.parentElement["inv"].isFloat;
                     if (float == false)
                         return;
-                    var p = _this._calcClientPos(ele);
+                    var p = this._calcClientPos(ele);
                     px = clientX - p.x;
                     py = clientY - p.y;
                     mode = 2;
                     dialog = ele.parentElement;
-                    _this._moveTop(dialog);
+                    this._moveTop(dialog);
                     return true;
                 }
                 else if (stin == "dialog-split") {
-                    var p = _this._calcClientPos(ele);
+                    var p = this._calcClientPos(ele);
                     px = clientX - p.x;
                     py = clientY - p.y;
                     mode = 3;
@@ -479,7 +461,7 @@ var lightsPanel;
                     var dd = ele;
                     while (dd != null) {
                         if (dd.className == "dialog" && dd instanceof HTMLDivElement) {
-                            _this._moveTop(dd);
+                            this._moveTop(dd);
                             break;
                         }
                         dd = dd.parentElement;
@@ -487,14 +469,14 @@ var lightsPanel;
                     return false;
                 }
             };
-            var onUp = function (clientX, clientY) {
+            var onUp = (clientX, clientY) => {
                 mode = 0;
-                _this.overDiv.hidden = true;
+                this.overDiv.hidden = true;
                 if (overobj == null) {
                     return false;
                 }
                 else if (overobj.id == "overDiv_FillImg") {
-                    var inele = _this.pickPanel(_this.root, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    var inele = this.pickPanel(this.root, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     if (inele instanceof (panelContainer)) {
                         inele.fill(dialog["inv"]);
                     }
@@ -502,7 +484,7 @@ var lightsPanel;
                 }
                 else if (overobj.id == "overDiv_LeftImg") {
                     overobj = null;
-                    var inele = _this.pickPanel(_this.root, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    var inele = this.pickPanel(this.root, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     if (inele instanceof (panel)) {
                         inele.splitWith(dialog["inv"], direction.H_Left, 0.5);
                     }
@@ -510,7 +492,7 @@ var lightsPanel;
                 }
                 else if (overobj.id == "overDiv_RightImg") {
                     overobj = null;
-                    var inele = _this.pickPanel(_this.root, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    var inele = this.pickPanel(this.root, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     if (inele instanceof (panel)) {
                         inele.splitWith(dialog["inv"], direction.H_Right, 0.5);
                     }
@@ -518,7 +500,7 @@ var lightsPanel;
                 }
                 else if (overobj.id == "overDiv_TopImg") {
                     overobj = null;
-                    var inele = _this.pickPanel(_this.root, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    var inele = this.pickPanel(this.root, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     if (inele instanceof (panel)) {
                         inele.splitWith(dialog["inv"], direction.V_Top, 0.5);
                     }
@@ -526,7 +508,7 @@ var lightsPanel;
                 }
                 else if (overobj.id == "overDiv_BottomImg") {
                     overobj = null;
-                    var inele = _this.pickPanel(_this.root, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    var inele = this.pickPanel(this.root, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     if (inele instanceof (panel)) {
                         inele.splitWith(dialog["inv"], direction.V_Bottom, 0.5);
                     }
@@ -536,128 +518,128 @@ var lightsPanel;
                     return false;
                 }
             };
-            var onMove = function (clientX, clientY) {
+            var onMove = (clientX, clientY) => {
                 if (mode == 1) {
-                    var pp = _this.pickPanel(_this.root, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    var pp = this.pickPanel(this.root, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     if (pp == null)
                         return;
                     var dock = dialog["inv"].canDock;
-                    var pos = _this._calcRootPos(pp.divRoot);
-                    _this.overDiv_FillImg.style.borderWidth = "0px";
-                    _this.overDiv_FillImg.style.margin = "4px";
-                    _this.overDiv_LeftImg.style.borderWidth = "0px";
-                    _this.overDiv_LeftImg.style.margin = "4px";
-                    _this.overDiv_RightImg.style.borderWidth = "0px";
-                    _this.overDiv_RightImg.style.margin = "4px";
-                    _this.overDiv_TopImg.style.borderWidth = "0px";
-                    _this.overDiv_TopImg.style.margin = "4px";
-                    _this.overDiv_BottomImg.style.borderWidth = "0px";
-                    _this.overDiv_BottomImg.style.margin = "4px";
+                    var pos = this._calcRootPos(pp.divRoot);
+                    this.overDiv_FillImg.style.borderWidth = "0px";
+                    this.overDiv_FillImg.style.margin = "4px";
+                    this.overDiv_LeftImg.style.borderWidth = "0px";
+                    this.overDiv_LeftImg.style.margin = "4px";
+                    this.overDiv_RightImg.style.borderWidth = "0px";
+                    this.overDiv_RightImg.style.margin = "4px";
+                    this.overDiv_TopImg.style.borderWidth = "0px";
+                    this.overDiv_TopImg.style.margin = "4px";
+                    this.overDiv_BottomImg.style.borderWidth = "0px";
+                    this.overDiv_BottomImg.style.margin = "4px";
                     if (dock) {
-                        overobj = _this.pickOverLay(clientX, clientY);
+                        overobj = this.pickOverLay(clientX, clientY);
                     }
                     else {
                         overobj = null;
                     }
                     if (overobj == null) {
-                        _this.overDiv_Show.hidden = true;
+                        this.overDiv_Show.hidden = true;
                     }
                     else if (overobj.id == "overDiv_FillImg") {
-                        _this.overDiv_FillImg.style.borderColor = "#ffffff";
-                        _this.overDiv_FillImg.style.borderStyle = "solid";
-                        _this.overDiv_FillImg.style.borderWidth = "4px";
-                        _this.overDiv_FillImg.style.margin = "0px";
-                        _this.overDiv_Show.hidden = false;
-                        _this.overDiv_Show.style.left = pos.x + "px";
-                        _this.overDiv_Show.style.top = pos.y + "px";
-                        _this.overDiv_Show.style.width = pp.divRoot.clientWidth + "px";
-                        _this.overDiv_Show.style.height = pp.divRoot.clientHeight + "px";
-                        _this.overDiv_Show.style.right = "auto";
-                        _this.overDiv_Show.style.bottom = "auto";
+                        this.overDiv_FillImg.style.borderColor = "#ffffff";
+                        this.overDiv_FillImg.style.borderStyle = "solid";
+                        this.overDiv_FillImg.style.borderWidth = "4px";
+                        this.overDiv_FillImg.style.margin = "0px";
+                        this.overDiv_Show.hidden = false;
+                        this.overDiv_Show.style.left = pos.x + "px";
+                        this.overDiv_Show.style.top = pos.y + "px";
+                        this.overDiv_Show.style.width = pp.divRoot.clientWidth + "px";
+                        this.overDiv_Show.style.height = pp.divRoot.clientHeight + "px";
+                        this.overDiv_Show.style.right = "auto";
+                        this.overDiv_Show.style.bottom = "auto";
                     }
                     else if (overobj.id == "overDiv_LeftImg" && overobj.hidden == false) {
-                        _this.overDiv_LeftImg.style.borderColor = "#ffffff";
-                        _this.overDiv_LeftImg.style.borderStyle = "solid";
-                        _this.overDiv_LeftImg.style.borderWidth = "4px";
-                        _this.overDiv_LeftImg.style.margin = "0px";
-                        _this.overDiv_Show.hidden = false;
-                        _this.overDiv_Show.style.left = pos.x + "px";
-                        _this.overDiv_Show.style.top = pos.y + "px";
-                        _this.overDiv_Show.style.width = (pp.divRoot.clientWidth / 2) + "px";
-                        _this.overDiv_Show.style.height = pp.divRoot.clientHeight + "px";
-                        _this.overDiv_Show.style.right = "auto";
-                        _this.overDiv_Show.style.bottom = "auto";
+                        this.overDiv_LeftImg.style.borderColor = "#ffffff";
+                        this.overDiv_LeftImg.style.borderStyle = "solid";
+                        this.overDiv_LeftImg.style.borderWidth = "4px";
+                        this.overDiv_LeftImg.style.margin = "0px";
+                        this.overDiv_Show.hidden = false;
+                        this.overDiv_Show.style.left = pos.x + "px";
+                        this.overDiv_Show.style.top = pos.y + "px";
+                        this.overDiv_Show.style.width = (pp.divRoot.clientWidth / 2) + "px";
+                        this.overDiv_Show.style.height = pp.divRoot.clientHeight + "px";
+                        this.overDiv_Show.style.right = "auto";
+                        this.overDiv_Show.style.bottom = "auto";
                     }
                     else if (overobj.id == "overDiv_RightImg" && overobj.hidden == false) {
-                        _this.overDiv_RightImg.style.borderColor = "#ffffff";
-                        _this.overDiv_RightImg.style.borderStyle = "solid";
-                        _this.overDiv_RightImg.style.borderWidth = "4px";
-                        _this.overDiv_RightImg.style.margin = "0px";
-                        _this.overDiv_Show.hidden = false;
-                        _this.overDiv_Show.style.left = (pos.x + pp.divRoot.clientWidth / 2) + "px";
-                        _this.overDiv_Show.style.top = pos.y + "px";
-                        _this.overDiv_Show.style.width = (pp.divRoot.clientWidth / 2) + "px";
-                        _this.overDiv_Show.style.height = pp.divRoot.clientHeight + "px";
-                        _this.overDiv_Show.style.right = "auto";
-                        _this.overDiv_Show.style.bottom = "auto";
+                        this.overDiv_RightImg.style.borderColor = "#ffffff";
+                        this.overDiv_RightImg.style.borderStyle = "solid";
+                        this.overDiv_RightImg.style.borderWidth = "4px";
+                        this.overDiv_RightImg.style.margin = "0px";
+                        this.overDiv_Show.hidden = false;
+                        this.overDiv_Show.style.left = (pos.x + pp.divRoot.clientWidth / 2) + "px";
+                        this.overDiv_Show.style.top = pos.y + "px";
+                        this.overDiv_Show.style.width = (pp.divRoot.clientWidth / 2) + "px";
+                        this.overDiv_Show.style.height = pp.divRoot.clientHeight + "px";
+                        this.overDiv_Show.style.right = "auto";
+                        this.overDiv_Show.style.bottom = "auto";
                     }
                     else if (overobj.id == "overDiv_TopImg" && overobj.hidden == false) {
-                        _this.overDiv_TopImg.style.borderColor = "#ffffff";
-                        _this.overDiv_TopImg.style.borderStyle = "solid";
-                        _this.overDiv_TopImg.style.borderWidth = "4px";
-                        _this.overDiv_TopImg.style.margin = "0px";
-                        _this.overDiv_Show.hidden = false;
-                        _this.overDiv_Show.style.left = pos.x + "px";
-                        _this.overDiv_Show.style.top = (pos.y) + "px";
-                        _this.overDiv_Show.style.width = (pp.divRoot.clientWidth) + "px";
-                        _this.overDiv_Show.style.height = (pp.divRoot.clientHeight / 2) + "px";
-                        _this.overDiv_Show.style.right = "auto";
-                        _this.overDiv_Show.style.bottom = "auto";
+                        this.overDiv_TopImg.style.borderColor = "#ffffff";
+                        this.overDiv_TopImg.style.borderStyle = "solid";
+                        this.overDiv_TopImg.style.borderWidth = "4px";
+                        this.overDiv_TopImg.style.margin = "0px";
+                        this.overDiv_Show.hidden = false;
+                        this.overDiv_Show.style.left = pos.x + "px";
+                        this.overDiv_Show.style.top = (pos.y) + "px";
+                        this.overDiv_Show.style.width = (pp.divRoot.clientWidth) + "px";
+                        this.overDiv_Show.style.height = (pp.divRoot.clientHeight / 2) + "px";
+                        this.overDiv_Show.style.right = "auto";
+                        this.overDiv_Show.style.bottom = "auto";
                     }
                     else if (overobj.id == "overDiv_BottomImg" && overobj.hidden == false) {
-                        _this.overDiv_BottomImg.style.borderColor = "#ffffff";
-                        _this.overDiv_BottomImg.style.borderStyle = "solid";
-                        _this.overDiv_BottomImg.style.borderWidth = "4px";
-                        _this.overDiv_BottomImg.style.margin = "0px";
-                        _this.overDiv_Show.hidden = false;
-                        _this.overDiv_Show.style.left = pos.x + "px";
-                        _this.overDiv_Show.style.top = (pos.y + pp.divRoot.clientHeight / 2) + "px";
-                        _this.overDiv_Show.style.width = (pp.divRoot.clientWidth) + "px";
-                        _this.overDiv_Show.style.height = (pp.divRoot.clientHeight / 2) + "px";
-                        _this.overDiv_Show.style.right = "auto";
-                        _this.overDiv_Show.style.bottom = "auto";
+                        this.overDiv_BottomImg.style.borderColor = "#ffffff";
+                        this.overDiv_BottomImg.style.borderStyle = "solid";
+                        this.overDiv_BottomImg.style.borderWidth = "4px";
+                        this.overDiv_BottomImg.style.margin = "0px";
+                        this.overDiv_Show.hidden = false;
+                        this.overDiv_Show.style.left = pos.x + "px";
+                        this.overDiv_Show.style.top = (pos.y + pp.divRoot.clientHeight / 2) + "px";
+                        this.overDiv_Show.style.width = (pp.divRoot.clientWidth) + "px";
+                        this.overDiv_Show.style.height = (pp.divRoot.clientHeight / 2) + "px";
+                        this.overDiv_Show.style.right = "auto";
+                        this.overDiv_Show.style.bottom = "auto";
                     }
                     else {
-                        _this.overDiv_Show.hidden = true;
+                        this.overDiv_Show.hidden = true;
                     }
-                    var left = (clientX - (_this.divRoot.offsetLeft + px));
-                    var top = (clientY - (_this.divRoot.offsetTop + py));
+                    var left = (clientX - (this.divRoot.offsetLeft + px));
+                    var top = (clientY - (this.divRoot.offsetTop + py));
                     if (left < 0)
                         left = 0;
-                    if (left > _this.divRoot.offsetWidth - dialog.offsetWidth) {
-                        left = _this.divRoot.offsetWidth - dialog.offsetWidth;
+                    if (left > this.divRoot.offsetWidth - dialog.offsetWidth) {
+                        left = this.divRoot.offsetWidth - dialog.offsetWidth;
                     }
                     if (top < 0)
                         top = 0;
-                    if (top > _this.divRoot.offsetHeight - dialog.offsetHeight) {
-                        top = _this.divRoot.offsetHeight - dialog.offsetHeight;
+                    if (top > this.divRoot.offsetHeight - dialog.offsetHeight) {
+                        top = this.divRoot.offsetHeight - dialog.offsetHeight;
                     }
                     dialog.style.left = left + "px";
                     dialog.style.top = top + "px";
-                    _this.testOverlay(dock, clientX - _this.divRoot.offsetLeft, clientY - _this.divRoot.offsetTop);
+                    this.testOverlay(dock, clientX - this.divRoot.offsetLeft, clientY - this.divRoot.offsetTop);
                     return true;
                 }
                 else if (mode == 2) {
-                    var width = (clientX - (_this.divRoot.offsetLeft - px)) - dialog.offsetLeft;
+                    var width = (clientX - (this.divRoot.offsetLeft - px)) - dialog.offsetLeft;
                     if (width < 100)
                         width = 100;
-                    if (width > _this.divRoot.offsetWidth - dialog.offsetLeft)
-                        width = _this.divRoot.offsetWidth - dialog.offsetLeft;
-                    var height = (clientY - (_this.divRoot.offsetTop - py)) - dialog.offsetTop;
+                    if (width > this.divRoot.offsetWidth - dialog.offsetLeft)
+                        width = this.divRoot.offsetWidth - dialog.offsetLeft;
+                    var height = (clientY - (this.divRoot.offsetTop - py)) - dialog.offsetTop;
                     if (height < 100)
                         height = 100;
-                    if (height > _this.divRoot.offsetHeight - dialog.offsetTop)
-                        height = _this.divRoot.offsetHeight - dialog.offsetTop;
+                    if (height > this.divRoot.offsetHeight - dialog.offsetTop)
+                        height = this.divRoot.offsetHeight - dialog.offsetTop;
                     dialog.style.width = width + "px";
                     dialog.style.height = height + "px";
                     var p = dialog["inv"];
@@ -666,9 +648,9 @@ var lightsPanel;
                     return true;
                 }
                 else if (mode == 3) {
-                    var pos = _this._calcRootPos(dialog);
-                    var left = (clientX - (_this.divRoot.offsetLeft - px)) - dialog.offsetLeft;
-                    var top = (clientY - (_this.divRoot.offsetTop - py)) - dialog.offsetTop;
+                    var pos = this._calcRootPos(dialog);
+                    var left = (clientX - (this.divRoot.offsetLeft - px)) - dialog.offsetLeft;
+                    var top = (clientY - (this.divRoot.offsetTop - py)) - dialog.offsetTop;
                     if (left < 100)
                         left = 100;
                     if (top < 100)
@@ -697,7 +679,7 @@ var lightsPanel;
             {
                 var lastx;
                 var lasty;
-                this.divRoot.addEventListener("touchstart", function (ev) {
+                this.divRoot.addEventListener("touchstart", (ev) => {
                     btouch = true;
                     lastx = ev.touches[0].clientX;
                     lasty = ev.touches[0].clientY;
@@ -705,17 +687,17 @@ var lightsPanel;
                     if (b)
                         ev.preventDefault();
                 });
-                this.divRoot.addEventListener("touchend", function (ev) {
+                this.divRoot.addEventListener("touchend", (ev) => {
                     var b = onUp(lastx, lasty);
                     if (b)
                         ev.preventDefault();
                 });
-                this.divRoot.addEventListener("touchcancel", function (ev) {
+                this.divRoot.addEventListener("touchcancel", (ev) => {
                     var b = onUp(lastx, lasty);
                     if (b)
                         ev.preventDefault();
                 });
-                this.divRoot.addEventListener("touchmove", function (ev) {
+                this.divRoot.addEventListener("touchmove", (ev) => {
                     lastx = ev.touches[0].clientX;
                     lasty = ev.touches[0].clientY;
                     var b = onMove(lastx, lasty);
@@ -724,18 +706,18 @@ var lightsPanel;
                 });
             }
             {
-                this.divRoot.addEventListener("mousedown", function (ev) {
+                this.divRoot.addEventListener("mousedown", (ev) => {
                     onDown(ev.target, ev.clientX, ev.clientY);
                 });
-                this.divRoot.addEventListener("mouseup", function (ev) {
+                this.divRoot.addEventListener("mouseup", (ev) => {
                     onUp(ev.clientX, ev.clientY);
                 });
-                this.divRoot.addEventListener("mousemove", function (ev) {
+                this.divRoot.addEventListener("mousemove", (ev) => {
                     onMove(ev.clientX, ev.clientY);
                 });
             }
-        };
-        panelMgr.prototype.pickPanel = function (panel, cx, cy) {
+        }
+        pickPanel(panel, cx, cy) {
             var b = this._inbox(panel, cx, cy);
             if (!b)
                 return null;
@@ -747,12 +729,8 @@ var lightsPanel;
                 }
             }
             return panel;
-        };
-        panelMgr.prototype.createPanel = function (name, width, height, customctor) {
-            var _this = this;
-            if (width === void 0) { width = 200; }
-            if (height === void 0) { height = 200; }
-            if (customctor === void 0) { customctor = null; }
+        }
+        createPanel(name, width = 200, height = 200, customctor = null) {
             var div = document.createElement("div");
             div.className = "dialog";
             this.floatDiv.appendChild(div);
@@ -789,8 +767,8 @@ var lightsPanel;
             button.style.bottom = "4px";
             button.style.width = "40px";
             button.style.lineHeight = "22px";
-            button.onclick = function () {
-                _this.floatPanel(p);
+            button.onclick = () => {
+                this.floatPanel(p);
             };
             var buttonClose = document.createElement("button");
             buttonClose.textContent = "X";
@@ -801,7 +779,7 @@ var lightsPanel;
             buttonClose.style.bottom = "4px";
             buttonClose.style.width = "20px";
             buttonClose.style.lineHeight = "22px";
-            buttonClose.onclick = function () {
+            buttonClose.onclick = () => {
                 p.onClose();
             };
             var p = null;
@@ -822,13 +800,13 @@ var lightsPanel;
             p.floatHeight = height;
             p.onFloat();
             return p;
-        };
-        panelMgr.prototype.toTop = function (panel) {
+        }
+        toTop(panel) {
             if (panel != null) {
                 this._moveTop(panel.divRoot);
             }
-        };
-        panelMgr.prototype.floatPanel = function (panel) {
+        }
+        floatPanel(panel) {
             if (panel instanceof (panelContainer)) {
                 throw new Error("panelContainer can't be float.");
             }
@@ -837,20 +815,20 @@ var lightsPanel;
             panel.onFloat();
             panel.container.removeSubPanel(panel);
             this.floatDiv.appendChild(panel.divRoot);
-        };
-        panelMgr.prototype.removePanel = function (panel) {
+        }
+        removePanel(panel) {
             if (panel.isFloat == false) {
                 this.floatPanel(panel);
             }
             this.floatDiv.removeChild(panel.divRoot);
-        };
-        panelMgr.prototype.fillPanel = function (panel) {
+        }
+        fillPanel(panel) {
             if (this.root.subPanels.length > 0) {
                 throw new Error("只有在空的时候可以用");
             }
             this.root.fill(panel);
-        };
-        panelMgr.prototype._moveTop = function (divsrc) {
+        }
+        _moveTop(divsrc) {
             if (divsrc.style.zIndex == "")
                 divsrc.style.zIndex = "1";
             var zme = parseInt(divsrc.style.zIndex);
@@ -883,8 +861,8 @@ var lightsPanel;
                 div.style.zIndex = zindex.toString();
             }
             divsrc.style.zIndex = Math.max((zindexmax + 1), this.floatDiv.childElementCount).toString();
-        };
-        panelMgr.prototype._initOverDiv = function () {
+        }
+        _initOverDiv() {
             this.overDiv_Show = document.createElement("div");
             this.overDiv_Show.className = "full";
             this.overDiv_Show.style.backgroundColor = "rgba(0, 20, 204, 0.48)";
@@ -924,8 +902,8 @@ var lightsPanel;
             this.overDiv_TopImg.style.width = "64px";
             this.overDiv_TopImg.style.height = "64px";
             this.overDiv.appendChild(this.overDiv_TopImg);
-        };
-        panelMgr.prototype.pickOverLay = function (cx, cy) {
+        }
+        pickOverLay(cx, cy) {
             var cp = this._calcClientPos(this.overDiv_FillImg);
             if (cx > cp.x && cy > cp.y && cx < cp.x + 64 && cy < cp.y + 64)
                 return this.overDiv_FillImg;
@@ -942,8 +920,8 @@ var lightsPanel;
             if (cx > cp.x && cy > cp.y && cx < cp.x + 64 && cy < cp.y + 64)
                 return this.overDiv_BottomImg;
             return null;
-        };
-        panelMgr.prototype.testOverlay = function (usedock, cx, cy) {
+        }
+        testOverlay(usedock, cx, cy) {
             if (usedock == false) {
                 this.overDiv_FillImg.hidden = true;
                 this.overDiv_LeftImg.hidden = true;
@@ -981,8 +959,8 @@ var lightsPanel;
                 this.overDiv_BottomImg.style.left = (pos.x + inele.divRoot.clientWidth / 2 - 32) + "px";
                 this.overDiv_BottomImg.style.top = (pos.y + inele.divRoot.clientHeight / 2 - 32 + 68) + "px";
             }
-        };
-        panelMgr.prototype._inbox = function (panel, cx, cy) {
+        }
+        _inbox(panel, cx, cy) {
             var divf = panel.divRoot;
             var left = 0;
             var top = 0;
@@ -995,16 +973,16 @@ var lightsPanel;
                 return false;
             }
             return true;
-        };
-        panelMgr.prototype._setDockPos = function (div, x, y, r, b) {
+        }
+        _setDockPos(div, x, y, r, b) {
             div.style.left = x;
             div.style.top = y;
             div.style.right = r;
             div.style.bottom = b;
             div.style.width = "auto";
             div.style.height = "auto";
-        };
-        panelMgr.prototype._calcRootPos = function (div) {
+        }
+        _calcRootPos(div) {
             var divf = div;
             var left = 0;
             var top = 0;
@@ -1014,8 +992,8 @@ var lightsPanel;
                 divf = divf.parentElement;
             }
             return { x: left, y: top };
-        };
-        panelMgr.prototype._calcClientPos = function (div) {
+        }
+        _calcClientPos(div) {
             var divf = div;
             var left = 0;
             var top = 0;
@@ -1025,20 +1003,55 @@ var lightsPanel;
                 divf = divf.parentElement;
             }
             return { x: left, y: top };
-        };
-        panelMgr.prototype._calcRootCenterPos = function () {
+        }
+        _calcRootCenterPos() {
             return { x: this.divRoot.clientWidth / 2, y: this.divRoot.clientHeight / 2 };
-        };
-        return panelMgr;
-    }());
+        }
+    }
     lightsPanel.panelMgr = panelMgr;
 })(lightsPanel || (lightsPanel = {}));
+var what;
+(function (what) {
+    class panel_State {
+        constructor() {
+        }
+        init(main) {
+            this.main = main;
+            this.panel = lightsPanel.panelMgr.instance().createPanel("API States(Refresh per 1 sec)");
+            this.panel.divRoot.style.left = "30px";
+            this.panel.divRoot.style.top = "30px";
+            this.panel.floatWidth = 300;
+            this.panel.floatHeight = 150;
+            this.panel.canDrag = true;
+            this.panel.canScale = true;
+            this.panel.onFloat();
+            this.panel.divContent.textContent = "";
+            lightsPanel.QuickDom.addSpan(this.panel, "API=" + what.WWW.api);
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            this.spanAPIHeight = lightsPanel.QuickDom.addSpan(this.panel, "");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            this.spanRPC = lightsPanel.QuickDom.addSpan(this.panel, "");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            this.spanRPCHeight = lightsPanel.QuickDom.addSpan(this.panel, "");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+        }
+        update() {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.spanAPIHeight.textContent = "API height=" + (yield what.WWW.api_getHeight());
+                if (what.WWW.rpc == "") {
+                    what.WWW.rpc = yield what.WWW.rpc_getURL();
+                }
+                this.spanRPC.textContent = "RPC=" + what.WWW.rpcName + ":" + what.WWW.rpc;
+                this.spanRPCHeight.textContent = "RPC height=" + (yield what.WWW.rpc_getHeight());
+            });
+        }
+    }
+    what.panel_State = panel_State;
+})(what || (what = {}));
 var lightsPanel;
 (function (lightsPanel) {
-    var QuickDom = (function () {
-        function QuickDom() {
-        }
-        QuickDom.addElement = function (panel, name) {
+    class QuickDom {
+        static addElement(panel, name) {
             var p = null;
             if (panel instanceof (lightsPanel.panel)) {
                 p = panel.divContent;
@@ -1049,49 +1062,114 @@ var lightsPanel;
             var e = document.createElement(name);
             p.appendChild(e);
             return e;
-        };
-        QuickDom.addA = function (panel, text, href) {
-            if (href === void 0) { href = null; }
+        }
+        static addA(panel, text, href = null) {
             var e = QuickDom.addElement(panel, "a");
             e.text = text;
             if (href != null)
                 e.href = href;
             return e;
-        };
-        QuickDom.addSpace = function (panel, width) {
+        }
+        static addSpan(panel, text) {
+            var e = QuickDom.addElement(panel, "Span");
+            e.textContent = text;
+            return e;
+        }
+        static addSpace(panel, width) {
             var e = QuickDom.addElement(panel, "div");
             e.style.width = width + "px";
             e.style.height = "1px";
             return e;
-        };
-        QuickDom.addReturn = function (panel) {
+        }
+        static addReturn(panel) {
             var e = QuickDom.addElement(panel, "br");
             return e;
-        };
-        QuickDom.addTextInput = function (panel, text) {
-            if (text === void 0) { text = ""; }
+        }
+        static addTextInput(panel, text = "") {
             var e = QuickDom.addElement(panel, "input");
             e.type = "text";
             e.value = text;
             return e;
-        };
-        QuickDom.addTextInputPassword = function (panel, text) {
-            if (text === void 0) { text = ""; }
+        }
+        static addTextInputPassword(panel, text = "") {
             var e = QuickDom.addElement(panel, "input");
             e.type = "password";
             e.value = text;
             return e;
-        };
-        QuickDom.addButton = function (panel, text) {
-            if (text === void 0) { text = ""; }
+        }
+        static addButton(panel, text = "") {
             var e = QuickDom.addElement(panel, "button");
             e.title = text;
             e.value = text;
             e.textContent = text;
             return e;
-        };
-        return QuickDom;
-    }());
+        }
+    }
     lightsPanel.QuickDom = QuickDom;
 })(lightsPanel || (lightsPanel = {}));
+var what;
+(function (what) {
+    class WWW {
+        static makeRpcUrl(url, method, ..._params) {
+            if (url[url.length - 1] != '/')
+                url = url + "/";
+            var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
+            for (var i = 0; i < _params.length; i++) {
+                urlout += JSON.stringify(_params[i]);
+                if (i != _params.length - 1)
+                    urlout += ",";
+            }
+            urlout += "]";
+            return urlout;
+        }
+        static makeRpcPostBody(method, ..._params) {
+            var body = {};
+            body["jsonrpc"] = "2.0";
+            body["id"] = 1;
+            body["method"] = method;
+            var params = [];
+            for (var i = 0; i < _params.length; i++) {
+                params.push(_params[i]);
+            }
+            body["params"] = params;
+            return body;
+        }
+        static api_getHeight() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl(WWW.api, "getblockcount");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                var height = parseInt(r[0]["blockcount"]) - 1;
+                return height;
+            });
+        }
+        static rpc_getURL() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"][0];
+                var url = r.nodeList[0];
+                WWW.rpc = url;
+                WWW.rpcName = r.nodeType;
+                return url;
+            });
+        }
+        static rpc_getHeight() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl(WWW.rpc, "getblockcount");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                var height = parseInt(r) - 1;
+                return height;
+            });
+        }
+    }
+    WWW.api = "http://47.96.168.8:81/api/testnet";
+    WWW.rpc = "";
+    WWW.rpcName = "";
+    what.WWW = WWW;
+})(what || (what = {}));
 //# sourceMappingURL=code.js.map

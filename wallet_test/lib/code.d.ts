@@ -1,9 +1,8 @@
 declare namespace what {
     class Main {
-        other: lightsPanel.panel;
-        panel2: lightsPanel.panel;
-        panel3: lightsPanel.panel;
-        Start(): void;
+        panelState: panel_State;
+        start(): void;
+        update(): void;
     }
 }
 declare namespace lightsPanel {
@@ -109,14 +108,39 @@ declare namespace lightsPanel {
         };
     }
 }
+declare namespace what {
+    class panel_State {
+        constructor();
+        panel: lightsPanel.panel;
+        main: Main;
+        spanAPIHeight: HTMLSpanElement;
+        spanRPC: HTMLSpanElement;
+        spanRPCHeight: HTMLSpanElement;
+        init(main: Main): void;
+        update(): Promise<void>;
+    }
+}
 declare namespace lightsPanel {
     class QuickDom {
         static addElement(panel: panel | HTMLDivElement, name: string): HTMLElement;
         static addA(panel: panel | HTMLDivElement, text: string, href?: string): HTMLAnchorElement;
+        static addSpan(panel: panel | HTMLDivElement, text: string): HTMLSpanElement;
         static addSpace(panel: panel | HTMLDivElement, width: number): HTMLDivElement;
         static addReturn(panel: panel | HTMLDivElement): HTMLBRElement;
         static addTextInput(panel: panel | HTMLDivElement, text?: string): HTMLInputElement;
         static addTextInputPassword(panel: panel | HTMLDivElement, text?: string): HTMLInputElement;
         static addButton(panel: panel | HTMLDivElement, text?: string): HTMLButtonElement;
+    }
+}
+declare namespace what {
+    class WWW {
+        static api: string;
+        static rpc: string;
+        static rpcName: string;
+        static makeRpcUrl(url: string, method: string, ..._params: any[]): string;
+        static makeRpcPostBody(method: string, ..._params: any[]): {};
+        static api_getHeight(): Promise<number>;
+        static rpc_getURL(): Promise<any>;
+        static rpc_getHeight(): Promise<number>;
     }
 }
