@@ -1,4 +1,4 @@
-﻿///<reference path="../lib/neo-ts.d.ts"/>
+﻿///<reference path="../../lib/neo-ts.d.ts"/>
 namespace what
 {
 
@@ -12,6 +12,8 @@ namespace what
         main: Main;
         keylist: HTMLDivElement;
         prikey: Uint8Array;
+        pubkey: Uint8Array;
+        address: string;
         spanKey: HTMLSpanElement;
         init(main: Main): void
         {
@@ -87,11 +89,16 @@ namespace what
         setKey(key: Uint8Array)
         {
             this.prikey = key;
-            var pub = ThinNeo.Helper.GetPublicKeyFromPrivateKey(this.prikey);
-            var addr = ThinNeo.Helper.GetAddressFromPublicKey(pub);
+            this.pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(this.prikey);
+            this.address = ThinNeo.Helper.GetAddressFromPublicKey(this.pubkey);
             this.keylist.textContent = "";
-
-            this.spanKey.textContent = "usekey= " + addr;
+            this.spanKey.textContent = "usekey= " + this.address;
+            var btn = lightsPanel.QuickDom.addButton(this.keylist, "refresh UTXO");
+            btn.onclick = () =>
+            {
+                this.main.panelUTXO.refresh();
+            }
+            this.main.panelUTXO.refresh();
         }
     }
 

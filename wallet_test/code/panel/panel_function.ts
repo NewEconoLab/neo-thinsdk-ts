@@ -1,4 +1,4 @@
-﻿///<reference path="../lib/neo-ts.d.ts"/>
+﻿///<reference path="../../lib/neo-ts.d.ts"/>
 namespace what
 {
 
@@ -35,7 +35,15 @@ namespace what
             lightsPanel.QuickDom.addTextInput(this.panel, "");
             lightsPanel.QuickDom.addElement(this.panel, "br");
 
-            lightsPanel.QuickDom.addSpan(this.panel, "Type:");
+            lightsPanel.QuickDom.addSpan(this.panel, "Asset Type:");
+            var select = document.createElement("select");
+            this.panel.divContent.appendChild(select);
+            for (var name in CoinTool.name2assetID)
+            {
+                var sitem = document.createElement("option");
+                sitem.text = name;
+                select.appendChild(sitem);
+            }
             lightsPanel.QuickDom.addElement(this.panel, "br");
 
             lightsPanel.QuickDom.addSpan(this.panel, "Count");

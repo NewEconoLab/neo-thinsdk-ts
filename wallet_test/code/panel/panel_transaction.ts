@@ -1,4 +1,4 @@
-﻿///<reference path="../lib/neo-ts.d.ts"/>
+﻿///<reference path="../../lib/neo-ts.d.ts"/>
 namespace what
 {
 

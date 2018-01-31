@@ -10,18 +10,23 @@ var what;
 (function (what) {
     class Main {
         start() {
-            setTimeout(() => { this.update(); }, 1000);
-            var divpanel = document.getElementById("panel");
-            lightsPanel.panelMgr.instance().init(divpanel);
-            lightsPanel.panelMgr.instance().setbackImg("res/back1.jpg");
-            this.panelState = new what.panel_State();
-            this.panelState.init(this);
-            this.panelLoadKey = new what.panel_LoadKey();
-            this.panelLoadKey.init(this);
-            this.panelFunction = new what.panel_Function();
-            this.panelFunction.init(this);
-            this.panelTransaction = new what.panel_Transaction();
-            this.panelTransaction.init(this);
+            return __awaiter(this, void 0, void 0, function* () {
+                yield what.CoinTool.initAllAsset();
+                setTimeout(() => { this.update(); }, 1000);
+                var divpanel = document.getElementById("panel");
+                lightsPanel.panelMgr.instance().init(divpanel);
+                lightsPanel.panelMgr.instance().setbackImg("res/back1.jpg");
+                this.panelState = new what.panel_State();
+                this.panelState.init(this);
+                this.panelLoadKey = new what.panel_LoadKey();
+                this.panelLoadKey.init(this);
+                this.panelFunction = new what.panel_Function();
+                this.panelFunction.init(this);
+                this.panelTransaction = new what.panel_Transaction();
+                this.panelTransaction.init(this);
+                this.panelUTXO = new what.panel_UTXO();
+                this.panelUTXO.init(this);
+            });
         }
         update() {
             this.panelState.update();
@@ -1016,6 +1021,215 @@ var lightsPanel;
     }
     lightsPanel.panelMgr = panelMgr;
 })(lightsPanel || (lightsPanel = {}));
+var lightsPanel;
+(function (lightsPanel) {
+    class QuickDom {
+        static addElement(panel, name) {
+            var p = null;
+            if (panel instanceof (lightsPanel.panel)) {
+                p = panel.divContent;
+            }
+            else {
+                p = panel;
+            }
+            var e = document.createElement(name);
+            p.appendChild(e);
+            return e;
+        }
+        static addA(panel, text, href = null) {
+            var e = QuickDom.addElement(panel, "a");
+            e.text = text;
+            if (href != null)
+                e.href = href;
+            return e;
+        }
+        static addSpan(panel, text) {
+            var e = QuickDom.addElement(panel, "Span");
+            e.textContent = text;
+            return e;
+        }
+        static addSpace(panel, width) {
+            var e = QuickDom.addElement(panel, "div");
+            e.style.width = width + "px";
+            e.style.height = "1px";
+            return e;
+        }
+        static addReturn(panel) {
+            var e = QuickDom.addElement(panel, "br");
+            return e;
+        }
+        static addTextInput(panel, text = "") {
+            var e = QuickDom.addElement(panel, "input");
+            e.type = "text";
+            e.value = text;
+            return e;
+        }
+        static addTextInputPassword(panel, text = "") {
+            var e = QuickDom.addElement(panel, "input");
+            e.type = "password";
+            e.value = text;
+            return e;
+        }
+        static addButton(panel, text = "") {
+            var e = QuickDom.addElement(panel, "button");
+            e.title = text;
+            e.value = text;
+            e.textContent = text;
+            return e;
+        }
+    }
+    lightsPanel.QuickDom = QuickDom;
+})(lightsPanel || (lightsPanel = {}));
+var lightsPanel;
+(function (lightsPanel) {
+    class treeNode {
+        constructor() {
+            this.left = 0;
+        }
+        getDivForChild() {
+            if (this.divForChild != null)
+                return this.divForChild;
+            this.divForChild = document.createElement("div");
+            this.divForChild.style.position = "relative";
+            this.divForChild.style.overflow = "auto";
+            this.divForChild.style.overflowX = "hidden";
+            this.divForChild.style.overflowY = "auto";
+            this.divForChild.style.left = "0px";
+            this.divNode.appendChild(this.divForChild);
+            return this.divForChild;
+        }
+        MakeLength(len) {
+            if (len == 0)
+                return;
+            if (this.children == null)
+                this.children = [];
+            for (var i = this.children.length; i < len; i++) {
+                var nnode = new treeNode();
+                nnode.parent = this;
+                this.children.push(nnode);
+            }
+            for (var i = len; i < this.children.length; i++) {
+                this.children[i].hide();
+            }
+        }
+        FillData(treeview, filter, data) {
+            this.data = data;
+            if (this.divNode == null) {
+                this.divNode = document.createElement("div");
+                this.divNode.style.position = "relative";
+                this.divNode.style.overflow = "auto";
+                this.divNode.style.overflowX = "hidden";
+                this.divNode.style.overflowY = "auto";
+                this.parent.getDivForChild().appendChild(this.divNode);
+            }
+            if (this.divText == null) {
+                this.divChildButton = document.createElement("button");
+                this.divChildButton.textContent = "-";
+                this.divChildButton.style.position = "relative";
+                this.divChildButton.style.width = "24px";
+                this.divChildButton.style.left = this.left + "px";
+                this.divChildButton.onclick = () => {
+                    if (this.divForChild == null)
+                        return;
+                    this.divForChild.hidden = !this.divForChild.hidden;
+                    if (this.divForChild.hidden == true) {
+                        this.divChildButton.textContent = "+";
+                    }
+                    else {
+                        this.divChildButton.textContent = "-";
+                    }
+                };
+                this.divText = document.createElement("div");
+                this.divText.style.position = "relative";
+                this.divText.style.overflow = "auto";
+                this.divText.style.overflowX = "hidden";
+                this.divText.style.overflowY = "auto";
+                var text = document.createElement("a");
+                text.style.cursor = "default";
+                text.style.position = "relative";
+                text.style.left = (this.left) + "px";
+                text.hidden = false;
+                this.divText.appendChild(this.divChildButton);
+                this.divText.appendChild(text);
+                this.divNode.appendChild(this.divText);
+            }
+            treeview.makeSelectEvent(this);
+            this.divText.childNodes[1].text = data.name;
+            this.divText.childNodes[1].style.color = data.txtcolor;
+            var children = filter.getChildren(data);
+            this.divChildButton.hidden = (children.length == 0);
+            this.MakeLength(children.length);
+            for (var i = 0; i < children.length; i++) {
+                this.children[i].left = this.left + 16;
+                this.children[i].show();
+                this.children[i].FillData(treeview, filter, children[i]);
+            }
+        }
+        hide() {
+            if (this.divNode != null) {
+                this.divNode.hidden = true;
+            }
+        }
+        show() {
+            if (this.divNode != null) {
+                this.divNode.hidden = false;
+            }
+        }
+    }
+    lightsPanel.treeNode = treeNode;
+    class treeView {
+        constructor(parent) {
+            this.nodeRoot = new treeNode();
+            this.onSelectItem = null;
+            this.selectItem = null;
+            this.treeArea = document.createElement("div");
+            this.treeArea.className = "full";
+            this.treeArea.style.overflow = "auto";
+            this.treeArea.style.overflowX = "hidden";
+            this.treeArea.style.overflowY = "auto";
+            this.treeArea["inv"] = this;
+            this.nodeRoot.divForChild = this.treeArea;
+            if (parent instanceof lightsPanel.panel) {
+                parent.divContent.textContent = "";
+                parent.divContent.appendChild(this.treeArea);
+            }
+            else {
+                parent.textContent = "";
+                parent.appendChild(this.treeArea);
+            }
+        }
+        onSelect(node) {
+            this.selectItem = node;
+            if (this.onSelectItem != null) {
+                this.onSelectItem(node.divText.childNodes[1].text, node.data);
+            }
+        }
+        makeSelectEvent(node) {
+            node.divText.onclick = () => {
+                if (this.selectItem != null) {
+                    this.selectItem.divText.style.background = "transparent";
+                }
+                this.onSelect(node);
+                if (this.selectItem != null) {
+                    this.selectItem.divText.style.background = "#aaa";
+                }
+            };
+        }
+        updateData(filter) {
+            var child = filter.getChildren(null);
+            var ccount = child.length;
+            this.nodeRoot.MakeLength(ccount);
+            if (this.nodeRoot.children != null) {
+                for (var i = 0; i < ccount; i++) {
+                    var node = this.nodeRoot.children[i];
+                    node.show();
+                    node.FillData(this, filter, child[i]);
+                }
+            }
+        }
+    }
+    lightsPanel.treeView = treeView;
+})(lightsPanel || (lightsPanel = {}));
 var what;
 (function (what) {
     class panel_Function {
@@ -1037,7 +1251,14 @@ var what;
             lightsPanel.QuickDom.addSpan(this.panel, "Target");
             lightsPanel.QuickDom.addTextInput(this.panel, "");
             lightsPanel.QuickDom.addElement(this.panel, "br");
-            lightsPanel.QuickDom.addSpan(this.panel, "Type:");
+            lightsPanel.QuickDom.addSpan(this.panel, "Asset Type:");
+            var select = document.createElement("select");
+            this.panel.divContent.appendChild(select);
+            for (var name in what.CoinTool.name2assetID) {
+                var sitem = document.createElement("option");
+                sitem.text = name;
+                select.appendChild(sitem);
+            }
             lightsPanel.QuickDom.addElement(this.panel, "br");
             lightsPanel.QuickDom.addSpan(this.panel, "Count");
             lightsPanel.QuickDom.addTextInput(this.panel, "");
@@ -1105,10 +1326,15 @@ var what;
         }
         setKey(key) {
             this.prikey = key;
-            var pub = ThinNeo.Helper.GetPublicKeyFromPrivateKey(this.prikey);
-            var addr = ThinNeo.Helper.GetAddressFromPublicKey(pub);
+            this.pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(this.prikey);
+            this.address = ThinNeo.Helper.GetAddressFromPublicKey(this.pubkey);
             this.keylist.textContent = "";
-            this.spanKey.textContent = "usekey= " + addr;
+            this.spanKey.textContent = "usekey= " + this.address;
+            var btn = lightsPanel.QuickDom.addButton(this.keylist, "refresh UTXO");
+            btn.onclick = () => {
+                this.main.panelUTXO.refresh();
+            };
+            this.main.panelUTXO.refresh();
         }
     }
     what.panel_LoadKey = panel_LoadKey;
@@ -1171,65 +1397,121 @@ var what;
     }
     what.panel_Transaction = panel_Transaction;
 })(what || (what = {}));
-var lightsPanel;
-(function (lightsPanel) {
-    class QuickDom {
-        static addElement(panel, name) {
-            var p = null;
-            if (panel instanceof (lightsPanel.panel)) {
-                p = panel.divContent;
-            }
-            else {
-                p = panel;
-            }
-            var e = document.createElement(name);
-            p.appendChild(e);
-            return e;
+var what;
+(function (what) {
+    class panel_UTXO {
+        constructor() {
         }
-        static addA(panel, text, href = null) {
-            var e = QuickDom.addElement(panel, "a");
-            e.text = text;
-            if (href != null)
-                e.href = href;
-            return e;
+        init(main) {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.main = main;
+                this.panel = lightsPanel.panelMgr.instance().createPanel("UTXO");
+                this.panel.divRoot.style.left = "920px";
+                this.panel.divRoot.style.top = "30px";
+                this.panel.floatWidth = 400;
+                this.panel.floatHeight = 150;
+                this.panel.canDrag = true;
+                this.panel.canScale = true;
+                this.panel.onFloat();
+                this.panel.divContent.textContent = "";
+                this.tree = new lightsPanel.treeView(this.panel);
+            });
         }
-        static addSpan(panel, text) {
-            var e = QuickDom.addElement(panel, "Span");
-            e.textContent = text;
-            return e;
-        }
-        static addSpace(panel, width) {
-            var e = QuickDom.addElement(panel, "div");
-            e.style.width = width + "px";
-            e.style.height = "1px";
-            return e;
-        }
-        static addReturn(panel) {
-            var e = QuickDom.addElement(panel, "br");
-            return e;
-        }
-        static addTextInput(panel, text = "") {
-            var e = QuickDom.addElement(panel, "input");
-            e.type = "text";
-            e.value = text;
-            return e;
-        }
-        static addTextInputPassword(panel, text = "") {
-            var e = QuickDom.addElement(panel, "input");
-            e.type = "password";
-            e.value = text;
-            return e;
-        }
-        static addButton(panel, text = "") {
-            var e = QuickDom.addElement(panel, "button");
-            e.title = text;
-            e.value = text;
-            e.textContent = text;
-            return e;
+        refresh() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var utxos = yield what.WWW.api_getUTXO(this.main.panelLoadKey.address);
+                this.tree.updateData(new Filter(utxos));
+            });
         }
     }
-    lightsPanel.QuickDom = QuickDom;
-})(lightsPanel || (lightsPanel = {}));
+    what.panel_UTXO = panel_UTXO;
+    class UTXO {
+    }
+    class Filter {
+        constructor(json) {
+            this.assets = {};
+            for (var i in json) {
+                var item = json[i];
+                var txid = item.txid;
+                var n = item.n;
+                var asset = item.asset;
+                var count = item.value;
+                if (this.assets[asset] == undefined) {
+                    this.assets[asset] = [];
+                }
+                var utxo = new UTXO();
+                utxo.asset = asset;
+                utxo.n = n;
+                utxo.txid = txid;
+                utxo.count = Neo.Fixed8.parse(count);
+                this.assets[asset].push(utxo);
+            }
+        }
+        getChildren(rootObj) {
+            if (rootObj == null) {
+                var item = [];
+                for (var asset in this.assets) {
+                    var name = what.CoinTool.assetID2name[asset];
+                    var count = Neo.Fixed8.Zero;
+                    for (var i in this.assets[asset]) {
+                        var utxo = this.assets[asset][i];
+                        count = count.add(utxo.count);
+                    }
+                    item.push({ "name": name + " count=" + count.toString(), "txtcolor": "FFF", "asset": asset });
+                }
+                return item;
+            }
+            else {
+                if (rootObj["asset"] != undefined) {
+                    var utxos = this.assets[rootObj["asset"]];
+                    var item = [];
+                    for (var i in utxos) {
+                        var utxo = utxos[i];
+                        item.push({ "name": utxo.count, "txtcolor": "FFF", "asset": asset });
+                    }
+                    return item;
+                }
+                return [];
+            }
+        }
+    }
+})(what || (what = {}));
+var what;
+(function (what) {
+    class CoinTool {
+        static initAllAsset() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var allassets = yield what.WWW.api_getAllAssets();
+                for (var a in allassets) {
+                    var asset = allassets[a];
+                    var names = asset.name;
+                    var id = asset.id;
+                    var name = "";
+                    if (id == CoinTool.id_GAS) {
+                        name = "GAS";
+                    }
+                    else if (id == CoinTool.id_NEO) {
+                        name = "NEO";
+                    }
+                    else {
+                        for (var i in names) {
+                            name = names[i].name;
+                            if (names[i].lang == "en")
+                                break;
+                        }
+                    }
+                    CoinTool.assetID2name[id] = name;
+                    CoinTool.name2assetID[name] = id;
+                }
+            });
+        }
+    }
+    CoinTool.id_GAS = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
+    CoinTool.id_NEO = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
+    CoinTool.assetID2name = {};
+    CoinTool.name2assetID = {};
+    what.CoinTool = CoinTool;
+})(what || (what = {}));
 var what;
 (function (what) {
     class WWW {
@@ -1265,6 +1547,24 @@ var what;
                 var r = json["result"];
                 var height = parseInt(r[0]["blockcount"]) - 1;
                 return height;
+            });
+        }
+        static api_getAllAssets() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl(WWW.api, "getallasset");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getUTXO(address) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl(WWW.api, "getutxo", address);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
             });
         }
         static rpc_getURL() {

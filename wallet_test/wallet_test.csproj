@@ -75,13 +75,16 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="code\main.ts" />
-    <TypeScriptCompile Include="code\panelmgr.ts" />
-    <TypeScriptCompile Include="code\panel_transaction.ts" />
-    <TypeScriptCompile Include="code\panel_function.ts" />
-    <TypeScriptCompile Include="code\panel_loadkey.ts" />
-    <TypeScriptCompile Include="code\panel_state.ts" />
-    <TypeScriptCompile Include="code\quickdom.ts" />
-    <TypeScriptCompile Include="code\wwwtool.ts" />
+    <TypeScriptCompile Include="code\htmlui\panelmgr.ts" />
+    <TypeScriptCompile Include="code\panel\panel_UTXO.ts" />
+    <TypeScriptCompile Include="code\panel\panel_transaction.ts" />
+    <TypeScriptCompile Include="code\panel\panel_function.ts" />
+    <TypeScriptCompile Include="code\panel\panel_loadkey.ts" />
+    <TypeScriptCompile Include="code\panel\panel_state.ts" />
+    <TypeScriptCompile Include="code\htmlui\quickdom.ts" />
+    <TypeScriptCompile Include="code\htmlui\treeview.ts" />
+    <TypeScriptCompile Include="code\tools\cointool.ts" />
+    <TypeScriptCompile Include="code\tools\wwwtool.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -46,6 +46,26 @@
             var height = parseInt(r[0]["blockcount"] as string) - 1;
             return height;
         }
+        static async api_getAllAssets()
+        {
+            var str = WWW.makeRpcUrl(WWW.api, "getallasset");
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        static async api_getUTXO(address: string)
+        {
+            var str = WWW.makeRpcUrl(WWW.api, "getutxo", address);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+
+        }
+
+
+
         static async rpc_getURL()
         {
             var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
@@ -57,6 +77,7 @@
             WWW.rpcName = r.nodeType;
             return url;
         }
+
         static async  rpc_getHeight()
         {
             var str = WWW.makeRpcUrl(WWW.rpc, "getblockcount");

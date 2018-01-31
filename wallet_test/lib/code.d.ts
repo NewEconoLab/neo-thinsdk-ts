@@ -5,7 +5,8 @@ declare namespace what {
         panelLoadKey: panel_LoadKey;
         panelFunction: panel_Function;
         panelTransaction: panel_Transaction;
-        start(): void;
+        panelUTXO: panel_UTXO;
+        start(): Promise<void>;
         update(): void;
     }
 }
@@ -112,6 +113,55 @@ declare namespace lightsPanel {
         };
     }
 }
+declare namespace lightsPanel {
+    class QuickDom {
+        static addElement(panel: panel | HTMLDivElement, name: string): HTMLElement;
+        static addA(panel: panel | HTMLDivElement, text: string, href?: string): HTMLAnchorElement;
+        static addSpan(panel: panel | HTMLDivElement, text: string): HTMLSpanElement;
+        static addSpace(panel: panel | HTMLDivElement, width: number): HTMLDivElement;
+        static addReturn(panel: panel | HTMLDivElement): HTMLBRElement;
+        static addTextInput(panel: panel | HTMLDivElement, text?: string): HTMLInputElement;
+        static addTextInputPassword(panel: panel | HTMLDivElement, text?: string): HTMLInputElement;
+        static addButton(panel: panel | HTMLDivElement, text?: string): HTMLButtonElement;
+    }
+}
+declare namespace lightsPanel {
+    interface ITreeViewFilter {
+        getChildren(rootObj: any): {
+            name: string;
+            txtcolor: string;
+        }[];
+    }
+    class treeNode {
+        divNode: HTMLDivElement;
+        divText: HTMLDivElement;
+        divForChild: HTMLDivElement;
+        divChildButton: HTMLButtonElement;
+        text: string;
+        children: treeNode[];
+        parent: treeNode;
+        left: number;
+        getDivForChild(): HTMLDivElement;
+        data: any;
+        MakeLength(len: number): void;
+        FillData(treeview: treeView, filter: ITreeViewFilter, data: {
+            name: string;
+            txtcolor: string;
+        }): void;
+        hide(): void;
+        show(): void;
+    }
+    class treeView {
+        constructor(parent: panel | HTMLDivElement);
+        private treeArea;
+        private nodeRoot;
+        onSelectItem: (txt: string, data: any) => void;
+        private selectItem;
+        private onSelect(node);
+        makeSelectEvent(node: treeNode): void;
+        updateData(filter: ITreeViewFilter): void;
+    }
+}
 declare namespace what {
     class panel_Function {
         constructor();
@@ -128,6 +178,8 @@ declare namespace what {
         main: Main;
         keylist: HTMLDivElement;
         prikey: Uint8Array;
+        pubkey: Uint8Array;
+        address: string;
         spanKey: HTMLSpanElement;
         init(main: Main): void;
         setKey(key: Uint8Array): void;
@@ -154,16 +206,27 @@ declare namespace what {
         init(main: Main): void;
     }
 }
-declare namespace lightsPanel {
-    class QuickDom {
-        static addElement(panel: panel | HTMLDivElement, name: string): HTMLElement;
-        static addA(panel: panel | HTMLDivElement, text: string, href?: string): HTMLAnchorElement;
-        static addSpan(panel: panel | HTMLDivElement, text: string): HTMLSpanElement;
-        static addSpace(panel: panel | HTMLDivElement, width: number): HTMLDivElement;
-        static addReturn(panel: panel | HTMLDivElement): HTMLBRElement;
-        static addTextInput(panel: panel | HTMLDivElement, text?: string): HTMLInputElement;
-        static addTextInputPassword(panel: panel | HTMLDivElement, text?: string): HTMLInputElement;
-        static addButton(panel: panel | HTMLDivElement, text?: string): HTMLButtonElement;
+declare namespace what {
+    class panel_UTXO {
+        constructor();
+        panel: lightsPanel.panel;
+        main: Main;
+        tree: lightsPanel.treeView;
+        init(main: Main): Promise<void>;
+        refresh(): Promise<void>;
+    }
+}
+declare namespace what {
+    class CoinTool {
+        static readonly id_GAS: string;
+        static readonly id_NEO: string;
+        static assetID2name: {
+            [id: string]: string;
+        };
+        static name2assetID: {
+            [id: string]: string;
+        };
+        static initAllAsset(): Promise<void>;
     }
 }
 declare namespace what {
@@ -174,6 +237,8 @@ declare namespace what {
         static makeRpcUrl(url: string, method: string, ..._params: any[]): string;
         static makeRpcPostBody(method: string, ..._params: any[]): {};
         static api_getHeight(): Promise<number>;
+        static api_getAllAssets(): Promise<any>;
+        static api_getUTXO(address: string): Promise<any>;
         static rpc_getURL(): Promise<any>;
         static rpc_getHeight(): Promise<number>;
     }

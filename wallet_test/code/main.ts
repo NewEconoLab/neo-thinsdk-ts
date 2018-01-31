@@ -7,8 +7,10 @@ namespace what
         panelLoadKey: panel_LoadKey;//加载key的面板
         panelFunction: panel_Function;//钱包功能面板
         panelTransaction: panel_Transaction;//交易面板
-        start(): void
+        panelUTXO: panel_UTXO;
+        async start()
         {
+            await CoinTool.initAllAsset();
             setTimeout(() => { this.update() }, 1000);
             var divpanel = document.getElementById("panel") as HTMLDivElement;
             lightsPanel.panelMgr.instance().init(divpanel);
@@ -25,6 +27,9 @@ namespace what
 
             this.panelTransaction = new panel_Transaction();
             this.panelTransaction.init(this);
+
+            this.panelUTXO = new panel_UTXO();
+            this.panelUTXO.init(this);
        }
 
         update(): void
