@@ -116,7 +116,7 @@
                     throw new Error("the sum is not match.");
                 }
             }
-            return hash;
+            return hash.clone();
         }
 
 

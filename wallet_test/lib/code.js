@@ -1376,7 +1376,8 @@ var what;
                 tran.witnesses = [];
             let txid = tran.GetHash().clone().reverse().toHexString();
             this.panel.divContent.textContent = "";
-            lightsPanel.QuickDom.addA(this.panel, "TXID:" + txid, "http://be.nel.group/page/txInfo.html?txid=" + txid);
+            var a = lightsPanel.QuickDom.addA(this.panel, "TXID:" + txid, "http://be.nel.group/page/txInfo.html?txid=" + txid);
+            a.target = "_blank";
             lightsPanel.QuickDom.addSpan(this.panel, "need witness:");
             lightsPanel.QuickDom.addElement(this.panel, "br");
             for (var i = 0; i < inputaddr.length; i++) {
