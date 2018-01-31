@@ -139,7 +139,7 @@
         {
             this.fillBuffer(this._buffer, 4);
             if (this.array_uint32 == null)
-                this.array_uint32 = new Uint32Array(this._buffer, 0, 2);
+                this.array_uint32 = new Uint32Array(this._buffer, 0, 1);
             return this.array_uint32[0];
         }
 

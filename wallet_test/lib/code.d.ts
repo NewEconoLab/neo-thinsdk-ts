@@ -6,6 +6,7 @@ declare namespace what {
         panelFunction: panel_Function;
         panelTransaction: panel_Transaction;
         panelUTXO: panel_UTXO;
+        panelSign: panel_Sign;
         start(): Promise<void>;
         update(): void;
     }
@@ -185,6 +186,15 @@ declare namespace what {
     }
 }
 declare namespace what {
+    class panel_Sign {
+        constructor();
+        panel: lightsPanel.panel;
+        main: Main;
+        init(main: Main): void;
+        setTran(tran: ThinNeo.Transaction, inputaddr: string[]): void;
+    }
+}
+declare namespace what {
     class panel_State {
         constructor();
         panel: lightsPanel.panel;
@@ -253,5 +263,6 @@ declare namespace what {
         static api_getUTXO(address: string): Promise<any>;
         static rpc_getURL(): Promise<any>;
         static rpc_getHeight(): Promise<number>;
+        static rpc_postRawTransaction(data: Uint8Array): Promise<any>;
     }
 }

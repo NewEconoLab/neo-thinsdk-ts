@@ -131,6 +131,7 @@ interface String {
 }
 interface Uint8Array {
     toHexString(): string;
+    clone(): Uint8Array;
 }
 interface Uint8ArrayConstructor {
     fromArrayBuffer(buffer: ArrayBuffer | ArrayBufferView): Uint8Array;
@@ -713,7 +714,6 @@ declare namespace Neo.IO {
         writeBoolean(value: boolean): void;
         writeByte(value: number): void;
         writeDouble(value: number): void;
-        writeFixed8(value: Fixed8): void;
         writeInt16(value: number): void;
         writeInt32(value: number): void;
         writeSByte(value: number): void;
@@ -721,6 +721,7 @@ declare namespace Neo.IO {
         writeSingle(value: number): void;
         writeUint16(value: number): void;
         writeUint32(value: number): void;
+        writeUint64(value: Uint64): void;
         writeUintVariable(value: UintVariable): void;
         writeVarBytes(value: ArrayBuffer): void;
         writeVarInt(value: number): void;

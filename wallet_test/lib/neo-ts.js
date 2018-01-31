@@ -968,7 +968,7 @@ var Neo;
             this.data = reader.readUint64();
         };
         Fixed8.prototype.serialize = function (writer) {
-            writer.writeFixed8(this);
+            writer.writeUint64(this.getData());
         };
         return Fixed8;
     }());
@@ -1032,6 +1032,12 @@ Uint8Array.prototype.toHexString = function () {
         s += (this[i] & 0xf).toString(16);
     }
     return s;
+};
+Uint8Array.prototype.clone = function () {
+    var u8 = new Uint8Array(this.length);
+    for (var i = 0; i < this.length; i++)
+        u8[i] = this[i];
+    return u8;
 };
 void function () {
     function fillArray(value, start, end) {
@@ -2265,14 +2271,14 @@ var ThinNeo;
         InvokeTransData.prototype.Serialize = function (trans, writer) {
             writer.writeVarBytes(this.script.buffer);
             if (trans.version >= 1) {
-                writer.writeFixed8(this.gas);
+                writer.writeUint64(this.gas.getData());
             }
         };
         InvokeTransData.prototype.Deserialize = function (trans, reader) {
             var buf = reader.readVarBytes(10000000);
             this.script = new Uint8Array(buf, 0, buf.byteLength);
             if (trans.version >= 1) {
-                this.gas = reader.readFixed8();
+                this.gas = new Neo.Fixed8(reader.readUint64());
             }
         };
         return InvokeTransData;
@@ -2331,7 +2337,7 @@ var ThinNeo;
             for (var i = 0; i < countOutputs; i++) {
                 var item = this.outputs[i];
                 writer.write(item.assetId.buffer, 0, 32);
-                writer.writeFixed8(item.value);
+                writer.writeUint64(item.value.getData());
                 writer.write(item.toAddress.buffer, 0, 20);
             }
         };
@@ -2410,7 +2416,7 @@ var ThinNeo;
                 var outp = this.outputs[i];
                 var arr = ms.readBytes(32);
                 var assetid = new Uint8Array(arr, 0, arr.byteLength);
-                var value = ms.readFixed8();
+                var value = new Neo.Fixed8(ms.readUint64());
                 var arr = ms.readBytes(20);
                 var scripthash = new Uint8Array(arr, 0, arr.byteLength);
                 outp.assetId = assetid;
@@ -4013,7 +4019,7 @@ var Neo;
             BinaryReader.prototype.readUint32 = function () {
                 this.fillBuffer(this._buffer, 4);
                 if (this.array_uint32 == null)
-                    this.array_uint32 = new Uint32Array(this._buffer, 0, 2);
+                    this.array_uint32 = new Uint32Array(this._buffer, 0, 1);
                 return this.array_uint32[0];
             };
             BinaryReader.prototype.readUint64 = function () {
@@ -4084,9 +4090,6 @@ var Neo;
                 this.array_float64[0] = value;
                 this.output.write(this._buffer, 0, 8);
             };
-            BinaryWriter.prototype.writeFixed8 = function (value) {
-                this.writeUintVariable(value.getData());
-            };
             BinaryWriter.prototype.writeInt16 = function (value) {
                 if (this.array_int16 == null)
                     this.array_int16 = new Int16Array(this._buffer, 0, 1);
@@ -4127,6 +4130,9 @@ var Neo;
                     this.array_uint32 = new Uint32Array(this._buffer, 0, 1);
                 this.array_uint32[0] = value;
                 this.output.write(this._buffer, 0, 4);
+            };
+            BinaryWriter.prototype.writeUint64 = function (value) {
+                this.writeUintVariable(value);
             };
             BinaryWriter.prototype.writeUintVariable = function (value) {
                 this.write(value.bits.buffer);

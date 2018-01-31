@@ -87,5 +87,13 @@
             var height = parseInt(r as string) - 1;
             return height;
         }
+        static async rpc_postRawTransaction(data: Uint8Array)
+        {
+            var postdata = WWW.makeRpcPostBody("sendrawtransaction", data.toHexString());
+            var result = await fetch(WWW.rpc, { "method": "post", "body": JSON.stringify(postdata) });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
     }
 }

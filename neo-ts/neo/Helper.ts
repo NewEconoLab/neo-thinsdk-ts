@@ -20,6 +20,7 @@ interface String
 interface Uint8Array
 {
     toHexString(): string;
+    clone(): Uint8Array;
 }
 
 interface Uint8ArrayConstructor
@@ -91,7 +92,13 @@ Uint8Array.prototype.toHexString = function (): string
     }
     return s;
 }
-
+Uint8Array.prototype.clone = function (): Uint8Array
+{
+    var u8 = new Uint8Array(this.length);
+    for (let i = 0; i < this.length; i++)
+        u8[i] = this[i];
+    return u8;
+}
 void function ()
 {
     function fillArray<T>(value: T, start = 0, end = this.length)

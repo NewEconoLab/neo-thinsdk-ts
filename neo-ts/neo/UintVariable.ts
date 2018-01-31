@@ -4,7 +4,7 @@
     {
         protected _bits: Uint32Array;
 
-        public get bits()
+        public get bits(): Uint32Array
         {
             return this._bits;
         }

@@ -140,7 +140,7 @@ namespace ThinNeo
             writer.writeVarBytes(this.script.buffer);
             if (trans.version >= 1)
             {
-                writer.writeFixed8(this.gas);
+                writer.writeUint64(this.gas.getData());
             }
         }
         public Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void
@@ -149,7 +149,7 @@ namespace ThinNeo
             this.script = new Uint8Array(buf, 0, buf.byteLength);
             if (trans.version >= 1)
             {
-                this.gas = reader.readFixed8();
+                this.gas = new Neo.Fixed8(reader.readUint64());
             }
         }
 
@@ -246,7 +246,7 @@ namespace ThinNeo
                 //资产种类
                 writer.write(item.assetId.buffer, 0, 32);
 
-                writer.writeFixed8(item.value);
+                writer.writeUint64(item.value.getData());
 
                 writer.write(item.toAddress.buffer, 0, 20);
 
@@ -371,7 +371,7 @@ namespace ThinNeo
                 //资产种类
                 var arr = ms.readBytes(32);
                 var assetid = new Uint8Array(arr, 0, arr.byteLength);
-                var value = ms.readFixed8();
+                var value = new Neo.Fixed8(ms.readUint64());
                 //资产数量
 
                 var arr = ms.readBytes(20);

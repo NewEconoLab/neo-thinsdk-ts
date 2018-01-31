@@ -8,6 +8,7 @@ namespace what
         panelFunction: panel_Function;//钱包功能面板
         panelTransaction: panel_Transaction;//交易面板
         panelUTXO: panel_UTXO;
+        panelSign: panel_Sign;
         async start()
         {
             await CoinTool.initAllAsset();
@@ -27,6 +28,9 @@ namespace what
 
             this.panelTransaction = new panel_Transaction();
             this.panelTransaction.init(this);
+            this.panelSign = new panel_Sign();
+            this.panelSign.init(this);
+            this.panelSign.panel.hide();
 
             this.panelUTXO = new panel_UTXO();
             this.panelUTXO.init(this);

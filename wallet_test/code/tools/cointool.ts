@@ -62,6 +62,7 @@
                 var input = new ThinNeo.TransactionInput();
                 input.hash = us[i].txid.hexToBytes().reverse();
                 input.index = us[i].n;
+                input["_addr"] = us[i].addr;//利用js的隨意性，臨時傳個值
                 tran.inputs.push(input);
                 count = count.add(us[i].count);
                 scraddr = us[i].addr;

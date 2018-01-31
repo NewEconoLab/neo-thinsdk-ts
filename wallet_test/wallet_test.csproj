@@ -76,6 +76,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="code\main.ts" />
     <TypeScriptCompile Include="code\htmlui\panelmgr.ts" />
+    <TypeScriptCompile Include="code\panel\panel_sign.ts" />
     <TypeScriptCompile Include="code\panel\panel_UTXO.ts" />
     <TypeScriptCompile Include="code\panel\panel_transaction.ts" />
     <TypeScriptCompile Include="code\panel\panel_function.ts" />

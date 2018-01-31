@@ -24,6 +24,9 @@ var what;
                 this.panelFunction.init(this);
                 this.panelTransaction = new what.panel_Transaction();
                 this.panelTransaction.init(this);
+                this.panelSign = new what.panel_Sign();
+                this.panelSign.init(this);
+                this.panelSign.panel.hide();
                 this.panelUTXO = new what.panel_UTXO();
                 this.panelUTXO.init(this);
             });
@@ -1349,6 +1352,83 @@ var what;
 })(what || (what = {}));
 var what;
 (function (what) {
+    class panel_Sign {
+        constructor() {
+        }
+        init(main) {
+            this.main = main;
+            this.panel = lightsPanel.panelMgr.instance().createPanel("Sign");
+            this.panel.onClose = () => {
+                this.panel.hide();
+                this.main.panelTransaction.panel.show();
+            };
+            this.panel.divRoot.style.left = "400px";
+            this.panel.divRoot.style.top = "200px";
+            this.panel.floatWidth = 1000;
+            this.panel.floatHeight = 600;
+            this.panel.canDrag = true;
+            this.panel.canScale = true;
+            this.panel.onFloat();
+            this.panel.divContent.textContent = "";
+        }
+        setTran(tran, inputaddr) {
+            if (tran.witnesses == null)
+                tran.witnesses = [];
+            let txid = tran.GetHash().clone().reverse().toHexString();
+            this.panel.divContent.textContent = "";
+            lightsPanel.QuickDom.addA(this.panel, "TXID:" + txid, "http://be.nel.group/page/txInfo.html?txid=" + txid);
+            lightsPanel.QuickDom.addSpan(this.panel, "need witness:");
+            lightsPanel.QuickDom.addElement(this.panel, "br");
+            for (var i = 0; i < inputaddr.length; i++) {
+                lightsPanel.QuickDom.addSpan(this.panel, "Withess[" + i + "]:" + inputaddr[i]);
+                lightsPanel.QuickDom.addElement(this.panel, "br");
+                var hadwit = false;
+                for (var w = 0; w < tran.witnesses.length; w++) {
+                    if (tran.witnesses[w].Address == inputaddr[i]) {
+                        lightsPanel.QuickDom.addSpan(this.panel, "V_script:" + tran.witnesses[w].VerificationScript.toHexString());
+                        lightsPanel.QuickDom.addElement(this.panel, "br");
+                        lightsPanel.QuickDom.addSpan(this.panel, "I_script:" + tran.witnesses[w].InvocationScript.toHexString());
+                        lightsPanel.QuickDom.addElement(this.panel, "br");
+                        let witi = w;
+                        var btn = lightsPanel.QuickDom.addButton(this.panel, "delete witness");
+                        btn.onclick = () => {
+                            tran.witnesses.splice(witi, 1);
+                            this.setTran(tran, inputaddr);
+                            return;
+                        };
+                        hadwit = true;
+                        break;
+                    }
+                }
+                if (hadwit == false) {
+                    lightsPanel.QuickDom.addSpan(this.panel, "NoWitness");
+                    lightsPanel.QuickDom.addElement(this.panel, "br");
+                    if (inputaddr[i] == this.main.panelLoadKey.address) {
+                        var btn = lightsPanel.QuickDom.addButton(this.panel, "Add witness by current key");
+                        btn.onclick = () => {
+                            var msg = tran.GetMessage();
+                            var pubkey = this.main.panelLoadKey.pubkey;
+                            var signdata = ThinNeo.Helper.Sign(msg, this.main.panelLoadKey.prikey);
+                            tran.AddWitness(signdata, pubkey, this.main.panelLoadKey.address);
+                            this.setTran(tran, inputaddr);
+                        };
+                    }
+                }
+                lightsPanel.QuickDom.addElement(this.panel, "hr");
+                var btn = lightsPanel.QuickDom.addButton(this.panel, "boardcast it.");
+                btn.onclick = () => __awaiter(this, void 0, void 0, function* () {
+                    var result = yield what.WWW.rpc_postRawTransaction(tran.GetRawData());
+                    if (result == true) {
+                        alert("txid=" + txid);
+                    }
+                });
+            }
+        }
+    }
+    what.panel_Sign = panel_Sign;
+})(what || (what = {}));
+var what;
+(function (what) {
     class panel_State {
         constructor() {
         }
@@ -1392,7 +1472,7 @@ var what;
         }
         init(main) {
             this.main = main;
-            this.panel = lightsPanel.panelMgr.instance().createPanel("Transaction （** not finish）");
+            this.panel = lightsPanel.panelMgr.instance().createPanel("Transaction");
             this.panel.divRoot.style.left = "400px";
             this.panel.divRoot.style.top = "200px";
             this.panel.floatWidth = 1000;
@@ -1404,27 +1484,63 @@ var what;
         }
         setTran(tran) {
             this.panel.divContent.textContent = "";
-            lightsPanel.QuickDom.addSpan(this.panel, "type=" + tran.type.toString());
+            lightsPanel.QuickDom.addSpan(this.panel, "type=" + ThinNeo.TransactionType[tran.type].toString());
             lightsPanel.QuickDom.addElement(this.panel, "br");
             lightsPanel.QuickDom.addSpan(this.panel, "version=" + tran.version);
-            lightsPanel.QuickDom.addElement(this.panel, "br");
+            lightsPanel.QuickDom.addElement(this.panel, "hr");
+            var inputAddrs = [];
             lightsPanel.QuickDom.addSpan(this.panel, "inputcount=" + tran.inputs.length);
             lightsPanel.QuickDom.addElement(this.panel, "br");
             for (var i = 0; i < tran.inputs.length; i++) {
-                lightsPanel.QuickDom.addSpan(this.panel, "    input[" + i + "]" + tran.inputs[i].hash.toHexString() + "(" + tran.inputs[i].index + ")");
+                var _addr = tran.inputs[i]["_addr"];
+                if (inputAddrs.indexOf(_addr) < 0) {
+                    inputAddrs.push(_addr);
+                }
+                var rhash = tran.inputs[i].hash.clone().reverse();
+                var inputhash = rhash.toHexString();
+                var outstr = "    input[" + i + "]" + inputhash + "(" + tran.inputs[i].index + ")";
+                var a = lightsPanel.QuickDom.addA(this.panel, outstr, "http://be.nel.group/page/txInfo.html?txid=" + inputhash);
+                a.target = "_blank";
                 lightsPanel.QuickDom.addElement(this.panel, "br");
             }
+            lightsPanel.QuickDom.addElement(this.panel, "hr");
             lightsPanel.QuickDom.addSpan(this.panel, "outputcount=" + tran.outputs.length);
             lightsPanel.QuickDom.addElement(this.panel, "br");
             for (var i = 0; i < tran.outputs.length; i++) {
-                lightsPanel.QuickDom.addSpan(this.panel, "    outputs[" + i + "]" + ThinNeo.Helper.GetAddressFromScriptHash(tran.outputs[i].toAddress));
-                lightsPanel.QuickDom.addElement(this.panel, "br");
-                lightsPanel.QuickDom.addSpan(this.panel, "    " + tran.outputs[i].assetId.toHexString() + "=" + tran.outputs[i].value.toString());
+                var addrt = tran.outputs[i].toAddress;
+                var address = ThinNeo.Helper.GetAddressFromScriptHash(addrt);
+                var a = lightsPanel.QuickDom.addA(this.panel, "    outputs[" + i + "]" + address, "http://be.nel.group/page/address.html?addr=" + address);
+                a.target = "_blank";
+                var assethash = tran.outputs[i].assetId.clone().reverse();
+                var assetid = "0x" + assethash.toHexString();
+                if (inputAddrs.length == 1 && address == inputAddrs[0]) {
+                    lightsPanel.QuickDom.addSpan(this.panel, "    (change)" + what.CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
+                }
+                else {
+                    lightsPanel.QuickDom.addSpan(this.panel, "    " + what.CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
+                }
                 lightsPanel.QuickDom.addElement(this.panel, "br");
             }
+            lightsPanel.QuickDom.addElement(this.panel, "hr");
+            let msg = tran.GetMessage();
+            var msglen = msg.length;
             var txid = tran.GetHash().toHexString();
-            lightsPanel.QuickDom.addSpan(this.panel, "this TXID=" + txid);
+            lightsPanel.QuickDom.addSpan(this.panel, "--this TXLen=" + msglen);
+            lightsPanel.QuickDom.addSpan(this.panel, "--this TXID=" + txid);
             lightsPanel.QuickDom.addElement(this.panel, "br");
+            for (var i = 0; i < inputAddrs.length; i++) {
+                lightsPanel.QuickDom.addSpan(this.panel, "must witness[" + i + "]=" + inputAddrs[i]);
+            }
+            lightsPanel.QuickDom.addElement(this.panel, "hr");
+            var btnsign = lightsPanel.QuickDom.addButton(this.panel, "Sign");
+            btnsign.onclick = () => {
+                this.panel.hide();
+                tran.witnesses = [];
+                this.main.panelSign.setTran(tran, inputAddrs);
+                this.main.panelSign.panel.show();
+            };
+            lightsPanel.QuickDom.addElement(this.panel, "hr");
+            lightsPanel.QuickDom.addSpan(this.panel, msg.toHexString());
         }
     }
     what.panel_Transaction = panel_Transaction;
@@ -1559,6 +1675,7 @@ var what;
                 var input = new ThinNeo.TransactionInput();
                 input.hash = us[i].txid.hexToBytes().reverse();
                 input.index = us[i].n;
+                input["_addr"] = us[i].addr;
                 tran.inputs.push(input);
                 count = count.add(us[i].count);
                 scraddr = us[i].addr;
@@ -1669,6 +1786,15 @@ var what;
                 var r = json["result"];
                 var height = parseInt(r) - 1;
                 return height;
+            });
+        }
+        static rpc_postRawTransaction(data) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var postdata = WWW.makeRpcPostBody("sendrawtransaction", data.toHexString());
+                var result = yield fetch(WWW.rpc, { "method": "post", "body": JSON.stringify(postdata) });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
             });
         }
     }

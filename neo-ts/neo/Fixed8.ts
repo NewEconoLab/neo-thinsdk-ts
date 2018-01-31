@@ -115,7 +115,7 @@ namespace Neo
         public serialize(writer: IO.BinaryWriter): void
         {
             //TODO
-            writer.writeFixed8(this);
+            writer.writeUint64(this.getData());
         }
     }
 }

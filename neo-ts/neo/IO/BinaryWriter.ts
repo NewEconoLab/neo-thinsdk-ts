@@ -52,10 +52,7 @@
             this.output.write(this._buffer, 0, 8);
         }
 
-        public writeFixed8(value: Fixed8): void
-        {
-            this.writeUintVariable(value.getData());
-        }
+
 
         public writeInt16(value: number): void
         {
@@ -110,6 +107,11 @@
                 this.array_uint32 = new Uint32Array(this._buffer, 0, 1);
             this.array_uint32[0] = value;
             this.output.write(this._buffer, 0, 4);
+        }
+
+        public writeUint64(value: Uint64): void
+        {
+            this.writeUintVariable(value);
         }
 
         public writeUintVariable(value: UintVariable): void
