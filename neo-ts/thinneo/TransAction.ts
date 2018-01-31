@@ -1,6 +1,8 @@
 ﻿///<reference path="helper.ts"/>
-namespace ThinNeo {
-    export enum TransactionType {
+namespace ThinNeo
+{
+    export enum TransactionType
+    {
         /// <summary>
         /// 用于分配字节费的特殊交易
         /// </summary>
@@ -31,7 +33,8 @@ namespace ThinNeo {
         PublishTransaction = 0xd0,
         InvocationTransaction = 0xd1
     }
-    export enum TransactionAttributeUsage {
+    export enum TransactionAttributeUsage
+    {
         /// <summary>
         /// 外部合同的散列值
         /// </summary>
@@ -92,24 +95,29 @@ namespace ThinNeo {
         Remark14 = 0xfe,
         Remark15 = 0xff
     }
-    export class Attribute {
+    export class Attribute
+    {
         public usage: TransactionAttributeUsage;
         public data: Uint8Array;
     }
-    export class TransactionOutput {
+    export class TransactionOutput
+    {
         public assetId: Uint8Array;
         public value: Neo.Fixed8;
         public toAddress: Uint8Array;
     }
-    export class TransactionInput {
+    export class TransactionInput
+    {
         public hash: Uint8Array;
         public index: number;
     }
-    export class Witness {
+    export class Witness
+    {
         public InvocationScript: Uint8Array;//设置参数脚本，通常是吧signdata push进去
         public VerificationScript: Uint8Array;//校验脚本，通常是 push 公钥, CheckSig 两条指令   验证的东西就是未签名的交易
         //这个就是地址的脚本
-        public get Address(): string {
+        public get Address(): string
+        {
             var hash = ThinNeo.Helper.GetScriptHashFromScript(this.VerificationScript);
             return ThinNeo.Helper.GetAddressFromScriptHash(hash);
         }
@@ -117,38 +125,46 @@ namespace ThinNeo {
 
 
 
-    export interface IExtData {
+    export interface IExtData
+    {
         Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
         Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
     }
 
-    export class InvokeTransData implements IExtData {
+    export class InvokeTransData implements IExtData
+    {
         public script: Uint8Array;
         public gas: Neo.Fixed8;
-        public Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void {
+        public Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void
+        {
             writer.writeVarBytes(this.script.buffer);
-            if (trans.version >= 1) {
+            if (trans.version >= 1)
+            {
                 writer.writeFixed8(this.gas);
             }
         }
-        public Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void {
+        public Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void
+        {
             var buf = reader.readVarBytes(10000000);
             this.script = new Uint8Array(buf, 0, buf.byteLength);
-            if (trans.version >= 1) {
+            if (trans.version >= 1)
+            {
                 this.gas = reader.readFixed8();
             }
         }
 
     }
 
-    export class Transaction {
+    export class Transaction
+    {
         public type: TransactionType;
         public version: number;
         public attributes: Attribute[];
         public inputs: TransactionInput[];
         public outputs: TransactionOutput[];
         public witnesses: Witness[];//见证人
-        public SerializeUnsigned(writer: Neo.IO.BinaryWriter): void {
+        public SerializeUnsigned(writer: Neo.IO.BinaryWriter): void
+        {
             //write type
             writer.writeByte(this.type as number);
             //write version
@@ -159,41 +175,49 @@ namespace ThinNeo {
                 //ContractTransaction 就是最常见的转账交易
                 //他没有自己的独特处理
             }
-            else if (this.type == TransactionType.InvocationTransaction) {
+            else if (this.type == TransactionType.InvocationTransaction)
+            {
                 this.extdata.Serialize(this, writer);
             }
-            else {
+            else
+            {
                 throw new Error("未编写针对这个交易类型的代码");
             }
             //#region write attribute
             var countAttributes = this.attributes.length;
             writer.writeVarInt(countAttributes);
-            for (var i = 0; i < countAttributes; i++) {
+            for (var i = 0; i < countAttributes; i++)
+            {
                 var attributeData = this.attributes[i].data;
                 var Usage = this.attributes[i].usage;
                 writer.writeByte(Usage as number);
-                if (Usage == TransactionAttributeUsage.ContractHash || Usage == TransactionAttributeUsage.Vote || (Usage >= TransactionAttributeUsage.Hash1 && Usage <= TransactionAttributeUsage.Hash15)) {
+                if (Usage == TransactionAttributeUsage.ContractHash || Usage == TransactionAttributeUsage.Vote || (Usage >= TransactionAttributeUsage.Hash1 && Usage <= TransactionAttributeUsage.Hash15))
+                {
                     //attributeData =new byte[32];
                     writer.write(attributeData.buffer, 0, 32);
                 }
-                else if (Usage == TransactionAttributeUsage.ECDH02 || Usage == TransactionAttributeUsage.ECDH03) {
+                else if (Usage == TransactionAttributeUsage.ECDH02 || Usage == TransactionAttributeUsage.ECDH03)
+                {
                     //attributeData = new byte[33];
                     //attributeData[0] = (byte)Usage;
                     writer.write(attributeData.buffer, 1, 32);
                 }
-                else if (Usage == TransactionAttributeUsage.Script) {
+                else if (Usage == TransactionAttributeUsage.Script)
+                {
                     //attributeData = new byte[20];
 
                     writer.write(attributeData.buffer, 0, 20);
                 }
-                else if (Usage == TransactionAttributeUsage.DescriptionUrl) {
+                else if (Usage == TransactionAttributeUsage.DescriptionUrl)
+                {
                     //var len = (byte)ms.ReadByte();
                     //attributeData = new byte[len];
                     var len = attributeData.length;
                     writer.writeByte(len);
                     writer.write(attributeData.buffer, 0, len);
                 }
-                else if (Usage == TransactionAttributeUsage.Description || Usage >= TransactionAttributeUsage.Remark) {
+                else if (Usage == TransactionAttributeUsage.Description || Usage >= TransactionAttributeUsage.Remark)
+                {
                     //var len = (int)readVarInt(ms, 65535);
                     //attributeData = new byte[len];
                     var len = attributeData.length;
@@ -207,7 +231,8 @@ namespace ThinNeo {
             //#region write Input
             var countInputs = this.inputs.length;
             writer.writeVarInt(countInputs);
-            for (var i = 0; i < countInputs; i++) {
+            for (var i = 0; i < countInputs; i++)
+            {
                 writer.write(this.inputs[i].hash, 0, 32);
                 writer.writeUint16(this.inputs[i].index);
             }
@@ -215,7 +240,8 @@ namespace ThinNeo {
             //#region write Outputs
             var countOutputs = this.outputs.length;
             writer.writeVarInt(countOutputs);
-            for (var i = 0; i < countOutputs; i++) {
+            for (var i = 0; i < countOutputs; i++)
+            {
                 var item = this.outputs[i];
                 //资产种类
                 writer.write(item.assetId.buffer, 0, 32);
@@ -227,12 +253,14 @@ namespace ThinNeo {
             }
             //#endregion
         }
-        public Serialize(writer: Neo.IO.BinaryWriter): void {
+        public Serialize(writer: Neo.IO.BinaryWriter): void
+        {
             this.SerializeUnsigned(writer);
 
             var witnesscount = this.witnesses.length;
             writer.writeVarInt(witnesscount);
-            for (var i = 0; i < witnesscount; i++) {
+            for (var i = 0; i < witnesscount; i++)
+            {
                 var _witness = this.witnesses[i];
                 writer.writeVarBytes(_witness.InvocationScript.buffer);
                 writer.writeVarBytes(_witness.VerificationScript.buffer);
@@ -240,7 +268,8 @@ namespace ThinNeo {
         }
         public extdata: IExtData;
 
-        public Deserialize(ms: Neo.IO.BinaryReader): void {
+        public Deserialize(ms: Neo.IO.BinaryReader): void
+        {
             //参考源码来自
             //      https://github.com/neo-project/neo
             //      Transaction.cs
@@ -259,46 +288,56 @@ namespace ThinNeo {
                 //他没有自己的独特处理
                 this.extdata = null;
             }
-            else if (this.type == TransactionType.InvocationTransaction) {
+            else if (this.type == TransactionType.InvocationTransaction)
+            {
                 this.extdata = new InvokeTransData();
             }
-            else {
+            else
+            {
                 throw new Error("未编写针对这个交易类型的代码");
             }
-            if (this.extdata != null) {
+            if (this.extdata != null)
+            {
                 this.extdata.Deserialize(this, ms);
             }
             //attributes
             var countAttributes = ms.readVarInt();
             this.attributes = new Attribute[countAttributes];
             // Console.WriteLine("countAttributes:" + countAttributes);
-            for (var i = 0; i < countAttributes; i++) {
+            for (var i = 0; i < countAttributes; i++)
+            {
                 //读取attributes
                 var attributeData: Uint8Array = null;
                 var Usage = ms.readByte() as TransactionAttributeUsage;
-                if (Usage == TransactionAttributeUsage.ContractHash || Usage == TransactionAttributeUsage.Vote || (Usage >= TransactionAttributeUsage.Hash1 && Usage <= TransactionAttributeUsage.Hash15)) {
+                if (Usage == TransactionAttributeUsage.ContractHash || Usage == TransactionAttributeUsage.Vote || (Usage >= TransactionAttributeUsage.Hash1 && Usage <= TransactionAttributeUsage.Hash15))
+                {
                     var arr = ms.readBytes(32);
                     attributeData = new Uint8Array(arr, 0, arr.byteLength);
                 }
-                else if (Usage == TransactionAttributeUsage.ECDH02 || Usage == TransactionAttributeUsage.ECDH03) {
+                else if (Usage == TransactionAttributeUsage.ECDH02 || Usage == TransactionAttributeUsage.ECDH03)
+                {
                     var arr = ms.readBytes(32);
                     var data = new Uint8Array(arr, 0, arr.byteLength);
                     attributeData = new Uint8Array(33);
                     attributeData[0] = Usage as number;
-                    for (var i = 0; i < 32; i++) {
+                    for (var i = 0; i < 32; i++)
+                    {
                         attributeData[i + 1] = data[i];
                     }
                 }
-                else if (Usage == TransactionAttributeUsage.Script) {
+                else if (Usage == TransactionAttributeUsage.Script)
+                {
                     var arr = ms.readBytes(20);
                     attributeData = new Uint8Array(arr, 0, arr.byteLength);
                 }
-                else if (Usage == TransactionAttributeUsage.DescriptionUrl) {
+                else if (Usage == TransactionAttributeUsage.DescriptionUrl)
+                {
                     var len = ms.readByte();
                     var arr = ms.readBytes(len);
                     attributeData = new Uint8Array(arr, 0, arr.byteLength);
                 }
-                else if (Usage == TransactionAttributeUsage.Description || Usage >= TransactionAttributeUsage.Remark) {
+                else if (Usage == TransactionAttributeUsage.Description || Usage >= TransactionAttributeUsage.Remark)
+                {
                     var len = ms.readVarInt(65535);
                     var arr = ms.readBytes(len);
                     attributeData = new Uint8Array(arr, 0, arr.byteLength);
@@ -311,7 +350,8 @@ namespace ThinNeo {
             var countInputs = ms.readVarInt();
             //Console.WriteLine("countInputs:" + countInputs);
             this.inputs = new TransactionInput[countInputs];
-            for (var i = 0; i < countInputs; i++) {
+            for (var i = 0; i < countInputs; i++)
+            {
                 this.inputs[i] = new TransactionInput();
                 var arr = ms.readBytes(32);
                 this.inputs[i].hash = new Uint8Array(arr, 0, arr.byteLength);
@@ -324,7 +364,8 @@ namespace ThinNeo {
             var countOutputs = ms.readVarInt();
             //Console.WriteLine("countOutputs:" + countOutputs);
             this.outputs = new TransactionOutput[countOutputs];
-            for (var i = 0; i < countOutputs; i++) {
+            for (var i = 0; i < countOutputs; i++)
+            {
                 this.outputs[i] = new TransactionOutput();
                 var outp = this.outputs[i];
                 //资产种类
@@ -345,7 +386,8 @@ namespace ThinNeo {
         }
 
 
-        public GetMessage(): Uint8Array {
+        public GetMessage(): Uint8Array
+        {
 
             var ms = new Neo.IO.MemoryStream();
             var writer = new Neo.IO.BinaryWriter(ms);
@@ -354,7 +396,8 @@ namespace ThinNeo {
             var msg = new Uint8Array(arr, 0, arr.byteLength);
             return msg;
         }
-        public GetRawData(): Uint8Array {
+        public GetRawData(): Uint8Array
+        {
             var ms = new Neo.IO.MemoryStream();
             var writer = new Neo.IO.BinaryWriter(ms);
             this.Serialize(writer);
@@ -363,7 +406,8 @@ namespace ThinNeo {
             return msg;
         }
         //增加个人账户见证人（就是用这个人的私钥对交易签个名，signdata传进来）
-        public AddWitness(signdata: Uint8Array, pubkey: Uint8Array, addrs: string): void {
+        public AddWitness(signdata: Uint8Array, pubkey: Uint8Array, addrs: string): void
+        {
             {//额外的验证
                 var msg = this.GetMessage();
 
@@ -389,7 +433,8 @@ namespace ThinNeo {
         }
 
         //增加智能合约见证人
-        public AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array): void {
+        public AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array): void
+        {
             var scripthash = ThinNeo.Helper.GetScriptHashFromScript(vscript);
             if (this.witnesses == null)
                 this.witnesses = [];
@@ -397,7 +442,8 @@ namespace ThinNeo {
             newwit.VerificationScript = vscript;
             newwit.InvocationScript = iscript;
 
-            for (var i = 0; i < this.witnesses.length; i++) {
+            for (var i = 0; i < this.witnesses.length; i++)
+            {
                 if (this.witnesses[i].Address == newwit.Address)
                     throw new Error("alread have this witness");
             }
@@ -407,11 +453,12 @@ namespace ThinNeo {
         }
 
         //TXID
-        public GetHash(): Uint8Array {
+        public GetHash(): Uint8Array
+        {
             var msg = this.GetMessage();
             var data = Neo.Cryptography.Sha256.computeHash(msg);
             data = Neo.Cryptography.Sha256.computeHash(data);
-            return new Uint8Array(data, data.byteLength);
+            return new Uint8Array(data, 0, data.byteLength);
 
         }
     }

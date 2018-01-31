@@ -47,6 +47,8 @@
             tran.version = 0;//0 or 1
             tran.extdata = null;
 
+            tran.attributes = [];
+
             tran.inputs = [];
             var scraddr: string = "";
             utxos[assetid].sort((a, b) =>

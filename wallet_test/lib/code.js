@@ -1547,6 +1547,7 @@ var what;
             tran.type = ThinNeo.TransactionType.ContractTransaction;
             tran.version = 0;
             tran.extdata = null;
+            tran.attributes = [];
             tran.inputs = [];
             var scraddr = "";
             utxos[assetid].sort((a, b) => {
