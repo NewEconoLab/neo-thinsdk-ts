@@ -5,3 +5,7 @@ cd ..
 cd app
 tsc
 cd ..
+
+cd wallet
+tsc
+cd ..

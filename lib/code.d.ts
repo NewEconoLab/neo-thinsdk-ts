@@ -164,11 +164,18 @@ declare namespace lightsPanel {
     }
 }
 declare namespace what {
+    enum FuncTag {
+        transfer = 0,
+        DApp_WhoAmI = 1,
+    }
     class panel_Function {
         constructor();
         panel: lightsPanel.panel;
         main: Main;
         init(main: Main): void;
+        setFunc(tag: FuncTag): void;
+        initTransfer(): void;
+        initDApp_WhoAmI(): void;
     }
 }
 declare namespace what {
@@ -263,6 +270,7 @@ declare namespace what {
         static api_getUTXO(address: string): Promise<any>;
         static rpc_getURL(): Promise<any>;
         static rpc_getHeight(): Promise<number>;
-        static rpc_postRawTransaction(data: Uint8Array): Promise<any>;
+        static rpc_postRawTransaction(data: Uint8Array): Promise<boolean>;
+        static rpc_getStorage(scripthash: Uint8Array, key: Uint8Array): Promise<string>;
     }
 }

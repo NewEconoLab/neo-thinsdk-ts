@@ -37,11 +37,11 @@
             }
         }
 
-
+        
         static makeTran(utxos: { [id: string]: UTXO[] }, targetaddr: string, assetid: string, sendcount: Neo.Fixed8): ThinNeo.Transaction
         {
-            if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
-                throw new Error("can not send zero.");
+            //if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
+            //    throw new Error("can not send zero.");
             var tran = new ThinNeo.Transaction();
             tran.type = ThinNeo.TransactionType.ContractTransaction;
             tran.version = 0;//0 or 1
@@ -71,16 +71,18 @@
                     break;
                 }
             }
-            if (count.compareTo(sendcount) > 0)//输入大于0
+            if (count.compareTo(sendcount) >= 0)//输入大于等于输出
             {
                 tran.outputs = [];
                 //输出
-                var output = new ThinNeo.TransactionOutput();
-                output.assetId = assetid.hexToBytes().reverse();
-                output.value = sendcount;
-                output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
-                tran.outputs.push(output);
-
+                if (sendcount.compareTo(Neo.Fixed8.Zero) > 0)
+                {
+                    var output = new ThinNeo.TransactionOutput();
+                    output.assetId = assetid.hexToBytes().reverse();
+                    output.value = sendcount;
+                    output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
+                    tran.outputs.push(output);
+                }
 
                 //找零
                 var change = count.subtract(sendcount);

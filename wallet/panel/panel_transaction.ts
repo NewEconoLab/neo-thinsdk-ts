@@ -83,7 +83,18 @@ namespace what
                 }
                 lightsPanel.QuickDom.addElement(this.panel, "br");
             }
-
+            if (tran.type == ThinNeo.TransactionType.InvocationTransaction && tran.extdata != null)
+            {
+                var scriptdata = tran.extdata as ThinNeo.InvokeTransData;
+                lightsPanel.QuickDom.addElement(this.panel, "hr");
+                lightsPanel.QuickDom.addSpan(this.panel,"call script:");
+                var ops = ThinNeo.Compiler.Avm2Asm.Trans(scriptdata.script);
+                for (var i = 0; i < ops.length;i++)
+                {
+                    lightsPanel.QuickDom.addSpan(this.panel, ops[i].toString());
+                    lightsPanel.QuickDom.addElement(this.panel, "br");
+                }
+            }
             //transaction info
             lightsPanel.QuickDom.addElement(this.panel, "hr");
 
