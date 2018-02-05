@@ -73,22 +73,43 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="code1.png" />
-    <Content Include="index.html" />
     <Content Include="lib\app.js" />
+    <Content Include="lib\app.js.map" />
     <Content Include="lib\asset\asmjs.js" />
     <Content Include="lib\asset\flash.swf" />
     <Content Include="lib\base64js.min.js" />
+    <Content Include="lib\code.js" />
     <Content Include="lib\component\aes.js" />
     <Content Include="lib\component\mode-ecb.js" />
     <Content Include="lib\component\pad-nopadding.js" />
     <Content Include="lib\component\pad-zeropadding.js" />
     <Content Include="lib\neo-ts.js" />
+    <Content Include="lib\neo-ts.js.map" />
     <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
+    <Content Include="wallet.css" />
+    <Content Include="wallet.html" />
+    <Content Include="wallet\panel.css" />
+    <Content Include="index.html" />
     <TypeScriptCompile Include="app\test4_getNep5Info.ts" />
     <TypeScriptCompile Include="app\test4_scriptbuilder.ts" />
     <TypeScriptCompile Include="app\test4_asm2avm.ts" />
     <TypeScriptCompile Include="app\test2_nep6.ts" />
+    <TypeScriptCompile Include="lib\app.d.ts" />
+    <TypeScriptCompile Include="lib\code.d.ts" />
+    <TypeScriptCompile Include="lib\neo-ts.d.ts" />
+    <TypeScriptCompile Include="wallet\htmlui\panelmgr.ts" />
+    <TypeScriptCompile Include="wallet\htmlui\quickdom.ts" />
+    <TypeScriptCompile Include="wallet\htmlui\treeview.ts" />
+    <TypeScriptCompile Include="wallet\main.ts" />
+    <TypeScriptCompile Include="wallet\panel\panel_function.ts" />
+    <TypeScriptCompile Include="wallet\panel\panel_loadkey.ts" />
+    <TypeScriptCompile Include="wallet\panel\panel_sign.ts" />
+    <TypeScriptCompile Include="wallet\panel\panel_state.ts" />
+    <TypeScriptCompile Include="wallet\panel\panel_transaction.ts" />
+    <TypeScriptCompile Include="wallet\panel\panel_UTXO.ts" />
+    <TypeScriptCompile Include="wallet\tools\cointool.ts" />
+    <TypeScriptCompile Include="wallet\tools\wwwtool.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\avm2asm.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\avm2asm\byteReader.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\opcode.ts" />
@@ -109,9 +130,9 @@
   <ItemGroup>
     <Content Include="app\tsconfig.json" />
     <Content Include="neo-ts\tsconfig.json" />
-    <Content Include="lib\app.js.map" />
-    <Content Include="lib\neo-ts.js.map" />
     <Content Include="readme.md" />
+    <Content Include="wallet\tsconfig.json" />
+    <Content Include="lib\code.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -121,8 +142,6 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app\app.ts" />
-    <TypeScriptCompile Include="lib\app.d.ts" />
-    <TypeScriptCompile Include="lib\neo-ts.d.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Helper.ts" />
     <TypeScriptCompile Include="neo-ts\neo\Map.ts" />
     <TypeScriptCompile Include="neo-ts\neo\BigInteger.ts" />
