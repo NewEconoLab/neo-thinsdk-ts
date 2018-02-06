@@ -1,12 +1,17 @@
 ﻿///<reference path="../lib/neo-ts.d.ts"/>
-module NeoTest {
-    export class Test_Nep6Gen implements ITestItem {
-        constructor() {
+module NeoTest
+{
+    export class Test_Nep6Gen implements ITestItem
+    {
+        constructor()
+        {
         }
-        getName(): string {
+        getName(): string
+        {
             return "Nep6 Gen";
         }
-        start(div: HTMLDivElement): void {
+        start(div: HTMLDivElement): void
+        {
             //title
             var span = document.createElement("span");
             div.appendChild(span);
@@ -18,7 +23,7 @@ module NeoTest {
 
             div.appendChild(document.createElement("hr"));//newline
 
-         
+
             var spanPri = document.createElement("span");
             div.appendChild(spanPri);
             spanPri.textContent = "prikey";
@@ -31,22 +36,79 @@ module NeoTest {
 
             var btn = document.createElement("button");
             div.appendChild(btn);
-            btn.textContent = "gen";
+            btn.textContent = "gen key";
+
+            var key: Uint8Array = null;
+            var addr: string = null;
+
             //info2
-            btn.onclick = () => {
-                try {
+            btn.onclick = () =>
+            {
+                try
+                {
                     //getPrivateKey 是异步方法，且同时只能执行一个
                     var array = new Uint8Array(32);
-                    var key = Neo.Cryptography.RandomNumberGenerator.getRandomValues<Uint8Array>(array);
+                    key = Neo.Cryptography.RandomNumberGenerator.getRandomValues<Uint8Array>(array);
                     spanPri.textContent = key.toHexString();
                     var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(key);
-                    var addr = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                    addr = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                     spanAddr.textContent = addr;
                 }
-                catch (e) {
+                catch (e)
+                {
                 }
 
             }
+            div.appendChild(document.createElement("hr"));//newline
+            var inputPass = document.createElement("input");
+            div.appendChild(inputPass);
+            inputPass.style.width = "300px";
+            inputPass.style.position = "absoulte";
+            inputPass.value = "";
+            div.appendChild(document.createElement("hr"));//newline
+
+            var btnSave = document.createElement("button");
+            div.appendChild(btnSave);
+            btnSave.textContent = "download";
+
+            var download = document.createElement("a");
+            div.appendChild(download);
+            download.download = "wallet.json";
+            download.href = "";
+            download.target = "_blank";
+            download.text = "";
+
+            btnSave.onclick = () =>
+            {
+                var wallet = new ThinNeo.nep6wallet();
+                wallet.scrypt = new ThinNeo.nep6ScryptParameters();
+                wallet.scrypt.N = 16384;
+                wallet.scrypt.r = 8;
+                wallet.scrypt.p = 8;
+                wallet.accounts = [];
+                wallet.accounts[0] = new ThinNeo.nep6account();
+                wallet.accounts[0].address = addr;
+                ThinNeo.Helper.GetNep2FromPrivateKey(key, inputPass.value, wallet.scrypt.N, wallet.scrypt.r, wallet.scrypt.p, (info, result) =>
+                {
+                    if (info == "finish")
+                    {
+                        wallet.accounts[0].nep2key = result;
+                        var jsonstr = JSON.stringify(wallet.toJson());
+                        var blob = new Blob([ThinNeo.Helper.String2Bytes(jsonstr)]);
+                        download.href = URL.createObjectURL(blob);
+                        download.text = "download";
+                    }
+                });
+
+            }
+            //var aLink = document.createElement('a');
+            //var blob = new Blob([content]);
+            //var evt = document.createEvent("HTMLEvents");
+            //evt.initEvent("click", false, false);
+            //aLink.download = fileName;
+            //aLink.href = URL.createObjectURL(blob);
+            //aLink.dispatchEvent(evt);
+            //btn.onabort
         }
     }
 }
