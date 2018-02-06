@@ -23,6 +23,7 @@ module NeoTest {
             this.addMenuItem(new Test_Nep2FromPrikey());
             this.addMenuItem(new Test_Nep2ToPrikey());
             this.addMenuItem(new Test_Nep6());
+            this.addMenuItem(new Test_Nep6Gen());
             this.addText("交易相关Transaction");
             this.addLink("WalletTest", "wallet.html");
             this.addText("合约相关Contract");
