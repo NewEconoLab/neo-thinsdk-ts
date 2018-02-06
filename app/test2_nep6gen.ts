@@ -60,6 +60,9 @@ module NeoTest
 
             }
             div.appendChild(document.createElement("hr"));//newline
+            var span2 = document.createElement("span");
+            div.appendChild(span2);
+            span2.textContent = "password";
             var inputPass = document.createElement("input");
             div.appendChild(inputPass);
             inputPass.style.width = "300px";
@@ -69,7 +72,7 @@ module NeoTest
 
             var btnSave = document.createElement("button");
             div.appendChild(btnSave);
-            btnSave.textContent = "download";
+            btnSave.textContent = "gen wallet.json";
 
             var download = document.createElement("a");
             div.appendChild(download);
