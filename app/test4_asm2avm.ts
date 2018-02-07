@@ -41,7 +41,7 @@ module NeoTest {
             btn.onclick = () => {
                 try {
                     info2.textContent = "";
-                    var data = info1.textContent.hexToBytes();
+                    var data = info1.value.hexToBytes();
                     var ops = ThinNeo.Compiler.Avm2Asm.Trans(data);
                     for (var i = 0; i < ops.length; i++) {
 
