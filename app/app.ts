@@ -1,22 +1,28 @@
 ﻿///<reference path="../lib/neo-ts.d.ts"/>
-module NeoTest {
-    export interface ITestItem {
+module NeoTest
+{
+    export interface ITestItem
+    {
         getName(): string;
         start(div: HTMLDivElement): void
     }
 
-    class Menu {
-        constructor() {
+    class Menu
+    {
+        constructor()
+        {
             console.log("hello world");
         }
         div: HTMLDivElement;
         divMenu: HTMLDivElement;
-        start(): void {
+        start(): void
+        {
             this.createMenu();
             this.addText("NEO-ThinSDK(typescript)");
             this.addLink("Github", "https://github.com/NewEconoLab/neo-thinsdk-ts");
             this.addText("基本签名运算Cryptography");
             this.addMenuItem(new Test_CheckAddress());
+            this.addMenuItem(new Test_Hash2Address());
             this.addMenuItem(new Test_WifDecode());
             this.addMenuItem(new Test_Sign());
             this.addText("钱包相关Wallet");
@@ -32,25 +38,29 @@ module NeoTest {
             this.addMenuItem(new Test_GetNep5Info());
 
         }
-        addText(str: string) {
+        addText(str: string)
+        {
             var link = document.createElement("a");
             link.textContent = str;
             this.divMenu.appendChild(link);
             this.divMenu.appendChild(document.createElement("hr"));//newline         
         }
-        addLink(str: string, url: string) {
+        addLink(str: string, url: string)
+        {
             var link = document.createElement("a");
             link.textContent = str;
             link.href = url;
             this.divMenu.appendChild(link);
             this.divMenu.appendChild(document.createElement("hr"));//newline         
         }
-        addMenuItem(item: ITestItem) {
+        addMenuItem(item: ITestItem)
+        {
             var link = document.createElement("a");
             link.textContent = item.getName();
             link.href = "#";
             this.divMenu.appendChild(link);
-            link.onclick = () => {
+            link.onclick = () =>
+            {
 
                 this.resetDiv();
                 item.start(this.div);
@@ -58,7 +68,8 @@ module NeoTest {
 
             this.divMenu.appendChild(document.createElement("hr"));//newline            
         }
-        createMenu() {
+        createMenu()
+        {
             this.divMenu = document.createElement("div");
             this.divMenu.style.left = "0px";
             this.divMenu.style.width = "200px";
@@ -69,8 +80,10 @@ module NeoTest {
             document.body.appendChild(this.divMenu);
 
         }
-        resetDiv() {
-            if (this.div != null) {
+        resetDiv()
+        {
+            if (this.div != null)
+            {
                 document.body.removeChild(this.div);
             }
             this.div = document.createElement("div");
@@ -83,7 +96,8 @@ module NeoTest {
             document.body.appendChild(this.div);
         }
     }
-    window.onload = () => {
+    window.onload = () =>
+    {
         var main = new Menu();
         main.start();
     };

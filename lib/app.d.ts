@@ -13,6 +13,13 @@ declare module NeoTest {
     }
 }
 declare module NeoTest {
+    class Test_Hash2Address implements ITestItem {
+        constructor();
+        getName(): string;
+        start(div: HTMLDivElement): void;
+    }
+}
+declare module NeoTest {
     class Test_Sign implements ITestItem {
         constructor();
         getName(): string;
