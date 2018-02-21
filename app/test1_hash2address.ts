@@ -35,7 +35,7 @@ module NeoTest {
             btn.textContent = "check";
             btn.onclick = () =>
             {
-                var array: Uint8Array = input.value.hexToBytes();
+                var array: Uint8Array = input.value.hexToBytes().reverse();
                 var address = ThinNeo.Helper.GetAddressFromScriptHash(array);
                 spanNewAddr.textContent = address;
 
