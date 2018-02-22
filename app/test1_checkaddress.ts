@@ -52,7 +52,7 @@ module NeoTest {
                 var hash = array.subarray(1, 1 + 20);
                 var check = array.subarray(21, 21 + 4);
                 spanDecode.textContent = "salt:" + salt.toHexString();
-                spanDecode.textContent += " hash:" + hash.toHexString();
+                spanDecode.textContent += " hash:" + hash.clone().reverse().toHexString();
                 spanDecode.textContent += " check:" + check.toHexString();
 
                 var checkdata = array.subarray(0, 21);
