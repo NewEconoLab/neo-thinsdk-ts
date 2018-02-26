@@ -64,6 +64,13 @@ declare module NeoTest {
     }
 }
 declare module NeoTest {
+    class Test_TransactionAnalysis implements ITestItem {
+        constructor();
+        getName(): string;
+        start(div: HTMLDivElement): void;
+    }
+}
+declare module NeoTest {
     class Test_ASM2AVM implements ITestItem {
         constructor();
         getName(): string;

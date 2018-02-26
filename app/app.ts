@@ -32,6 +32,8 @@ module NeoTest
             this.addMenuItem(new Test_Nep6Gen());
             this.addText("交易相关Transaction");
             this.addLink("WalletTest", "wallet.html");
+            this.addText("交易解析TransactionAnalysis");
+            this.addMenuItem(new Test_TransactionAnalysis());
             this.addText("合约相关Contract");
             this.addMenuItem(new Test_ASM2AVM());
             this.addMenuItem(new Test_ScriptBuilder());
