@@ -268,7 +268,7 @@ namespace ThinNeo
         }
         public extdata: IExtData;
 
-        public Deserialize(ms: Neo.IO.BinaryReader): void
+        public DeserializeUnsigned(ms: Neo.IO.BinaryReader): void
         {
             //参考源码来自
             //      https://github.com/neo-project/neo
@@ -302,10 +302,12 @@ namespace ThinNeo
             }
             //attributes
             var countAttributes = ms.readVarInt();
-            this.attributes = new Attribute[countAttributes];
+            this.attributes = [];//new Attribute[countAttributes];
             // Console.WriteLine("countAttributes:" + countAttributes);
             for (var i = 0; i < countAttributes; i++)
             {
+
+
                 //读取attributes
                 var attributeData: Uint8Array = null;
                 var Usage = ms.readByte() as TransactionAttributeUsage;
@@ -344,15 +346,21 @@ namespace ThinNeo
                 }
                 else
                     throw new Error();
+
+                var attr = new Attribute();
+                attr.usage = Usage;
+                attr.data = attributeData;
+                this.attributes.push(attr);
             }
 
             //inputs  输入表示基于哪些交易
             var countInputs = ms.readVarInt();
             //Console.WriteLine("countInputs:" + countInputs);
-            this.inputs = new TransactionInput[countInputs];
+            this.inputs = [];//new TransactionInput[countInputs];
             for (var i = 0; i < countInputs; i++)
             {
-                this.inputs[i] = new TransactionInput();
+                this.inputs.push(new TransactionInput());
+                //this.inputs[i] = new TransactionInput();
                 var arr = ms.readBytes(32);
                 this.inputs[i].hash = new Uint8Array(arr, 0, arr.byteLength);
                 this.inputs[i].index = ms.readUint16();
@@ -363,10 +371,10 @@ namespace ThinNeo
             //这个机制叫做UTXO
             var countOutputs = ms.readVarInt();
             //Console.WriteLine("countOutputs:" + countOutputs);
-            this.outputs = new TransactionOutput[countOutputs];
+            this.outputs = [];//new TransactionOutput[countOutputs];
             for (var i = 0; i < countOutputs; i++)
             {
-                this.outputs[i] = new TransactionOutput();
+                this.outputs.push(new TransactionOutput());
                 var outp = this.outputs[i];
                 //资产种类
                 var arr = ms.readBytes(32);
@@ -384,7 +392,22 @@ namespace ThinNeo
 
             }
         }
-
+        public Deserialize(ms: Neo.IO.BinaryReader): void
+        {
+            this.DeserializeUnsigned(ms);
+            if (ms.canRead()>0)
+            {
+                var witnesscount = ms.readVarInt();
+                this.witnesses = [];
+                for (var i = 0; i < witnesscount; i++)
+                {
+                    this.witnesses.push(new Witness());
+                    this.witnesses[i].InvocationScript = new Uint8Array(ms.readVarBytes()).clone();
+                    this.witnesses[i].VerificationScript = new Uint8Array(ms.readVarBytes()).clone();
+                }
+            }
+        }
+         
 
         public GetMessage(): Uint8Array
         {

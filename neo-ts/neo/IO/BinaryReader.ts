@@ -15,7 +15,10 @@
         public constructor(private input: Stream)
         {
         }
-
+        public canRead(): number
+        {
+            return this.input.length() - this.input.position();
+        }
         public close(): void
         {
         }

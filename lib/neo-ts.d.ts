@@ -460,6 +460,7 @@ declare namespace ThinNeo {
         SerializeUnsigned(writer: Neo.IO.BinaryWriter): void;
         Serialize(writer: Neo.IO.BinaryWriter): void;
         extdata: IExtData;
+        DeserializeUnsigned(ms: Neo.IO.BinaryReader): void;
         Deserialize(ms: Neo.IO.BinaryReader): void;
         GetMessage(): Uint8Array;
         GetRawData(): Uint8Array;
@@ -671,6 +672,7 @@ declare namespace Neo.IO {
         private array_float32;
         private array_float64;
         constructor(input: Stream);
+        canRead(): number;
         close(): void;
         private fillBuffer(buffer, count);
         read(buffer: ArrayBuffer, index: number, count: number): number;

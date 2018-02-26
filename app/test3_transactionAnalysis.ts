@@ -52,10 +52,31 @@ module NeoTest {
                 //类型
                 var span = document.createElement("span");
                 div.appendChild(span);
-                span.textContent = input.value.substring(0, 2);
+                span.textContent = "Transaction Type";
+                span.style.color = "#000000";
+                div.appendChild(document.createElement("br"));//换行
+                var span = document.createElement("span");
+                div.appendChild(span);
+                switch (input.value.substring(0, 2)) {
+                    case "80":
+                        span.textContent = "ContractTransaction";
+                        break;
+                    case "d1":
+                        span.textContent = "InvocationTransaction";
+                        break;
+                    default:
+                        span.textContent = "unknow";
+                }
+                //span.textContent = input.value.substring(0, 2);
                 span.style.color = "#FF0000";
+                div.appendChild(document.createElement("br"));//换行
 
                 //版本
+                var span = document.createElement("span");
+                div.appendChild(span);
+                span.textContent = "Transaction Version";
+                span.style.color = "#000000";
+                div.appendChild(document.createElement("br"));//换行
                 var span = document.createElement("span");
                 div.appendChild(span);
                 span.textContent = input.value.substring(2, 4);
@@ -63,7 +84,66 @@ module NeoTest {
 
                 //对象化交易体
                 var tx = new ThinNeo.Transaction();
-                tx.Deserialize(new Neo.IO.BinaryReader(new Neo.IO.MemoryStream(input.value.hexToBytes())));
+                var buf = input.value.hexToBytes();
+                tx.Deserialize(new Neo.IO.BinaryReader(new Neo.IO.MemoryStream(buf.buffer, 0, buf.byteLength)));
+
+                div.appendChild(document.createElement("hr"));//newline
+
+                var i = 0;
+                //输入
+                tx.inputs.forEach(function (input) {
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = "input" + i;
+                    span.style.color = "#000000";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = input.hash.reverse().toHexString();
+                    span.style.color = "#FF0000";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = input.index.toString();
+                    span.style.color = "#00FF00";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    i++;
+                });
+
+                div.appendChild(document.createElement("hr"));//newline
+
+                i = 0;
+                //输出
+                tx.outputs.forEach(function (output) {
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = "optput" + i;
+                    span.style.color = "#000000";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = ThinNeo.Helper.GetAddressFromScriptHash(output.toAddress);//.toHexString();
+                    span.style.color = "#FF0000";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = output.assetId.reverse().toHexString();
+                    span.style.color = "#00FF00";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = output.value.toString();
+                    span.style.color = "#0000FF";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    i++;
+                });
 
                 //var array: Uint8Array = Neo.Cryptography.Base58.decode(input.value);
                 //var hexstr = array.toHexString();
@@ -82,12 +162,12 @@ module NeoTest {
                 //spanCheck.textContent = "checked:" + checked.toHexString();
 
                 //var error = false;
-                //for (var i = 0; i < 4; i++) {
+                for (var i = 0; i < 4; i++) {
                 //    if (checked[i] != check[i]) {
                 //        spanCheck.textContent += "[Error Addr]";
                 //        error = true;
                 //        break;
-                //    }
+                    }
                 //}
                 //if (error) {
                 //    var newarray = new Uint8Array(25);
