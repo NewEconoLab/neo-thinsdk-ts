@@ -57,7 +57,8 @@ module NeoTest {
                 div.appendChild(document.createElement("br"));//换行
                 var span = document.createElement("span");
                 div.appendChild(span);
-                switch (input.value.substring(0, 2)) {
+                var txTypeId = input.value.substring(0, 2);
+                switch (txTypeId) {
                     case "80":
                         span.textContent = "ContractTransaction";
                         break;
@@ -144,6 +145,52 @@ module NeoTest {
 
                     i++;
                 });
+
+                div.appendChild(document.createElement("hr"));//newline
+
+                //合约脚本
+                if (txTypeId == "d1")//如果是合约调用交易
+                {
+                    var itd = tx.extdata as ThinNeo.InvokeTransData;
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = "script";
+                    span.style.color = "#000000";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = itd.script.toHexString();
+                    span.style.color = "#FF0000";
+                    div.appendChild(document.createElement("br"));//换行
+
+                    //反编译
+                    var info2 = document.createElement("textarea");
+                    div.appendChild(info2);
+                    info2.style.width = "500px";
+                    info2.style.height = "300px";
+                    try {
+                        info2.textContent = "";
+                        var data = itd.script;
+                        var ops = ThinNeo.Compiler.Avm2Asm.Trans(data);
+                        for (var i = 0; i < ops.length; i++) {
+
+                            var op = ops[i];
+                            info2.textContent += op.toString() + "\r\n";
+                        }
+                    }
+                    catch (e) {
+                    }
+
+                    var span = document.createElement("span");
+                    div.appendChild(span);
+                    span.textContent = itd.gas.toString();
+                    span.style.color = "#00FF00";
+                    div.appendChild(document.createElement("br"));//换行
+                }
+
+
 
                 //var array: Uint8Array = Neo.Cryptography.Base58.decode(input.value);
                 //var hexstr = array.toHexString();
