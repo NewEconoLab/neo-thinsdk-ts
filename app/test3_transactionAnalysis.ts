@@ -60,6 +60,11 @@ module NeoTest {
                 div.appendChild(span);
                 span.textContent = input.value.substring(2, 4);
                 span.style.color = "#00FF00";
+
+                //对象化交易体
+                var tx = new ThinNeo.Transaction();
+                tx.Deserialize(new Neo.IO.BinaryReader(new Neo.IO.MemoryStream(input.value.hexToBytes())));
+
                 //var array: Uint8Array = Neo.Cryptography.Base58.decode(input.value);
                 //var hexstr = array.toHexString();
                 //var salt = array.subarray(0, 1);
