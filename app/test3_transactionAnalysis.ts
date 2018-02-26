@@ -120,7 +120,7 @@ module NeoTest {
                 tx.outputs.forEach(function (output) {
                     var span = document.createElement("span");
                     div.appendChild(span);
-                    span.textContent = "optput" + i;
+                    span.textContent = "output" + i;
                     span.style.color = "#000000";
                     div.appendChild(document.createElement("br"));//换行
 
