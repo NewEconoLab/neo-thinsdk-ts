@@ -23,6 +23,7 @@ module NeoTest
             this.addText("基本签名运算Cryptography");
             this.addMenuItem(new Test_CheckAddress());
             this.addMenuItem(new Test_Hash2Address());
+            this.addMenuItem(new Test_Pubkey2Address());
             this.addMenuItem(new Test_WifDecode());
             this.addMenuItem(new Test_Sign());
             this.addText("钱包相关Wallet");
