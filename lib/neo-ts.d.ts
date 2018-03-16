@@ -450,6 +450,16 @@ declare namespace ThinNeo {
         Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
         Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
     }
+    class ClaimTransData implements IExtData {
+        claims: TransactionInput[];
+        Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
+        Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
+    }
+    class MinerTransData implements IExtData {
+        nonce: number;
+        Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
+        Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
+    }
     class Transaction {
         type: TransactionType;
         version: number;

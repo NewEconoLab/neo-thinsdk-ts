@@ -154,6 +154,45 @@ namespace ThinNeo
         }
 
     }
+    export class ClaimTransData implements IExtData
+    {
+        public claims: TransactionInput[];
+        public Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void
+        {
+            writer.writeVarInt(this.claims.length);
+            for (var i = 0; i < this.claims.length; i++)
+            {
+                writer.write(this.claims[i].hash, 0, 32);
+                writer.writeUint16(this.claims[i].index);
+            }
+        }
+        public Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void
+        {
+            var countClaims = reader.readVarInt();
+            this.claims = [];//new TransactionInput[countInputs];
+            for (var i = 0; i < countClaims; i++)
+            {
+                this.claims.push(new TransactionInput());
+                //this.inputs[i] = new TransactionInput();
+                var arr = reader.readBytes(32);
+                this.claims[i].hash = new Uint8Array(arr, 0, arr.byteLength);
+                this.claims[i].index = reader.readUint16();
+            }
+        }
+    }
+    export class MinerTransData implements IExtData
+    {
+        public nonce: number;
+        public Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void
+        {
+            writer.writeUint32(this.nonce);
+
+        }
+        public Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void
+        {
+            this.nonce = reader.readUint32();
+        }
+    }
 
     export class Transaction
     {
@@ -170,12 +209,21 @@ namespace ThinNeo
             //write version
             writer.writeByte(this.version);
             //SerializeExclusiveData(writer);
-            if (this.type == TransactionType.ContractTransaction)//每个交易类型有一些自己独特的处理
+            if (this.type == TransactionType.ContractTransaction ||
+                this.type == TransactionType.IssueTransaction)//每个交易类型有一些自己独特的处理
             {
                 //ContractTransaction 就是最常见的转账交易
                 //他没有自己的独特处理
             }
             else if (this.type == TransactionType.InvocationTransaction)
+            {
+                this.extdata.Serialize(this, writer);
+            }
+            else if (this.type == TransactionType.ClaimTransaction)
+            {
+                this.extdata.Serialize(this, writer);
+            }
+            else if (this.type == TransactionType.MinerTransaction)
             {
                 this.extdata.Serialize(this, writer);
             }
@@ -282,7 +330,8 @@ namespace ThinNeo
 
             this.type = ms.readByte() as TransactionType;//读一个字节，交易类型
             this.version = ms.readByte();
-            if (this.type == TransactionType.ContractTransaction)//每个交易类型有一些自己独特的处理
+            if (this.type == TransactionType.ContractTransaction
+                || this.type == TransactionType.IssueTransaction)//每个交易类型有一些自己独特的处理
             {
                 //ContractTransaction 就是最常见的合约交易，
                 //他没有自己的独特处理
@@ -291,6 +340,14 @@ namespace ThinNeo
             else if (this.type == TransactionType.InvocationTransaction)
             {
                 this.extdata = new InvokeTransData();
+            }
+            else if (this.type == TransactionType.ClaimTransaction)
+            {
+                this.extdata = new ClaimTransData();
+            }
+            else if (this.type == TransactionType.MinerTransaction)
+            {
+                this.extdata = new MinerTransData();
             }
             else
             {
