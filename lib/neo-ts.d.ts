@@ -187,9 +187,18 @@ declare namespace Neo {
     }
 }
 declare namespace ThinNeo {
+    class contract {
+        script: string;
+        parameters: {
+            "name": string;
+            "type": string;
+        }[];
+        deployed: boolean;
+    }
     class nep6account {
         address: string;
         nep2key: string;
+        contract: contract;
         getPrivateKey(scrypt: nep6ScryptParameters, password: string, callback: (info: string, result: string | Uint8Array) => void): void;
     }
     class nep6ScryptParameters {

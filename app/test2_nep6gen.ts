@@ -96,6 +96,9 @@ module NeoTest
                     if (info == "finish")
                     {
                         wallet.accounts[0].nep2key = result;
+                        wallet.accounts[0].contract = new ThinNeo.contract();
+                        var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(key);
+                        wallet.accounts[0].contract.script = ThinNeo.Helper.GetAddressCheckScriptFromPublicKey(pubkey).toHexString();
                         var jsonstr = JSON.stringify(wallet.toJson());
                         var blob = new Blob([ThinNeo.Helper.String2Bytes(jsonstr)]);
                         download.href = URL.createObjectURL(blob);

@@ -1,7 +1,15 @@
-﻿namespace ThinNeo {
+﻿namespace ThinNeo
+{
+    export class contract
+    {
+        script: string;
+        parameters = [{ "name": "parameter0", "type": "Signature" }];
+        deployed = false;
+    }
     export class nep6account {
         public address: string;
         public nep2key: string;
+        public contract: contract
         public getPrivateKey(scrypt: nep6ScryptParameters, password: string, callback: (info: string, result: string | Uint8Array) => void): void {
 
             var cb = (i, r) => {
@@ -70,6 +78,7 @@
                 jsonacc["lock"] = false;
                 jsonacc["key"] = acc.nep2key;
                 jsonacc["extra"] = null;
+                jsonacc["contract"] = acc.contract;
                 accounts.push(jsonacc);
             }
             obj["accounts"] = accounts;
