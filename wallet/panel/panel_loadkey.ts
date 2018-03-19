@@ -49,7 +49,7 @@ namespace what
                 {
                     if (wallet.accounts[i].nep2key != null)
                     {
-                        var nepkey = wallet.accounts[i].nep2key;
+                        let nepkey = wallet.accounts[i].nep2key;
                         var s = wallet.scrypt;
 
                         var btn = document.createElement("button");
