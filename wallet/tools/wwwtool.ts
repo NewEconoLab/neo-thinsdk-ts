@@ -2,8 +2,8 @@
 {
     export class WWW
     {
-        static api: string = "http://47.96.168.8:81/api/testnet";
-        static rpc: string = "";
+        static api: string = "https://api.nel.group/api/testnet";
+        static rpc: string = "http://47.96.168.8:20332/testnet";
         static rpcName: string = "";
         static makeRpcUrl(url: string, method: string, ..._params: any[])
         {
@@ -64,23 +64,9 @@
 
         }
 
-
-
-        static async rpc_getURL()
-        {
-            var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
-            var result = await fetch(str, { "method": "get" });
-            var json = await result.json();
-            var r = json["result"][0];
-            var url = r.nodeList[0];
-            WWW.rpc = url;
-            WWW.rpcName = r.nodeType;
-            return url;
-        }
-
         static async  rpc_getHeight()
         {
-            var str = WWW.makeRpcUrl(WWW.rpc, "getblockcount");
+            var str = WWW.makeRpcUrl(WWW.api, "getblockcount");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
@@ -90,20 +76,20 @@
         static async rpc_postRawTransaction(data: Uint8Array): Promise<boolean>
         {
             var postdata = WWW.makeRpcPostBody("sendrawtransaction", data.toHexString());
-            var result = await fetch(WWW.rpc, { "method": "post", "body": JSON.stringify(postdata) });
+            var result = await fetch(WWW.api, { "method": "post", "body": JSON.stringify(postdata) });
             var json = await result.json();
-            var r = json["result"] as boolean;
+            var r = json["result"][0]["sendrawtransactionresult"] as boolean;
             return r;
         }
         static async  rpc_getStorage(scripthash: Uint8Array, key: Uint8Array): Promise<string>
         {
-            var str = WWW.makeRpcUrl(WWW.rpc, "getstorage", scripthash.toHexString(), key.toHexString());
+            var str = WWW.makeRpcUrl(WWW.api, "getstorage", scripthash.toHexString(), key.toHexString());
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             if (json["result"] == null)
                 return null;
-            var r = json["result"] as string;
-            return r;
+            var r = json["result"][0] as string;
+            return r["storagevalue"];
         }
     }
 }

@@ -129,7 +129,7 @@ namespace what
                 var key = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
                 var script = scriptaddress.hexToBytes();//script 要反序
                 var r = await WWW.rpc_getStorage(script, key);
-                if (r == null)
+                if (r == null || r == undefined)
                 {
                     result.textContent = "no name";
                 }

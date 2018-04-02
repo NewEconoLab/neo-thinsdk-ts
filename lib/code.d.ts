@@ -268,7 +268,6 @@ declare namespace what {
         static api_getHeight(): Promise<number>;
         static api_getAllAssets(): Promise<any>;
         static api_getUTXO(address: string): Promise<any>;
-        static rpc_getURL(): Promise<any>;
         static rpc_getHeight(): Promise<number>;
         static rpc_postRawTransaction(data: Uint8Array): Promise<boolean>;
         static rpc_getStorage(scripthash: Uint8Array, key: Uint8Array): Promise<string>;

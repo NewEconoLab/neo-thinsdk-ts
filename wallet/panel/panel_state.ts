@@ -32,21 +32,21 @@
             this.spanAPIHeight = lightsPanel.QuickDom.addSpan(this.panel, "");
             lightsPanel.QuickDom.addElement(this.panel, "br");
 
-            this.spanRPC = lightsPanel.QuickDom.addSpan(this.panel, "");
-            lightsPanel.QuickDom.addElement(this.panel, "br");
+            //this.spanRPC = lightsPanel.QuickDom.addSpan(this.panel, "");
+            //lightsPanel.QuickDom.addElement(this.panel, "br");
 
-            this.spanRPCHeight = lightsPanel.QuickDom.addSpan(this.panel, "");
-            lightsPanel.QuickDom.addElement(this.panel, "br");
+            //this.spanRPCHeight = lightsPanel.QuickDom.addSpan(this.panel, "");
+            //lightsPanel.QuickDom.addElement(this.panel, "br");
         }
         async update(): Promise<void>
         {
             this.spanAPIHeight.textContent = "API height=" + await WWW.api_getHeight();
-            if (WWW.rpc == "")
-            {
-                WWW.rpc = await WWW.rpc_getURL();
-            }
-            this.spanRPC.textContent = "RPC=" + WWW.rpcName + ":" + WWW.rpc;
-            this.spanRPCHeight.textContent = "RPC height=" + await WWW.rpc_getHeight();
+            //if (WWW.rpc == "")
+            //{
+            //    WWW.rpc = await WWW.rpc_getURL();
+            //}
+            //this.spanRPC.textContent = "RPC=" + WWW.rpcName + ":" + WWW.rpc;
+            //this.spanRPCHeight.textContent = "RPC height=" + await WWW.rpc_getHeight();
 
         }
     }
