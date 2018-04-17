@@ -79,7 +79,7 @@ declare namespace Neo {
         static parse(str: string): BigInteger;
         static pow(value: number | BigInteger, exponent: number): BigInteger;
         pow(exponent: number): BigInteger;
-        static random(bitLength: number, rng?: RandomSource): BigInteger;
+        static random(bitLength: number, rng?: Crypto): BigInteger;
         static remainder(x: number | BigInteger, y: number | BigInteger): BigInteger;
         remainder(other: number | BigInteger): BigInteger;
         rightShift(shift: number): BigInteger;

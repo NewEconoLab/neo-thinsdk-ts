@@ -561,7 +561,7 @@ namespace Neo
             return BigInteger.pow(this, exponent);
         }
 
-        public static random(bitLength: number, rng?: RandomSource): BigInteger
+        public static random(bitLength: number, rng?: Crypto): BigInteger
         {
             if (bitLength == 0) return BigInteger.Zero;
             let bytes = new Uint8Array(Math.ceil(bitLength / 8));
