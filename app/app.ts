@@ -17,6 +17,28 @@ module NeoTest
         divMenu: HTMLDivElement;
         start(): void
         {
+            var num = "10000000";
+            var bignum = new Neo.BigInteger(num);
+            var uint8 = bignum.toUint8ArrayWithSign(true);
+            var bignumrev = Neo.BigInteger.fromUint8ArrayAutoSign(uint8);
+            console.log("bignum=" + bignum);
+            console.log("bignumhex=" + uint8.toHexString());
+            console.log("bignumrev=" + bignumrev);
+            var bignum2 = new Neo.BigInteger("-1");
+            var uint82 = bignum2.toUint8ArrayWithSign(true);
+            var bignum2rev = Neo.BigInteger.fromUint8ArrayAutoSign(uint82);
+
+            console.log("bignum2=" + bignum2);
+            console.log("bignum2hex=" + uint82.toHexString());
+            console.log("bignum2rev=" + bignum2rev);
+
+            var bignum3 = new Neo.BigInteger("-129");
+            var uint83 = bignum3.toUint8ArrayWithSign(true);
+            var bignum3rev = Neo.BigInteger.fromUint8ArrayAutoSign(uint83);
+            console.log("bignum3=" + bignum3);
+            console.log("bignum3hex=" + uint83.toHexString());
+            console.log("bignum3rev=" + bignum3rev);
+
             this.createMenu();
             this.addText("NEO-ThinSDK(typescript)");
             this.addLink("Github", "https://github.com/NewEconoLab/neo-thinsdk-ts");

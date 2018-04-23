@@ -58,6 +58,7 @@ declare namespace Neo {
         static fromString(str: string, radix?: number): BigInteger;
         private fromString(str, radix?);
         static fromUint8Array(arr: Uint8Array, sign?: number, littleEndian?: boolean): BigInteger;
+        static fromUint8ArrayAutoSign(arr: Uint8Array, littleEndian?: boolean): BigInteger;
         private fromUint8Array(arr, sign?, littleEndian?);
         private fromUint64(i, sign);
         private static getActualLength(arr);
@@ -91,6 +92,7 @@ declare namespace Neo {
         toInt32(): number;
         toString(radix?: number): string;
         toUint8Array(littleEndian?: boolean, length?: number): Uint8Array;
+        toUint8ArrayWithSign(littleEndian?: boolean, length?: number): Uint8Array;
     }
 }
 declare namespace Neo {
