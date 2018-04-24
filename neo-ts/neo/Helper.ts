@@ -21,6 +21,7 @@ interface Uint8Array
 {
     toHexString(): string;
     clone(): Uint8Array;
+    concat( data: Uint8Array ): Uint8Array;
 }
 
 interface Uint8ArrayConstructor
@@ -98,6 +99,19 @@ Uint8Array.prototype.clone = function (): Uint8Array
     for (let i = 0; i < this.length; i++)
         u8[i] = this[i];
     return u8;
+}
+Uint8Array.prototype.concat = function ( data )
+{
+    var newarr = new Uint8Array( this.length + data.length );
+    for ( var i = 0; i < this.length; i++ )
+    {
+        newarr[i] = this[i];
+    }
+    for ( var i = 0; i < data.length; i++ )
+    {
+        newarr[this.length + i] = data[i];
+    }
+    return newarr;
 }
 void function ()
 {

@@ -134,6 +134,7 @@ interface String {
 interface Uint8Array {
     toHexString(): string;
     clone(): Uint8Array;
+    concat(data: Uint8Array): Uint8Array;
 }
 interface Uint8ArrayConstructor {
     fromArrayBuffer(buffer: ArrayBuffer | ArrayBufferView): Uint8Array;
