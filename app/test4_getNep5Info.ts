@@ -139,8 +139,8 @@ module NeoTest {
                             this.nep5decimals = (new Neo.BigInteger(stack[2].value as string)).toInt32();
                         }
                         else if (stack[2].type == "ByteArray") {
-                            var bs = (stack[2].value as string).hexToBytes();
-                            var num = new Neo.BigInteger(bs);
+                            var bs = ( stack[2].value as string ).hexToBytes();
+                            var num = Neo.BigInteger.fromUint8ArrayAutoSign( bs );
                             this.nep5decimals = num.toInt32();
                         }
                         info2.textContent += "decimals=" + this.nep5decimals + "\n";
@@ -186,9 +186,10 @@ module NeoTest {
 
                         bnum = new Neo.BigInteger(stack[0].value);
                     }
-                    else if (stack[0].type == "ByteArray") {
-                        var bs = (stack[0].value as string).hexToBytes();
-                        bnum = new Neo.BigInteger(bs);
+                    else if ( stack[0].type == "ByteArray" )
+                    {
+                        var bs = ( stack[0].value as string ).hexToBytes();
+                        bnum = Neo.BigInteger.fromUint8ArrayAutoSign( bs );
                     }
                     var v = 1;
                     for (var i = 0; i < this.nep5decimals; i++) {
