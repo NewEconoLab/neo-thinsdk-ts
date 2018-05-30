@@ -530,6 +530,24 @@ namespace ThinNeo
 
             this.witnesses.push(newwit);
 
+            var _witnesses;
+            if (this.witnesses)
+                _witnesses = this.witnesses;
+            else
+                _witnesses = [];
+            _witnesses.push(newwit);
+            _witnesses.sort((a, b) => {
+                var hash_a = ThinNeo.Helper.GetScriptHashFromScript(a.VerificationScript);
+                var hash_b = ThinNeo.Helper.GetScriptHashFromScript(b.VerificationScript);
+                for (let i = (hash_a.length - 1); i >= 0; i--) {
+                    if (hash_a[i] > hash_b[i])
+                        return 1;
+                    if (hash_a[i] < hash_b[i])
+                        return -1;
+                }
+                return 0;
+            });
+            this.witnesses = _witnesses;
         }
 
         //TXID
