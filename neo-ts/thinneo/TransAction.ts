@@ -528,8 +528,6 @@ namespace ThinNeo
                     throw new Error("alread have this witness");
             }
 
-            this.witnesses.push(newwit);
-
             var _witnesses;
             if (this.witnesses)
                 _witnesses = this.witnesses;
