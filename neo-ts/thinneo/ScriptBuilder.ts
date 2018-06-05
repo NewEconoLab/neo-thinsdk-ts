@@ -48,10 +48,16 @@
             return this;
         }
 
-        public EmitAppCall(scriptHash: Uint8Array, useTailCall: boolean = false): ScriptBuilder {
-            if (scriptHash.length != 20)
+        public EmitAppCall(scriptHash: Uint8Array|Neo.Uint160, useTailCall: boolean = false): ScriptBuilder {
+            let hash: Uint8Array = null;
+            if (scriptHash instanceof Neo.Uint160) {
+                hash = new Uint8Array(scriptHash.bits.buffer);
+            } else if (scriptHash.length != 20)
                 throw new Error("error scriptHash length");
-            return this.Emit(useTailCall ? OpCode.TAILCALL : OpCode.APPCALL, scriptHash);
+            else {
+                hash = scriptHash;
+            }
+            return this.Emit(useTailCall ? OpCode.TAILCALL : OpCode.APPCALL, hash);
         }
 
         public EmitJump(op: OpCode, offset: number): ScriptBuilder {
