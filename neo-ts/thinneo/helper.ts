@@ -85,7 +85,7 @@
             var data = new Uint8Array(script_hash.length + 1);
             data[0] = 0x17;
             for (var i = 0; i < script_hash.length; i++) {
-                data[i + 1] = scripthash[i];
+                data[i + 1] = script_hash[i];
             }
             var hash = Neo.Cryptography.Sha256.computeHash(data);
             hash = Neo.Cryptography.Sha256.computeHash(hash);
