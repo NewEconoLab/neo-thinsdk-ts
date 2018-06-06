@@ -75,10 +75,16 @@
 
         }
          
-        public static GetAddressFromScriptHash(scripthash: Uint8Array): string {
-            var data = new Uint8Array(scripthash.length + 1);
+        public static GetAddressFromScriptHash(scripthash: Uint8Array | Neo.Uint160): string {
+            var script_hash: Uint8Array;
+            if (scripthash instanceof Neo.Uint160) {
+                script_hash = new Uint8Array(scripthash.bits.buffer);
+            } else {
+                script_hash = scripthash;
+            }
+            var data = new Uint8Array(script_hash.length + 1);
             data[0] = 0x17;
-            for (var i = 0; i < scripthash.length; i++) {
+            for (var i = 0; i < script_hash.length; i++) {
                 data[i + 1] = scripthash[i];
             }
             var hash = Neo.Cryptography.Sha256.computeHash(data);
