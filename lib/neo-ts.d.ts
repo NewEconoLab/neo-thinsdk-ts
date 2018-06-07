@@ -6,6 +6,7 @@ declare namespace Neo {
         compareTo(other: UintVariable): number;
         equals(other: UintVariable): boolean;
         toString(): string;
+        toArray(): Uint8Array;
     }
 }
 declare namespace Neo {
@@ -592,7 +593,7 @@ declare namespace ThinNeo {
         _WriteUint8Array(nums: Uint8Array): void;
         _ConvertInt16ToBytes(num: number): Uint8Array;
         Emit(op: OpCode, arg?: Uint8Array): ScriptBuilder;
-        EmitAppCall(scriptHash: Uint8Array, useTailCall?: boolean): ScriptBuilder;
+        EmitAppCall(scriptHash: Uint8Array | Neo.Uint160, useTailCall?: boolean): ScriptBuilder;
         EmitJump(op: OpCode, offset: number): ScriptBuilder;
         EmitPushNumber(number: Neo.BigInteger): ScriptBuilder;
         EmitPushBool(data: boolean): ScriptBuilder;
@@ -612,7 +613,7 @@ declare module ThinNeo {
         static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
         static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
         static GetScriptHashFromScript(script: Uint8Array): Uint8Array;
-        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
+        static GetAddressFromScriptHash(scripthash: Uint8Array | Neo.Uint160): string;
         static GetAddressFromPublicKey(publicKey: Uint8Array): string;
         static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
         static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
