@@ -61,6 +61,8 @@ module NeoTest
             this.addMenuItem(new Test_ASM2AVM());
             this.addMenuItem(new Test_ScriptBuilder());
             this.addMenuItem(new Test_GetNep5Info());
+            this.addText("多签");
+            this.addMenuItem(new Test_MultiSign());
 
         }
         addText(str: string)
