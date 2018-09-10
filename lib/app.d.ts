@@ -101,3 +101,46 @@ declare module NeoTest {
         start(div: HTMLDivElement): void;
     }
 }
+declare module NeoTest {
+    class Test_MultiSign implements ITestItem {
+        getName(): string;
+        keys: Array<key>;
+        key: key;
+        bError: boolean;
+        tx: Tx;
+        start(div: HTMLDivElement): void;
+    }
+    class key {
+        multisignkey: boolean;
+        prikey: Uint8Array;
+        MKey_NeedCount: number;
+        MKey_Pubkeys: Array<Uint8Array>;
+        ToString(): string;
+        GetMultiContract(): Uint8Array;
+        GetAddress(): string;
+        AddPubkey(pubkey: Uint8Array): void;
+    }
+    class Tx {
+        txraw: ThinNeo.Transaction;
+        keyinfos: Map<string, KeyInfo>;
+        HasKeyInfo(): boolean;
+        HasAllKeyInfo(): boolean;
+        FillRaw(): void;
+        ToString(): string;
+        ExoprtKeyInfo(): {};
+        ImportKeyInfo(keys: Array<key>, json?: {}): void;
+        FromString(keys: Array<key>, info: string): void;
+    }
+    class KeyInfo {
+        keyaddress: string;
+        type: KeyType;
+        MultiSignKey: key;
+        pubKey: Uint8Array;
+        signdata: Array<Uint8Array>;
+    }
+    enum KeyType {
+        Unknow = 0,
+        Simple = 1,
+        MultiSign = 2,
+    }
+}
