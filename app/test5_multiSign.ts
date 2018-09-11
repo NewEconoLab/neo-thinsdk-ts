@@ -39,17 +39,37 @@ module NeoTest {
             div.appendChild(document.createElement("br"));
             var lb_wif = document.createElement("label");
             div.appendChild(lb_wif);
-            lb_wif.textContent = "填入wif";
+            lb_wif.textContent = "填入wif：";
             var input_wif = document.createElement("input");
             div.appendChild(input_wif);
             input_wif.style.width = "500px";
             input_wif.style.position = "absoulte";
             input_wif.multiple = true;
             input_wif.value = "";
-
             var btn_addwif = document.createElement("button");
             div.appendChild(btn_addwif);
             btn_addwif.textContent = "add wif";
+            div.appendChild(document.createElement("br"));
+            var lb_nep6 = document.createElement("label");
+            div.appendChild(lb_nep6);
+            lb_nep6.textContent = "导入nep6钱包";
+            //openfile
+            var file = document.createElement("input");
+            div.appendChild(file);
+            file.type = "file";
+
+            var lb_pw = document.createElement("label");
+            div.appendChild(lb_pw);
+            lb_pw.textContent = "密码：";
+            var input_pw = document.createElement("input");
+            div.appendChild(input_pw);
+            input_pw.style.width = "500px";
+            input_pw.style.position = "absoulte";
+            input_pw.multiple = true;
+            input_pw.value = "";
+            var btn_sure = document.createElement("button");
+            btn_sure.textContent = "确认";
+            div.appendChild(btn_sure);
             div.appendChild(document.createElement("hr"));
 
             var label = document.createElement("label");
@@ -68,6 +88,8 @@ module NeoTest {
             var btn_addPubKey = document.createElement("button");
             div.appendChild(btn_addPubKey);
             btn_addPubKey.textContent = "add pubKey";
+            div.appendChild(document.createElement("br"));
+            div.appendChild(document.createElement("br"));
             var text_addrs = document.createElement("textarea");
             div.appendChild(text_addrs);
             text_addrs.style.width = "800px";
@@ -106,6 +128,56 @@ module NeoTest {
             var btn_sign = document.createElement("button");
             div.appendChild(btn_sign);
             btn_sign.textContent = "sign";
+
+
+
+            var wallet: ThinNeo.nep6wallet;
+            var reader = new FileReader();
+            reader.onload = (e: Event) => {
+                var walletstr = reader.result as string;
+                wallet = new ThinNeo.nep6wallet();
+                wallet.fromJsonStr(walletstr);
+            };
+            file.onchange = (ev: Event) => {
+                if (file.files[0].name.includes(".json")) {
+                    reader.readAsText(file.files[0]);
+                }
+            }
+            btn_sure.onclick = () => {
+                if (!input_pw.value) {
+                    alert("请输入密码");
+                    return;
+                }
+                var addPrikey = (num,wallet) => {
+                    if (!wallet.accounts[num].nep2key) {
+                        alert("nep2key wrong" + wallet.accounts[num].address);
+                        return;
+                    }
+                    wallet.accounts[num].getPrivateKey(wallet.scrypt, input_pw.value, (info, result) => {
+                        if (info == "finish") {
+                            var priKey = result as Uint8Array;
+                            var _key = new key();
+                            _key.MKey_NeedCount = 0;
+                            _key.MKey_Pubkeys = null;
+                            _key.multisignkey = false;
+                            _key.prikey = priKey;
+                            for (var i = 0; i < this.keys.length; i++) {
+                                if (this.keys[i].ToString() == _key.ToString())
+                                    return;
+                            }
+                            this.keys.push(_key);
+                            console.log(priKey);
+                            updateUI();
+                            num = num + 1;
+                            addPrikey(num, wallet);
+                        }
+                        else {
+                            console.log(result);
+                        }
+                    });
+                }
+                addPrikey(0, wallet);
+            }
 
             btn_addwif.onclick = () => {
                 var wif: string = input_wif.value;
@@ -184,7 +256,6 @@ module NeoTest {
                 }
             }
 
-
             var updateUI = () => {
                 //更新账户
                 text_account.textContent = "";
@@ -199,10 +270,16 @@ module NeoTest {
                         }
                     }
                 }
-                if (this.tx != null) {
-                    this.tx.ImportKeyInfo(this.keys);
+                try {
+                    if (this.tx != null) {
+                        this.tx.ImportKeyInfo(this.keys);
+                    }
+                    updateTxUI();
                 }
-                updateTxUI();
+                catch
+                {
+
+                }
             }
             var updateTxUI = () => {
                 text_tx.textContent = "";
