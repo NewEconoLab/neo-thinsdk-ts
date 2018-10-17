@@ -15,7 +15,7 @@ module NeoTest {
             this.key.multisignkey = true;
             this.key.MKey_NeedCount = 1;
             this.key.MKey_Pubkeys = new Array<Uint8Array>();
-
+            this.tx = new Tx();
             //title
             var span = document.createElement("span");
             div.appendChild(span);
@@ -169,6 +169,8 @@ module NeoTest {
                             console.log(priKey);
                             updateUI();
                             num = num + 1;
+                            if (wallet.accounts.length <= num)
+                                return;
                             addPrikey(num, wallet);
                         }
                         else {
@@ -298,6 +300,7 @@ module NeoTest {
                             let signstr = (this.tx.keyinfos[k] as KeyInfo).signdata[0] == null ? "<null>" : (this.tx.keyinfos[k] as KeyInfo).signdata[0].toHexString();
                             text_tx.textContent += "\t\t" + "sign0" + signstr + "\r\n";
                         }
+
                         if ((this.tx.keyinfos[k] as KeyInfo).type == KeyType.MultiSign) {
                             for (var i = 0; i < (this.tx.keyinfos[k] as KeyInfo).MultiSignKey.MKey_Pubkeys.length; i++) {
                                 var pubkey = (this.tx.keyinfos[k] as KeyInfo).MultiSignKey.MKey_Pubkeys[i];
@@ -582,7 +585,7 @@ module NeoTest {
                             var _key: key = null;
                             for (var i = 0; i < keys.length; i++) {
                                 var _k = keys[i].GetAddress();
-                                if (_k = k) {
+                                if (_k == k) {
                                     _key = keys[i];
                                     break;
                                 }
