@@ -117,6 +117,7 @@
     <TypeScriptCompile Include="neo-ts\lzma\MEMORY.ts" />
     <TypeScriptCompile Include="neo-ts\lzma\OutWindow.ts" />
     <TypeScriptCompile Include="neo-ts\lzma\RangeDecoder.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\debugtool\FullLogRead.ts" />
     <TypeScriptCompile Include="wallet\htmlui\panelmgr.ts" />
     <TypeScriptCompile Include="wallet\htmlui\quickdom.ts" />
     <TypeScriptCompile Include="wallet\htmlui\treeview.ts" />

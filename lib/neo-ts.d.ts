@@ -1033,6 +1033,42 @@ declare module ThinNeo.Compiler {
         getCodeName(): string;
     }
 }
+declare module ThinNeo.SmartContract.Debug {
+    enum VMState {
+        NONE = 0,
+        HALT = 1,
+        FAULT = 2,
+        BREAK = 4
+    }
+    enum OpType {
+        Non = 0,
+        Clear = 1,
+        Insert = 2,
+        Peek = 3,
+        Pop = 4,
+        Push = 5,
+        Remove = 6,
+        Set = 7
+    }
+    class Op {
+        constructor(type: OpType, ind?: number);
+        type: OpType;
+        ind: number;
+        clone(): Op;
+    }
+    class StackItem {
+        type: string;
+        strvalue: string;
+        subItems: Array<StackItem>;
+        Clone(): StackItem;
+        AsInt(): number;
+        AsBigInteger(): Neo.BigInteger;
+        asBytes(): Uint8Array;
+        ToString(): string;
+        ToShortString(): string;
+        static FromJson(json: {}): StackItem;
+    }
+}
 declare namespace Neo.IO.Caching {
     interface ITrackable<TKey> {
         key: TKey;
