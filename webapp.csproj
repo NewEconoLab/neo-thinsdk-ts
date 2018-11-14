@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="code1.png" />
+    <Content Include="lib\LZMAWorker.min.js" />
     <Content Include="test2.html" />
     <Content Include="lib\app.js" />
     <Content Include="lib\app.js.map" />

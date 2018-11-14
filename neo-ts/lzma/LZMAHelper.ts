@@ -5,7 +5,7 @@ module nid.utils{
 
     export class LZMAHelper{
         static decoder:LZMA = new LZMA();
-        static decoderAsync:Worker = new Worker('LZMAWorker.min.js');
+        static decoderAsync:Worker = new Worker('lib/LZMAWorker.min.js');
         static callback:Function;
         static ENCODE:number = 1;
         static DECODE:number = 2;
