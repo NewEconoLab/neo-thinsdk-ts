@@ -1,5 +1,5 @@
 ﻿///<reference path="../lib/neo-ts.d.ts"/>
-module NeoTest
+module NeoTest2
 {
     export interface ITestItem
     {
@@ -17,53 +17,12 @@ module NeoTest
         divMenu: HTMLDivElement;
         start(): void
         {
-            var num = "10000000";
-            var bignum = new Neo.BigInteger(num);
-            var uint8 = bignum.toUint8ArrayWithSign(true);
-            var bignumrev = Neo.BigInteger.fromUint8ArrayAutoSign(uint8);
-            console.log("bignum=" + bignum);
-            console.log("bignumhex=" + uint8.toHexString());
-            console.log("bignumrev=" + bignumrev);
-            var bignum2 = new Neo.BigInteger("-1");
-            var uint82 = bignum2.toUint8ArrayWithSign(true);
-            var bignum2rev = Neo.BigInteger.fromUint8ArrayAutoSign(uint82);
-
-            console.log("bignum2=" + bignum2);
-            console.log("bignum2hex=" + uint82.toHexString());
-            console.log("bignum2rev=" + bignum2rev);
-
-            var bignum3 = new Neo.BigInteger("-129");
-            var uint83 = bignum3.toUint8ArrayWithSign(true);
-            var bignum3rev = Neo.BigInteger.fromUint8ArrayAutoSign(uint83);
-            console.log("bignum3=" + bignum3);
-            console.log("bignum3hex=" + uint83.toHexString());
-            console.log("bignum3rev=" + bignum3rev);
-
             this.createMenu();
-            this.addText("NEO-ThinSDK(typescript)");
+            this.addText("NEO-ThinSDK(typescript) test2 debugpage");
             this.addLink("Github", "https://github.com/NewEconoLab/neo-thinsdk-ts");
-            this.addLink("TestPage2", "test2.html");
-            this.addText("基本签名运算Cryptography");
-            this.addMenuItem(new Test_CheckAddress());
-            this.addMenuItem(new Test_Hash2Address());
-            this.addMenuItem(new Test_Pubkey2Address());
-            this.addMenuItem(new Test_WifDecode());
-            this.addMenuItem(new Test_Sign());
-            this.addText("钱包相关Wallet");
-            this.addMenuItem(new Test_Nep2FromPrikey());
-            this.addMenuItem(new Test_Nep2ToPrikey());
-            this.addMenuItem(new Test_Nep6());
-            this.addMenuItem(new Test_Nep6Gen());
-            this.addText("交易相关Transaction");
-            this.addLink("WalletTest", "wallet.html");
-            this.addText("交易解析TransactionAnalysis");
-            this.addMenuItem(new Test_TransactionAnalysis());
-            this.addText("合约相关Contract");
-            this.addMenuItem(new Test_ASM2AVM());
-            this.addMenuItem(new Test_ScriptBuilder());
-            this.addMenuItem(new Test_GetNep5Info());
-            this.addText("多签");
-            this.addMenuItem(new Test_MultiSign());
+            this.addLink("TestPage1", "index.html");
+            this.addText("==lzma test==");
+            this.addMenuItem(new Test1_Lzma());
 
         }
         addText(str: string)

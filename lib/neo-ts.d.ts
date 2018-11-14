@@ -1,3 +1,179 @@
+/// <reference path="../neo-ts/lzma/LZMA.d.ts" />
+declare module nid {
+    class BitTreeDecoder {
+        probs: Uint16Array;
+        private numBits;
+        constructor(numBits: any);
+        init(): void;
+        decode(rc: RangeDecoder): number;
+        reverseDecode(rc: RangeDecoder): number;
+        static constructArray(numBits: number, len: number): Array<BitTreeDecoder>;
+    }
+}
+declare module nid {
+    class LenDecoder {
+        private choice;
+        private lowCoder;
+        private midCoder;
+        private highCoder;
+        constructor();
+        init(): void;
+        decode(rc: RangeDecoder, posState: number): number;
+    }
+}
+declare module nid {
+    class LZMA {
+        static LZMA_DIC_MIN: number;
+        static LZMA_RES_ERROR: number;
+        static LZMA_RES_FINISHED_WITH_MARKER: number;
+        static LZMA_RES_FINISHED_WITHOUT_MARKER: number;
+        static kNumBitModelTotalBits: number;
+        static kNumMoveBits: number;
+        static PROB_INIT_VAL: number;
+        static kNumPosBitsMax: number;
+        static kNumStates: number;
+        static kNumLenToPosStates: number;
+        static kNumAlignBits: number;
+        static kStartPosModelIndex: number;
+        static kEndPosModelIndex: number;
+        static kNumFullDistances: number;
+        static kMatchMinLen: number;
+        decoder: LzmaDecoder;
+        data: Uint8Array;
+        static INIT_PROBS(p: Uint16Array): void;
+        static BitTreeReverseDecode(probs: any, numBits: number, rc: RangeDecoder, offset?: number): number;
+        constructor();
+        decode(data: Uint8Array): Uint8Array;
+    }
+}
+declare module nid {
+    class RangeDecoder {
+        static kTopValue: number;
+        inStream: Uint8Array;
+        corrupted: boolean;
+        in_pos: number;
+        private range;
+        private code;
+        private rangeI;
+        private codeI;
+        private loc1;
+        private loc2;
+        private U32;
+        private U16;
+        constructor();
+        isFinishedOK(): boolean;
+        init(): void;
+        normalize(): void;
+        decodeDirectBits(numBits: number): number;
+        decodeBit(prob: Uint16Array, index: number): number;
+    }
+}
+declare module nid {
+    class OutWindow {
+        totalPos: number;
+        outStream: Uint8Array;
+        private buf;
+        private pos;
+        out_pos: number;
+        private size;
+        private isFull;
+        constructor();
+        create(dictSize: number): void;
+        putByte(b: any): void;
+        getByte(dist: number): number;
+        copyMatch(dist: any, len: any): void;
+        checkDistance(dist: any): boolean;
+        isEmpty(): boolean;
+    }
+}
+declare module nid {
+    class LzmaDecoder {
+        markerIsMandatory: boolean;
+        rangeDec: RangeDecoder;
+        outWindow: OutWindow;
+        lc: number;
+        pb: number;
+        lp: number;
+        dictSize: number;
+        dictSizeInProperties: number;
+        private litProbs;
+        private posSlotDecoder;
+        private alignDecoder;
+        private posDecoders;
+        private isMatch;
+        private isRep;
+        private isRepG0;
+        private isRepG1;
+        private isRepG2;
+        private isRep0Long;
+        private lenDecoder;
+        private repLenDecoder;
+        private loc1;
+        private loc2;
+        private matchBitI;
+        private matchByteI;
+        private bitI;
+        private symbolI;
+        private prevByteI;
+        private litStateI;
+        constructor();
+        init(): void;
+        create(): void;
+        private createLiterals;
+        private initLiterals;
+        private decodeLiteral;
+        private decodeDistance;
+        private initDist;
+        decodeProperties(properties: Uint8Array): void;
+        private updateState_Literal;
+        private updateState_ShortRep;
+        private updateState_Rep;
+        private updateState_Match;
+        decode(unpackSizeDefined: boolean, unpackSize: number): number;
+    }
+}
+declare module nid.utils {
+    import LZMA = nid.LZMA;
+    class LZMAHelper {
+        static decoder: LZMA;
+        static decoderAsync: Worker;
+        static callback: Function;
+        static ENCODE: number;
+        static DECODE: number;
+        static init(): void;
+        static encode(data: ArrayBuffer): ArrayBuffer;
+        static decode(data: ArrayBuffer): ArrayBuffer;
+        static encodeAsync(data: ArrayBuffer, _callback: Function): void;
+        static decodeAsync(data: ArrayBuffer, _callback: Function): void;
+    }
+}
+declare module nid {
+    class LZMAWorker {
+        static ENCODE: number;
+        static DECODE: number;
+        private decoder;
+        private command;
+        private time;
+        constructor();
+        private decode;
+    }
+}
+declare module nid.utils {
+    class MEMORY {
+        static u8Index: number;
+        static u16Index: number;
+        static u32Index: number;
+        static u8: Uint32Array;
+        static u16: Uint32Array;
+        static u32: Uint32Array;
+        static allocateUint8(len: number): void;
+        static allocateUint16(len: number): void;
+        static allocateUint32(len: number): void;
+        static getUint8(): number;
+        static getUint16(): number;
+        static getUint32(): number;
+    }
+}
 declare namespace Neo {
     abstract class UintVariable {
         protected _bits: Uint32Array;

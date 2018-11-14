@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="code1.png" />
+    <Content Include="test2.html" />
     <Content Include="lib\app.js" />
     <Content Include="lib\app.js.map" />
     <Content Include="lib\asset\asmjs.js" />
@@ -91,6 +92,8 @@
     <Content Include="wallet.html" />
     <Content Include="wallet\panel.css" />
     <Content Include="index.html" />
+    <TypeScriptCompile Include="app2\app.ts" />
+    <TypeScriptCompile Include="app2\test1_lzma.ts" />
     <TypeScriptCompile Include="app\test5_multiSign.ts" />
     <TypeScriptCompile Include="app\test1_pubkey2address.ts" />
     <TypeScriptCompile Include="app\test1_hash2address.ts" />
@@ -103,6 +106,16 @@
     <TypeScriptCompile Include="lib\app.d.ts" />
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\BitTreeDecoder.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\LenDecoder.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\LZMA.d.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\LZMA.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\LzmaDecoder.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\LZMAHelper.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\LZMAWorker.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\MEMORY.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\OutWindow.ts" />
+    <TypeScriptCompile Include="neo-ts\lzma\RangeDecoder.ts" />
     <TypeScriptCompile Include="wallet\htmlui\panelmgr.ts" />
     <TypeScriptCompile Include="wallet\htmlui\quickdom.ts" />
     <TypeScriptCompile Include="wallet\htmlui\treeview.ts" />
@@ -138,6 +151,7 @@
     <Content Include="readme.md" />
     <Content Include="wallet\tsconfig.json" />
     <Content Include="lib\neo-ts.js.map" />
+    <Content Include="app2\tsconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
