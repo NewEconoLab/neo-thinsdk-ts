@@ -141,6 +141,6 @@ declare module NeoTest {
     enum KeyType {
         Unknow = 0,
         Simple = 1,
-        MultiSign = 2,
+        MultiSign = 2
     }
 }

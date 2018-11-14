@@ -50,8 +50,9 @@ class NeoPromise<T> implements PromiseLike<T>
         });
     }
 
-    public catch<TResult>(onRejected: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult> {
-        return this.then(null, onRejected);
+    public catch<TResult>(onrejected: (reason: any) => PromiseLike<TResult>): PromiseLike<TResult> {
+
+        return this.then<TResult,any>(null, onrejected);
     }
 
     private checkState() {
@@ -105,12 +106,13 @@ class NeoPromise<T> implements PromiseLike<T>
         return new NeoPromise<T>((resolve, reject) => resolve(value));
     }
 
-    public then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult> {
+    public then<TResult1 = T, TResult2 = never>(onFulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onRejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): PromiseLike < TResult1 | TResult2 >
+        {
         this._onFulfilled = onFulfilled;
         this._onRejected = onRejected;
         this._callback_attached = true;
         if (this._state == PromiseState.pending) {
-            this._next_promise = new NeoPromise<TResult>(null);
+            this._next_promise = new NeoPromise<TResult1>(null);
             return this._next_promise;
         }
         else {

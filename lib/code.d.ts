@@ -21,7 +21,7 @@ declare namespace lightsPanel {
         H_Left = 0,
         H_Right = 1,
         V_Top = 2,
-        V_Bottom = 3,
+        V_Bottom = 3
     }
     class panel implements IPanel {
         container: panelContainer;
@@ -94,11 +94,11 @@ declare namespace lightsPanel {
         floatPanel(panel: panel): void;
         removePanel(panel: panel): void;
         fillPanel(panel: panel): void;
-        private _moveTop(divsrc);
-        private _initOverDiv();
-        private pickOverLay(cx, cy);
-        private testOverlay(usedock, cx, cy);
-        private _inbox(panel, cx, cy);
+        private _moveTop;
+        private _initOverDiv;
+        private pickOverLay;
+        private testOverlay;
+        private _inbox;
         _setDockPos(div: HTMLDivElement, x: string, y: string, r: string, b: string): void;
         _calcRootPos(div: HTMLDivElement): {
             x: number;
@@ -158,7 +158,7 @@ declare namespace lightsPanel {
         private nodeRoot;
         onSelectItem: (txt: string, data: any) => void;
         private selectItem;
-        private onSelect(node);
+        private onSelect;
         makeSelectEvent(node: treeNode): void;
         updateData(filter: ITreeViewFilter): void;
     }
@@ -166,7 +166,7 @@ declare namespace lightsPanel {
 declare namespace what {
     enum FuncTag {
         transfer = 0,
-        DApp_WhoAmI = 1,
+        DApp_WhoAmI = 1
     }
     class panel_Function {
         constructor();
