@@ -59,13 +59,13 @@ module NeoTest2 {
             }
         }
         dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: number) {
-            var lineout = "";
+            var space = "";
             for (var i = 0; i < level; i++)
-                lineout += "____";
+                space += "____";
 
-            this.addtxt(lineout + "hash=" + script.hash);
+            this.addtxt(space + "hash=" + script.hash);
             for (var i = 0; i < script.ops.length; i++) {
-                this.addtxt("op=" + script.ops[i].GetHeader());
+                this.addtxt(space + "op=" + script.ops[i].GetHeader());
                 if (script.ops[i].subScript != null)
                     this.dumpScript(script.ops[i].subScript, level + 1);
             }
