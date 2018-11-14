@@ -21,8 +21,9 @@ module NeoTest2
             this.addText("NEO-ThinSDK(typescript) test2 debugpage");
             this.addLink("Github", "https://github.com/NewEconoLab/neo-thinsdk-ts");
             this.addLink("TestPage1", "index.html");
-            this.addText("==lzma test==");
+            this.addText("==llvmhex.txt 解析相关==");
             this.addMenuItem(new Test1_Lzma());
+            this.addMenuItem(new Test1_Fullog_Read());
 
         }
         addText(str: string)

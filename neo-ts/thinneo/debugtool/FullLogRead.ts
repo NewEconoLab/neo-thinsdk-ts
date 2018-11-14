@@ -26,7 +26,7 @@ module ThinNeo.SmartContract.Debug {
         }
         public type: OpType;
         public ind: number;
-        public clone(): Op {
+        public Clone(): Op {
             var op = new Op(this.type, this.ind);
             return op;
         }
@@ -131,11 +131,12 @@ module ThinNeo.SmartContract.Debug {
             }
             //item.type = json.Keys.ToArray()[0];
             var strvalue: string = json[item.type];
-            var arrayvalue = json[item.type] as [];
-            if (arrayvalue == null) {
+            var isarrayvalue = json[item.type] instanceof Array;
+            if (isarrayvalue == false) {
                 item.strvalue = strvalue;
             }
             else {
+                var arrayvalue = json[item.type] as any[];
                 item.subItems = [];
                 for (var i = 0; i < arrayvalue.length; i++) {
                     item.subItems.push(StackItem.FromJson(arrayvalue[i] as {}));
@@ -150,292 +151,317 @@ module ThinNeo.SmartContract.Debug {
         }
     }
 
-    ///ready to trans 2 typescript
 
-//    public class LogScript {
-//        public int GetAllScriptName(List<string> names)
-//    {
-//        names.Add(this.hash);
-//        int scount = 1;
-//        foreach(var op in ops)
-//        {
-//            if (op.subScript != null) {
-//                scount += op.subScript.GetAllScriptName(names);
-//            }
-//        }
-//        return scount;
-//    }
-//        public LogScript parent;
-//        public string hash;
-//        public List < LogOp > ops = new List<LogOp>();
-//        public LogScript(string hash)
-//    {
-//        this.hash = hash;
-//    }
-//        //public MyJson.JsonNode_Object ToJson()
-//        //{
-//        //    MyJson.JsonNode_Object script = new MyJson.JsonNode_Object();
-//        //    script.SetDictValue("hash", this.hash);
-//        //    MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
-//        //    script.SetDictValue("ops", array);
-//        //    foreach (var op in ops)
-//        //    {
-//        //        array.Add(op.ToJson());
-//        //    }
-//        //    return script;
-//        //}
-//        public static LogScript FromJson(MyJson.JsonNode_Object json)
-//    {
-//        var hash = json["hash"].AsString();
-//        LogScript script = new LogScript(hash);
-//        var array = json["ops"].AsList();
-//        foreach(var op in array)
-//        {
-//            script.ops.Add(LogOp.FromJson(op as MyJson.JsonNode_Object));
-//            var ss = script.ops.Last().subScript;
-//            if (ss != null)
-//                ss.parent = script;
-//        }
-//        return script;
+    export class LogScript {
+        constructor(hash: string) {
+            this.hash = hash;
+        }
+        public GetAllScriptName(names: Array<string>): number {
+            names.push(this.hash);
+            let scount = 1;
+            for (var i = 0; i < this.ops.length; i++) {
+                let op = this.ops[i];
+                if (op.subScript != null) {
+                    scount += op.subScript.GetAllScriptName(names);
+                }
+            }
+            return scount;
+        }
+        public parent: LogScript;
+        public hash: string;
+        public ops: Array<LogOp> = new Array<LogOp>();
 
-//    }
-//        public LogScript Clone()
-//    {
-//        LogScript s = new LogScript(this.hash);
-//        s.parent = this;
-//        s.ops = new List<LogOp>();
-//        foreach(var o in this.ops)
-//        {
-//            s.ops.Add(o.Clone());
-//        }
+        //public MyJson.JsonNode_Object ToJson()
+        //{
+        //    MyJson.JsonNode_Object script = new MyJson.JsonNode_Object();
+        //    script.SetDictValue("hash", this.hash);
+        //    MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
+        //    script.SetDictValue("ops", array);
+        //    foreach (var op in ops)
+        //    {
+        //        array.Add(op.ToJson());
+        //    }
+        //    return script;
+        //}
+        public static FromJson(json: {}): LogScript {
+            var hash: string = json["hash"];
+            let script = new LogScript(hash);
+            var array = json["ops"] as any[];
+            for (var i = 0; i < array.length; i++) {
+                let op = array[i];
+                script.ops.push(LogOp.FromJson(op));
+                var ss = script.ops[script.ops.length - 1].subScript;
+                if (ss != null)
+                    ss.parent = script;
 
-//        return s;
-//    }
-//}
-//public class LogOp {
-//    public int addr;
-//    public VM.OpCode op;
-//    public bool error;
-//    //public string syscall;
-//    //public string[] syscallinfo;
-//    public Op[] stack;
-//    public byte[] param;
-//    public StackItem opresult;
-//    public string GetHeader() {
-//        string name = addr.ToString("x04") + ":";
-//        if (op > VM.OpCode.PUSHBYTES1 && op < VM.OpCode.PUSHBYTES75)
-//            return name + "PUSHBYTES" + (op - VM.OpCode.PUSHBYTES1);
-//        else
-//            return name + op.ToString();
-//    }
-//    public LogOp(int addr, VM.OpCode op) {
-//        this.addr = addr;
-//        this.op = op;
-//    }
-//    public LogScript subScript;
-//    //public static MyJson.JsonNode_Object StatkItemToJson(StackItem item)
-//    //{
-//    //    //MyJson.JsonNode_Object json = new MyJson.JsonNode_Object();
-//    //    //var type = item.GetType().Name;
-//    //    //if (type == "InteropInterface")
-//    //    //{
-//    //    //    json.SetDictValue(type, item.GetInterface<VM.IInteropInterface>().GetType().Name);
-//    //    //}
-//    //    //else if (type == "Boolean")
-//    //    //{
-//    //    //    json.SetDictValue(type, item.GetBoolean().ToString());
-//    //    //}
-//    //    //else if (type == "ByteArray")
-//    //    //{
-//    //    //    json.SetDictValue(type, item.GetByteArray().ToHexString());
-//    //    //}
-//    //    //else if (type == "Integer")
-//    //    //{
-//    //    //    json.SetDictValue(type, item.GetBigInteger().ToString());
-//    //    //}
-//    //    //else if (item.IsArray || item.IsStruct)
-//    //    //{
-//    //    //    MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
-//    //    //    json.SetDictValue(type, array);
-//    //    //    foreach (var i in item.GetArray())
-//    //    //    {
-//    //    //        array.Add(StatkItemToJson(i));
-//    //    //    }
-//    //    //}
-//    //    //return json;
-//    //}
-//    //public MyJson.JsonNode_Object ToJson()
-//    //{
-//    //    MyJson.JsonNode_Object _op = new MyJson.JsonNode_Object();
-//    //    _op.SetDictValue("addr", addr);
-//    //    _op.SetDictValue("op", op.ToString());
-//    //    if (this.stack != null)
-//    //    {
-//    //        MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
-//    //        _op.SetDictValue("stack", array);
-//    //        foreach (var r in stack)
-//    //        {
-//    //            if (r.ind > 0)
-//    //            {
-//    //                array.AddArrayValue(r.type.ToString() + "|" + r.ind);
-//    //            }
-//    //            else
-//    //            {
-//    //                array.AddArrayValue(r.type.ToString());
-//    //            }
-//    //        }
-//    //    }
-//    //    if (opresult != null)
-//    //    {
-//    //        _op.SetDictValue("result", StatkItemToJson(opresult));
-//    //    }
-//    //    if (subScript != null)
-//    //    {
-//    //        _op.SetDictValue("subscript", subScript.ToJson());
-//    //    }
-//    //    return _op;
-//    //}
-//    public static LogOp FromJson(MyJson.JsonNode_Object json) {
-//        var opstr = json["op"].AsString();
-//        var addr = json["addr"].AsInt();
-//        var op = (VM.OpCode)Enum.Parse(typeof (VM.OpCode), opstr);
-//        LogOp _op = new LogOp(addr, op);
-//        if (json.ContainsKey("stack")) {
+            }
 
-//            var array = json["stack"].AsList();
-//            _op.stack = new Op[array.Count];
-//            for (var i = 0; i < array.Count; i++) {
-//                var str = array[i].AsString();
-//                var ind = -1;
-//                if (str.Contains('|')) {
-//                    var strs = str.Split('|');
-//                    ind = int.Parse(strs[1]);
-//                    str = strs[0];
-//                }
-//                var type = (OpType)Enum.Parse(typeof (OpType), str);
-//                _op.stack[i] = new Op(type, ind);
-//            }
-//        }
-//        if (json.ContainsKey("param")) {
-//            _op.param = ThinNeo.Debug.DebugTool.HexString2Bytes(json["param"].AsString());
-//        }
-//        if (json.ContainsKey("result")) {
-//            _op.opresult = StackItem.FromJson(json["result"] as MyJson.JsonNode_Object);
-//        }
-//        if (json.ContainsKey("subscript")) {
-//            _op.subScript = LogScript.FromJson(json["subscript"] as MyJson.JsonNode_Object);
-//        }
-//        return _op;
-//    }
-//    public LogOp Clone() {
-//        LogOp op = new LogOp(this.addr, this.op);
-//        op.error = this.error;
-//        if (this.stack != null) {
-//            op.stack = new Op[this.stack.Length];
-//            for (var i = 0; i < this.stack.Length; i++) {
-//                op.stack[i] = this.stack[i];
-//            }
-//        }
-//        if (this.param != null) {
-//            op.param = this.param.Clone() as byte[];
-//        }
-//        if (this.opresult != null) {
-//            op.opresult = this.opresult.Clone();
-//        }
-//        op.subScript = this.subScript;
-//        return op;
-//    }
-//}
+            return script;
+
+        }
+        public Clone(): LogScript {
+            let s = new LogScript(this.hash);
+            s.parent = this;
+            s.ops = new Array<LogOp>();
+            for (var i = 0; i < this.ops.length; i++)
+            //foreach(var o in this.ops)
+            {
+                let o = this.ops[i];
+                s.ops.push(o.Clone());
+            }
+
+            return s;
+        }
+    }
 
 
-//public class FullLog {
-//    public LogScript script = null;
-//    public string error = null;
-//    public VMState state = VMState.NONE;
 
-//    LogScript curScript = null;
-//    LogOp curOp = null;
-//    //public void LoadScript(string hash)
-//    //{
-//    //    if (script == null)
-//    //    {
-//    //        script = new LogScript(hash);
-//    //        curScript = script;
-//    //    }
-//    //    else
-//    //    {
-//    //        curOp.subScript = new LogScript(hash);
-//    //        curOp.subScript.parent = curScript;
-//    //        curScript = curOp.subScript;
-//    //    }
-//    //}
-//    //public void NextOp(int addr, VM.OpCode op)
-//    //{
-//    //    LogOp _op = new LogOp(addr, op);
-//    //    curScript.ops.Add(_op);
-//    //    curOp = _op;
-//    //    if (op == VM.OpCode.RET || op == VM.OpCode.TAILCALL)
-//    //    {
-//    //        curScript = curScript.parent;
-//    //    }
-//    //}
-//    //public void OPStackRecord(Op[] records)
-//    //{
-//    //    curOp.stack = records;
-//    //}
-//    //public void OpResult(StackItem item)
-//    //{
-//    //    curOp.opresult = item;
-//    //}
-//    //public void Error(string info)
-//    //{
-//    //    this.error = info;
-//    //}
-//    //public void Finish(VMState state)
-//    //{
-//    //    this.state = state;
-//    //}
-//    //public void Save(string filename)
-//    //{
-//    //    var path = System.IO.Path.GetDirectoryName(filename);
-//    //    if (System.IO.Directory.Exists(path) == false)
-//    //        System.IO.Directory.CreateDirectory(path);
+    export class LogOp {
+        constructor(addr: number, op: ThinNeo.OpCode) {
+            this.addr = addr;
+            this.op = op;
+            if (op == undefined) {
 
-//    //    System.IO.File.Delete(filename + ".json");
-//    //    System.IO.File.Delete(filename);
+                console.log("what a fuck");
+            }
+        }
+        public addr: number;//int
+        public op: ThinNeo.OpCode;
+        public error: boolean;
+        //public string syscall;
+        //public string[] syscallinfo;
+        public stack: Op[];
+        public param: Uint8Array;
+        public opresult: StackItem;
+        public GetHeader(): string {
+            var addrstr = this.addr.toString(16);
+            while (addrstr.length < 4)
+                addrstr = "0" + addrstr;
+            //let name = this.addr.toString("x04") + ":";
+            let name = this.addr + ":";
+            if (this.op > ThinNeo.OpCode.PUSHBYTES1 && this.op < ThinNeo.OpCode.PUSHBYTES75)
+                return name + "PUSHBYTES" + (this.op - ThinNeo.OpCode.PUSHBYTES1);
+            else {
+                var trystr = ThinNeo.OpCode[this.op];
+                if (trystr == undefined)
+                    trystr = "" + this.op;
+                return name + trystr;//.toString();
+            }
+        }
 
-//    //    var json = new MyJson.JsonNode_Object();
-//    //    json.SetDictValue("script", script.ToJson());
-//    //    if (string.IsNullOrEmpty(error) == false)
-//    //        json.SetDictValue("error", error);
-//    //    json.SetDictValue("VMState", state.ToString());
+        public subScript: LogScript;
+        //public static MyJson.JsonNode_Object StatkItemToJson(StackItem item)
+        //{
+        //    //MyJson.JsonNode_Object json = new MyJson.JsonNode_Object();
+        //    //var type = item.GetType().Name;
+        //    //if (type == "InteropInterface")
+        //    //{
+        //    //    json.SetDictValue(type, item.GetInterface<VM.IInteropInterface>().GetType().Name);
+        //    //}
+        //    //else if (type == "Boolean")
+        //    //{
+        //    //    json.SetDictValue(type, item.GetBoolean().ToString());
+        //    //}
+        //    //else if (type == "ByteArray")
+        //    //{
+        //    //    json.SetDictValue(type, item.GetByteArray().ToHexString());
+        //    //}
+        //    //else if (type == "Integer")
+        //    //{
+        //    //    json.SetDictValue(type, item.GetBigInteger().ToString());
+        //    //}
+        //    //else if (item.IsArray || item.IsStruct)
+        //    //{
+        //    //    MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
+        //    //    json.SetDictValue(type, array);
+        //    //    foreach (var i in item.GetArray())
+        //    //    {
+        //    //        array.Add(StatkItemToJson(i));
+        //    //    }
+        //    //}
+        //    //return json;
+        //}
+        //public MyJson.JsonNode_Object ToJson()
+        //{
+        //    MyJson.JsonNode_Object _op = new MyJson.JsonNode_Object();
+        //    _op.SetDictValue("addr", addr);
+        //    _op.SetDictValue("op", op.ToString());
+        //    if (this.stack != null)
+        //    {
+        //        MyJson.JsonNode_Array array = new MyJson.JsonNode_Array();
+        //        _op.SetDictValue("stack", array);
+        //        foreach (var r in stack)
+        //        {
+        //            if (r.ind > 0)
+        //            {
+        //                array.AddArrayValue(r.type.ToString() + "|" + r.ind);
+        //            }
+        //            else
+        //            {
+        //                array.AddArrayValue(r.type.ToString());
+        //            }
+        //        }
+        //    }
+        //    if (opresult != null)
+        //    {
+        //        _op.SetDictValue("result", StatkItemToJson(opresult));
+        //    }
+        //    if (subScript != null)
+        //    {
+        //        _op.SetDictValue("subscript", subScript.ToJson());
+        //    }
+        //    return _op;
+        //}
+        public static FromJson(json: {}): LogOp {
+            var opstr = json["op"] as string;
+            var addr = json["addr"] as number;
 
-//    //    StringBuilder sb = new StringBuilder();
-//    //    json.ConvertToStringWithFormat(sb, 0);
-//    //    System.IO.File.WriteAllText(filename + ".json", sb.ToString());
+            let op: ThinNeo.OpCode = ThinNeo.OpCode[opstr];
+            if (op == undefined)
+                op = parseInt(opstr) as ThinNeo.OpCode;
+            let _op = new LogOp(addr, op);
+            if (json["stack"] != undefined) {
 
-//    //    var compressor = new SevenZip.SevenZipCompressor();
-//    //    compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma2;
-//    //    compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
-//    //    compressor.FastCompression = true;
+                var array = json["stack"] as any[];
+                _op.stack = new Array<Op>(array.length);
+                for (var i = 0; i < array.length; i++) {
+                    var str = array[i] as string;
+                    var ind = -1;
+                    if (str.indexOf('|') >= 0) {
+                        var strs = str.split('|');
+                        ind = parseInt(strs[1]);
+                        str = strs[0];
+                    }
+                    var type = OpType[opstr] as any as OpType;
+                    _op.stack[i] = new Op(type, ind);
+                }
+            }
+            if (json["param"] != undefined) {
+                _op.param = (json["param"] as string).hexToBytes();
+                //ThinNeo.Helper.ThinNeo.Debug.DebugTool.HexString2Bytes(json["param"].AsString());
+            }
+            if (json["result"] != undefined) {
+                _op.opresult = StackItem.FromJson(json["result"]);
+            }
+            if (json["subscript"] != undefined) {
+                _op.subScript = LogScript.FromJson(json["subscript"]);
+            }
+            return _op;
+        }
+        public Clone(): LogOp {
+            let op = new LogOp(this.addr, this.op);
+            op.error = this.error;
+            if (this.stack != null) {
+                op.stack = new Op[this.stack.length];
+                for (var i = 0; i < this.stack.length; i++) {
+                    op.stack[i] = this.stack[i].Clone();
+                }
+            }
+            if (this.param != null) {
+                op.param = this.param.clone();
+            }
+            if (this.opresult != null) {
+                op.opresult = this.opresult.Clone();
+            }
+            op.subScript = this.subScript;
+            return op;
+        }
+    }
 
-//    //    //compressor.path = path;
-//    //    compressor.CompressFiles(filename, System.IO.Path.GetFullPath(filename + ".json"));
-//    //    System.IO.File.Delete(filename + ".json");
+    export class FullLog {
+        public script: LogScript = null;
+        public error: string = null;
+        public states: VMState[];
 
-//    //}
-//    public static FullLog FromJson(MyJson.JsonNode_Object json) {
-//        FullLog fulllog = new FullLog();
-//        if (json.ContainsKey("error"))
-//            fulllog.error = json["error"].AsString();
-//        if (json.ContainsKey("VMState")) {
-//            var state = json["VMState"].AsString();
-//            fulllog.state = (VMState)Enum.Parse(typeof (VMState), state);
-//        }
-//        if (json.ContainsKey("script")) {
-//            fulllog.script = LogScript.FromJson(json["script"] as MyJson.JsonNode_Object);
-//        }
-//        return fulllog;
-//    }
-//}
+        curScript: LogScript = null;
+        curOp: LogOp = null;
+        //public void LoadScript(string hash)
+        //{
+        //    if (script == null)
+        //    {
+        //        script = new LogScript(hash);
+        //        curScript = script;
+        //    }
+        //    else
+        //    {
+        //        curOp.subScript = new LogScript(hash);
+        //        curOp.subScript.parent = curScript;
+        //        curScript = curOp.subScript;
+        //    }
+        //}
+        //public void NextOp(int addr, VM.OpCode op)
+        //{
+        //    LogOp _op = new LogOp(addr, op);
+        //    curScript.ops.Add(_op);
+        //    curOp = _op;
+        //    if (op == VM.OpCode.RET || op == VM.OpCode.TAILCALL)
+        //    {
+        //        curScript = curScript.parent;
+        //    }
+        //}
+        //public void OPStackRecord(Op[] records)
+        //{
+        //    curOp.stack = records;
+        //}
+        //public void OpResult(StackItem item)
+        //{
+        //    curOp.opresult = item;
+        //}
+        //public void Error(string info)
+        //{
+        //    this.error = info;
+        //}
+        //public void Finish(VMState state)
+        //{
+        //    this.state = state;
+        //}
+        //public void Save(string filename)
+        //{
+        //    var path = System.IO.Path.GetDirectoryName(filename);
+        //    if (System.IO.Directory.Exists(path) == false)
+        //        System.IO.Directory.CreateDirectory(path);
+
+        //    System.IO.File.Delete(filename + ".json");
+        //    System.IO.File.Delete(filename);
+
+        //    var json = new MyJson.JsonNode_Object();
+        //    json.SetDictValue("script", script.ToJson());
+        //    if (string.IsNullOrEmpty(error) == false)
+        //        json.SetDictValue("error", error);
+        //    json.SetDictValue("VMState", state.ToString());
+
+        //    StringBuilder sb = new StringBuilder();
+        //    json.ConvertToStringWithFormat(sb, 0);
+        //    System.IO.File.WriteAllText(filename + ".json", sb.ToString());
+
+        //    var compressor = new SevenZip.SevenZipCompressor();
+        //    compressor.CompressionMethod = SevenZip.CompressionMethod.Lzma2;
+        //    compressor.CompressionLevel = SevenZip.CompressionLevel.Fast;
+        //    compressor.FastCompression = true;
+
+        //    //compressor.path = path;
+        //    compressor.CompressFiles(filename, System.IO.Path.GetFullPath(filename + ".json"));
+        //    System.IO.File.Delete(filename + ".json");
+
+        //}
+        public static FromJson(json: {}): FullLog {
+            let fulllog = new FullLog();
+            if (json["error"] != undefined)
+                fulllog.error = json["error"] as string;
+            if (json["VMState"] != undefined) {
+                var state = json["VMState"] as string;
+                var words = state.split(",");
+                fulllog.states = [];
+                for (var i = 0; i < words.length; i++) {
+                    var item = words[i].replace(" ", "");
+                    fulllog.states.push(VMState[item]);
+                }
+
+            }
+            if (json["script"] != undefined) {
+                fulllog.script = LogScript.FromJson(json["script"]);
+            }
+            return fulllog;
+        }
+    }
 }

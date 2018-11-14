@@ -94,6 +94,7 @@
     <Content Include="wallet\panel.css" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="app2\app.ts" />
+    <TypeScriptCompile Include="app2\test1_fulllog_read.ts" />
     <TypeScriptCompile Include="app2\test1_lzma.ts" />
     <TypeScriptCompile Include="app\test5_multiSign.ts" />
     <TypeScriptCompile Include="app\test1_pubkey2address.ts" />

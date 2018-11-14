@@ -6,6 +6,17 @@ declare module NeoTest2 {
     }
 }
 declare module NeoTest2 {
+    class Test1_Fullog_Read implements ITestItem {
+        constructor();
+        getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
+        start(div: HTMLDivElement): void;
+        testasync(): Promise<void>;
+        dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: number): void;
+    }
+}
+declare module NeoTest2 {
     class Test1_Lzma implements ITestItem {
         constructor();
         getName(): string;

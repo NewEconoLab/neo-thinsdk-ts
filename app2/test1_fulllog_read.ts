@@ -1,11 +1,11 @@
 ﻿///<reference path="../lib/neo-ts.d.ts"/>
 
 module NeoTest2 {
-    export class Test1_Lzma implements ITestItem {
+    export class Test1_Fullog_Read implements ITestItem {
         constructor() {
         }
         getName(): string {
-            return "LZMA";
+            return "read fulllog";
         }
         div: HTMLDivElement;
         addtxt(str: string) {
@@ -41,10 +41,33 @@ module NeoTest2 {
                 console.log("jsonstr =" + unpackjsonstr);
                 unpackjson = JSON.parse(unpackjsonstr);
                 this.addtxt("convert to json . log to console");
+
             }
             catch (e) {
                 this.addtxt("decode error." + e);
                 return;
+            }
+
+            if (unpackjson != null) {
+                let fulllog = ThinNeo.SmartContract.Debug.FullLog.FromJson(unpackjson);
+                this.addtxt("read fulllog struct.");
+                this.addtxt("run state:" + fulllog.states);
+                for (var i = 0; i < fulllog.states.length; i++) {
+                    this.addtxt("--->" + ThinNeo.SmartContract.Debug.VMState[fulllog.states[i]]);
+                }
+                this.dumpScript(fulllog.script, 1);
+            }
+        }
+        dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: number) {
+            var lineout = "";
+            for (var i = 0; i < level; i++)
+                lineout += "____";
+
+            this.addtxt(lineout + "hash=" + script.hash);
+            for (var i = 0; i < script.ops.length; i++) {
+                this.addtxt("op=" + script.ops[i].GetHeader());
+                if (script.ops[i].subScript != null)
+                    this.dumpScript(script.ops[i].subScript, level + 1);
             }
         }
     }

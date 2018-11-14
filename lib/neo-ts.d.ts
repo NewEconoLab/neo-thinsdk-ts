@@ -1054,7 +1054,7 @@ declare module ThinNeo.SmartContract.Debug {
         constructor(type: OpType, ind?: number);
         type: OpType;
         ind: number;
-        clone(): Op;
+        Clone(): Op;
     }
     class StackItem {
         type: string;
@@ -1067,6 +1067,36 @@ declare module ThinNeo.SmartContract.Debug {
         ToString(): string;
         ToShortString(): string;
         static FromJson(json: {}): StackItem;
+    }
+    class LogScript {
+        constructor(hash: string);
+        GetAllScriptName(names: Array<string>): number;
+        parent: LogScript;
+        hash: string;
+        ops: Array<LogOp>;
+        static FromJson(json: {}): LogScript;
+        Clone(): LogScript;
+    }
+    class LogOp {
+        constructor(addr: number, op: ThinNeo.OpCode);
+        addr: number;
+        op: ThinNeo.OpCode;
+        error: boolean;
+        stack: Op[];
+        param: Uint8Array;
+        opresult: StackItem;
+        GetHeader(): string;
+        subScript: LogScript;
+        static FromJson(json: {}): LogOp;
+        Clone(): LogOp;
+    }
+    class FullLog {
+        script: LogScript;
+        error: string;
+        states: VMState[];
+        curScript: LogScript;
+        curOp: LogOp;
+        static FromJson(json: {}): FullLog;
     }
 }
 declare namespace Neo.IO.Caching {
