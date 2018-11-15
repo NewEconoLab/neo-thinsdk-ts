@@ -13,7 +13,7 @@ declare module NeoTest2 {
         addtxt(str: string): void;
         start(div: HTMLDivElement): void;
         testasync(): Promise<void>;
-        dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: number): void;
+        dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: HTMLUListElement): void;
     }
 }
 declare module NeoTest2 {
