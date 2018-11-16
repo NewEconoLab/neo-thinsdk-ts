@@ -23,6 +23,15 @@ module NeoTest2 {
 
 
         }
+        //需要使用simVM来模拟执行一下，得到详细的情报
+        simVM: ThinNeo.Debug.SimVM;//
+        divInfo: HTMLDivElement;
+        addtxtSub(str: string) {
+            var span = document.createElement("span");
+            this.divInfo.appendChild(span);
+            span.textContent = str;
+            this.divInfo.appendChild(document.createElement("hr"));//newline
+        }
         async testasync(): Promise<void> {
             let lzma: nid.LZMA = new nid.LZMA();
             this.addtxt("new LZMA");
@@ -31,6 +40,10 @@ module NeoTest2 {
             var hexstr = await result.text();
             var srcbytes = hexstr.hexToBytes();
             this.addtxt("get llvmhex.");
+
+            //initDivInfo
+            this.divInfo = document.createElement("div");
+            this.div.appendChild(this.divInfo);
 
             var unpackjsonstr: string = "";
             var unpackjson: {} = null;
@@ -52,10 +65,10 @@ module NeoTest2 {
             if (unpackjson != null) {
 
                 //read dumpinfo
-                let dumpinfo = ThinNeo.SmartContract.Debug.DumpInfo.FromJson(unpackjson); 
+                let dumpinfo = ThinNeo.SmartContract.Debug.DumpInfo.FromJson(unpackjson);
 
-                var simVM = new ThinNeo.Debug.SimVM();
-                simVM.Execute(dumpinfo);
+                this.simVM = new ThinNeo.Debug.SimVM();
+                this.simVM.Execute(dumpinfo);
 
                 this.addtxt("read fulllog struct.");
                 this.addtxt("run state:" + dumpinfo.states);
@@ -69,10 +82,32 @@ module NeoTest2 {
                 let ul = document.createElement("ul");
                 content.appendChild(ul);
                 this.div.appendChild(content);
-                this.dumpScript(dumpinfo.script, ul);
+
+                //dump simVM重新整理过的脚本，这个执行顺序才是正确的
+                this.dumpScript(this.simVM.regenScript, ul);
+            }
+        }
+        opcode2str(opcode: ThinNeo.OpCode): string {
+            var str = ThinNeo.OpCode[opcode];
+            if (str != undefined)
+                return str;
+            else return "??=" + opcode;
+        }
+        showOP(script: ThinNeo.SmartContract.Debug.LogScript, op: ThinNeo.SmartContract.Debug.LogOp): void {
+            this.divInfo.innerText = "";
+            this.addtxtSub("this op is:" + op.guid + ":" + this.opcode2str(op.op));
+            this.addtxtSub("show " + script.hash + ".avm" + " addr:" + op.addr +". use this to map2 srccode.");
+            let stateid = this.simVM.mapState[op.guid];
+            let state = this.simVM.stateClone[stateid];
+            if (state != undefined) {
+                this.addtxtSub("show stack(" + +state.StateID + "):CalcStack=" + state.CalcStack.Count + " ,AltStack=" + state.AltStack.Count
+                +". use this to show stack detail.");
             }
         }
         dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: HTMLUListElement) {
+            //var div = document.createElement("div");
+            //div.style.height = "auto";
+            //level.appendChild(div);
             let hash = document.createElement("li");
             hash.textContent = "hash : " + script.hash;
             level.appendChild(hash);
@@ -84,6 +119,15 @@ module NeoTest2 {
                     let ops = document.createElement("ul");
                     level.appendChild(ops);
                     this.dumpScript(script.ops[i].subScript, ops);
+                }
+                let link = document.createElement("a");
+                let _op = script.ops[i];
+                let _guid = _op.guid;
+                link.text = "pick this op(" + _guid + ")";
+                level.appendChild(link);
+                link.href = "#";
+                link.onclick = () => {
+                    this.showOP(script, _op);
                 }
             }
         }

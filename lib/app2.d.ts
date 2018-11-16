@@ -1250,7 +1250,12 @@ declare module NeoTest2 {
         div: HTMLDivElement;
         addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        simVM: ThinNeo.Debug.SimVM;
+        divInfo: HTMLDivElement;
+        addtxtSub(str: string): void;
         testasync(): Promise<void>;
+        opcode2str(opcode: ThinNeo.OpCode): string;
+        showOP(script: ThinNeo.SmartContract.Debug.LogScript, op: ThinNeo.SmartContract.Debug.LogOp): void;
         dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: HTMLUListElement): void;
     }
 }

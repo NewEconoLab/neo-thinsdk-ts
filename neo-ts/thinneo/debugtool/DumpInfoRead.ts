@@ -146,8 +146,9 @@ module ThinNeo.SmartContract.Debug {
                 //        item.subItems.Add(StackItem.FromJson(subitem as MyJson.JsonNode_Object));
                 //    }
                 //}
-                return item;
             }
+            return item;
+
         }
     }
 
@@ -339,8 +340,10 @@ module ThinNeo.SmartContract.Debug {
                         ind = parseInt(strs[1]);
                         str = strs[0];
                     }
-                    var type = OpType[opstr] as any as OpType;
-                    _op.stack[i] = new Op(type, ind);
+                    let _type: OpType = OpType[str];
+                    if (_type == undefined)
+                        _type = parseInt(str) as OpType;
+                    _op.stack[i] = new Op(_type, ind);
                 }
             }
             if (json["param"] != undefined) {
