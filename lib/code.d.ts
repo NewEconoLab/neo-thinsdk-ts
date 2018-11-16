@@ -1,4 +1,5 @@
 /// <reference path="neo-ts.d.ts" />
+/* Input file D:/git/nel/neo-thinsdk-ts/lib/neo-ts.d.ts was missing */
 declare namespace what {
     class Main {
         panelState: panel_State;

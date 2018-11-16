@@ -8,5 +8,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outFile": "../lib/app.js"
-  }
+  },
+  "references": [
+    {
+      "path": "../neo-ts",
+      "prepend": true
+    }
+  ]
 }

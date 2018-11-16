@@ -8,6 +8,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outFile": "../lib/neo-ts.js",
-    "strict": false
+    "strict": false,
+    "composite": true
   }
 }
