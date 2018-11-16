@@ -1,4 +1,5 @@
-﻿
+﻿///<reference path="../randomaccessstack.ts"/>
+
 namespace ThinNeo.Debug {
     export class State {
         private _StateID: number;
@@ -26,37 +27,37 @@ namespace ThinNeo.Debug {
                 this._StateID++;
                 return true;
             }
-            if (op == VM.OpCode.FROMALTSTACK) {
-                var p = AltStack.Pop();
-                CalcStack.Push(p);
-                StateID++;
+            if (op == ThinNeo.OpCode.FROMALTSTACK) {
+                var p = this.AltStack.Pop();
+                this.CalcStack.Push(p);
+                this._StateID++;
                 return true;
             }
-            if (op == VM.OpCode.XSWAP) {
-                var item = CalcStack.Pop();
-                var xn = CalcStack.Peek(item.AsInt());
-                var swapv = CalcStack.Peek(0);
-                CalcStack.Set(item.AsInt(), swapv);
-                CalcStack.Set(0, xn);
-                StateID++;
+            if (op == ThinNeo.OpCode.XSWAP) {
+                var item = this.CalcStack.Pop();
+                var xn = this.CalcStack.Peek(item.AsInt());
+                var swapv = this.CalcStack.Peek(0);
+                this.CalcStack.Set(item.AsInt(), swapv);
+                this.CalcStack.Set(0, xn);
+                this._StateID++;
                 return true;
             }
-            if (op == VM.OpCode.SWAP) {
-                var v1 = CalcStack.Pop();
-                var v2 = CalcStack.Pop();
-                CalcStack.Push(v1);
-                CalcStack.Push(v2);
-                StateID++;
+            if (op == ThinNeo.OpCode.SWAP) {
+                var v1 = this.CalcStack.Pop();
+                var v2 = this.CalcStack.Pop();
+                this.CalcStack.Push(v1);
+                this.CalcStack.Push(v2);
+                this._StateID++;
                 return true;
             }
-            if (op == VM.OpCode.ROT) {
-                var v3 = CalcStack.Pop();
-                var v2 = CalcStack.Pop();
-                var v1 = CalcStack.Pop();
-                CalcStack.Push(v2);
-                CalcStack.Push(v3);
-                CalcStack.Push(v1);
-                StateID++;
+            if (op == ThinNeo.OpCode.ROT) {
+                var v3 = this.CalcStack.Pop();
+                var v2 = this.CalcStack.Pop();
+                var v1 = this.CalcStack.Pop();
+                this.CalcStack.Push(v2);
+                this.CalcStack.Push(v3);
+                this.CalcStack.Push(v1);
+                this._StateID++;
                 return true;
             }
             //if (op == VM.OpCode.ROLL)
@@ -67,36 +68,36 @@ namespace ThinNeo.Debug {
             //}
             return false;
         }
-        public CalcCalcStack2(stackop: SmartContract.Debug.Op, item: SmartContract.Debug.StackItem): void {
-            if (stackop.type == SmartContract.Debug.OpType.Push) {
+        public CalcCalcStack2(stackop: ThinNeo.SmartContract.Debug.Op, item: ThinNeo.SmartContract.Debug.StackItem): void {
+            if (stackop.type == ThinNeo.SmartContract.Debug.OpType.Push) {
                 if (item == null)
-                    throw new Exception(stackop.type + "can not pass null");
-                CalcStack.Push(item);
+                    throw new Error(stackop.type + "can not pass null");
+                this.CalcStack.Push(item);
             }
-            else if (stackop.type == SmartContract.Debug.OpType.Insert) {
+            else if (stackop.type == ThinNeo.SmartContract.Debug.OpType.Insert) {
                 if (item == null)
-                    throw new Exception(stackop.type + "can not pass null");
-                CalcStack.Insert(stackop.ind, item);
+                    throw new Error(stackop.type + "can not pass null");
+                this.CalcStack.Insert(stackop.ind, item);
             }
-            else if (stackop.type == SmartContract.Debug.OpType.Clear) {
-                CalcStack.Clear();
+            else if (stackop.type == ThinNeo.SmartContract.Debug.OpType.Clear) {
+                this.CalcStack.Clear();
             }
-            else if (stackop.type == SmartContract.Debug.OpType.Set) {
+            else if (stackop.type == ThinNeo.SmartContract.Debug.OpType.Set) {
                 if (item == null)
-                    throw new Exception(stackop.type + "can not pass null");
-                CalcStack.Set(stackop.ind, item);
+                    throw new Error(stackop.type + "can not pass null");
+                this.CalcStack.Set(stackop.ind, item);
             }
             else if (stackop.type == SmartContract.Debug.OpType.Pop) {
-                CalcStack.Pop();
+                this.CalcStack.Pop();
             }
             else if (stackop.type == SmartContract.Debug.OpType.Peek) {
                 //CalcStack.Peek(stackop.ind);
             }
             else if (stackop.type == SmartContract.Debug.OpType.Remove) {
-                CalcStack.Remove(stackop.ind);
+                this.CalcStack.Remove(stackop.ind);
             }
             if (stackop.type != SmartContract.Debug.OpType.Peek)//peek 不造成状态变化
-                StateID++;
+                this._StateID++;
         }
         public DoSysCall(): void {
 
@@ -125,7 +126,7 @@ namespace ThinNeo.Debug {
         }
     }
     export class CareItem {
-        public CareItem(string name, State state) {
+        constructor(name: string, state: State) {
             this.name = name;
             if (name == "Neo.Runtime.CheckWitness" ||
                 name == "Neo.Runtime.Notify") {
@@ -140,8 +141,8 @@ namespace ThinNeo.Debug {
                     this.item.strvalue = item.strvalue;
                 }
                 else if (item.type == "ByteArray") {
-                    var bt = Debug.DebugTool.HexString2Bytes(item.strvalue);
-                    this.item.strvalue = System.Text.Encoding.ASCII.GetString(bt);
+                    var bt = item.strvalue.hexToBytes();//  Debug.DebugTool.HexString2Bytes(item.strvalue);
+                    this.item.strvalue = ThinNeo.Helper.Bytes2String(bt);// System.Text.Encoding.ASCII.GetString(bt);
                 }
                 else {
                     this.item.strvalue = "can't convert this.";
@@ -154,144 +155,142 @@ namespace ThinNeo.Debug {
                 var item3 = state.CalcStack.Peek(2);
                 this.item = new SmartContract.Debug.StackItem();
                 this.item.type = "Array";
-                this.item.subItems = new List<SmartContract.Debug.StackItem>();
-                this.item.subItems.Add(item1.Clone());
-                this.item.subItems.Add(item2.Clone());
-                this.item.subItems.Add(item3.Clone());
+                this.item.subItems = new Array<SmartContract.Debug.StackItem>();
+                this.item.subItems.push(item1.Clone());
+                this.item.subItems.push(item2.Clone());
+                this.item.subItems.push(item3.Clone());
             }
             else {
 
             }
 
         }
-        public string name;
-        public SmartContract.Debug.StackItem item;
-        public override string ToString()
-    {
-        return name + "(" + item ?.ToString() + ")";
-    }
-}
-//模拟虚拟机
-public class SimVM {
-    public void Execute(SmartContract.Debug.DumpInfo DumpInfo) {
-        State runstate = new State();
-        runstate.SetId(0);
-
-        stateClone = new Dictionary<int, State>();
-        mapState = new Dictionary<SmartContract.Debug.LogOp, int>();
-        careinfo = new List<CareItem>();
-
-        regenScript = new SmartContract.Debug.LogScript(DumpInfo.script.hash);
-        lastScript = regenScript;
-
-        ExecuteScript(runstate, DumpInfo.script);
-    }
-    SmartContract.Debug.LogScript lastScript = null;
-    public SmartContract.Debug.LogScript regenScript;
-    public Dictionary<int, State> stateClone;
-    public Dictionary<SmartContract.Debug.LogOp, int> mapState;
-    public List<CareItem> careinfo;
-        //加入outputscript，做一個補救，以前導出的log樹層次可能是錯的
-        void ExecuteScript(State runstate, SmartContract.Debug.LogScript script)
-{
-    try {
-        runstate.PushExe(script.hash);
-        foreach(var op in script.ops)
-        {
-            var _nop = op.Clone();
-            lastScript.ops.Add(_nop);
-            try {
-                if (op.op == VM.OpCode.APPCALL)//不造成栈影响，由目标script影响
-                {
-                    var _script = op.subScript;
-                    var outscript = new SmartContract.Debug.LogScript(op.subScript.hash);
-                    outscript.parent = lastScript;
-                    _nop.subScript = outscript;
-                    lastScript = outscript;
-                    //有可能造成影响
-                    if (op.stack != null) {
-
-                        for (var i = 0; i < op.stack.Length; i++) {
-                            if (i == op.stack.Length - 1) {
-                                runstate.CalcCalcStack(op.stack[i], op.opresult);
-                            }
-                            else {
-                                runstate.CalcCalcStack(op.stack[i], null);
-                            }
-                        }
-                    }
-                    runstate.PushExe(script.hash);
-                    if (stateClone.ContainsKey(runstate.StateID) == false) {
-                        stateClone[runstate.StateID] = (Debug.State)runstate.Clone();
-                    }
-                    ExecuteScript(runstate, _script);
-                    mapState[_nop] = runstate.StateID;
-                }
-                else if (op.op == VM.OpCode.CALL)//造成栈影响 就是个jmp
-                {
-                    var _lastScript = new SmartContract.Debug.LogScript(lastScript.hash);
-                    _lastScript.parent = lastScript;
-                    _nop.subScript = _lastScript;
-
-                    lastScript = _lastScript;
-                    runstate.PushExe(lastScript.hash);
-                    mapState[_nop] = runstate.StateID;
-
-                    //runstate.callcount++;
-                }
-                else if (op.op == VM.OpCode.RET) {
-                    runstate.PopExe();
-
-                    //mapState[op] = runstate.StateID;
-                    //if (runstate.callcount > 0)
-                    //{
-                    //    runstate.callcount--;
-                    //}
-                    //if (runstate.callcount == 0)
-                    {
-                        lastScript = lastScript.parent;
-                    }
-                    if (stateClone.ContainsKey(runstate.StateID) == false) {
-                        stateClone[runstate.StateID] = (Debug.State)runstate.Clone();
-                    }
-                    mapState[_nop] = runstate.StateID;
-                }
-                else {
-                    if (op.op == VM.OpCode.SYSCALL)//syscall比较独特，有些syscall 可以产生独立的log
-                    {
-                        var name = System.Text.Encoding.ASCII.GetString(op.param);
-                        careinfo.Add(new CareItem(name, runstate));
-                        //runstate.DoSysCall(op.op);
-                    }
-                    if (runstate.CalcCalcStack(op.op) == false) {
-                        if (op.stack != null) {
-
-                            for (var i = 0; i < op.stack.Length; i++) {
-                                if (i == op.stack.Length - 1) {
-                                    runstate.CalcCalcStack(op.stack[i], op.opresult);
-                                }
-                                else {
-                                    runstate.CalcCalcStack(op.stack[i], null);
-                                }
-                            }
-                        }
-                    }
-                    if (stateClone.ContainsKey(runstate.StateID) == false) {
-                        stateClone[runstate.StateID] = (Debug.State)runstate.Clone();
-                    }
-                    mapState[_nop] = runstate.StateID;
-                }
-            }
-            catch (Exception err1)
-            {
-                _nop.error = true;
-            }
+        public name: string;
+        public item: ThinNeo.SmartContract.Debug.StackItem;
+        public ToString(): string {
+            return name + "(" + this.item == null?"":this.item.ToString() + ")";
         }
     }
-    catch (Exception err)
-    {
-        throw new Exception("error in:" + err.Message);
-    }
-}
+    //模拟虚拟机
+    export class SimVM {
+        public Execute(DumpInfo: SmartContract.Debug.DumpInfo): void {
+            let runstate = new State();
+            runstate.SetId(0);
+
+            this.stateClone = {};
+            this.mapState = {};
+            this.careinfo = new Array<CareItem>();
+
+            this.regenScript = new SmartContract.Debug.LogScript(DumpInfo.script.hash);
+            this.lastScript = this.regenScript;
+
+            this.ExecuteScript(runstate, DumpInfo.script);
+        }
+        lastScript: SmartContract.Debug.LogScript = null;
+        public regenScript: SmartContract.Debug.LogScript;
+        public stateClone: { [id: number]: State };//Dictionary<int, State> ;
+        public mapState: { [id: number]: number };// Dictionary<SmartContract.Debug.LogOp, int> mapState;
+        public careinfo: Array<CareItem>;
+        //加入outputscript，做一個補救，以前導出的log樹層次可能是錯的
+        ExecuteScript(runstate: State, script: SmartContract.Debug.LogScript): void {
+            try {
+                runstate.PushExe(script.hash);
+                for (var i = 0; i < script.ops.length; i++)
+                //foreach(var op in script.ops)
+                {
+                    let op = script.ops[i];
+                    var _nop = op.Clone();
+                    this.lastScript.ops.push(_nop);
+                    try {
+                        if (op.op == ThinNeo.OpCode.APPCALL)//不造成栈影响，由目标script影响
+                        {
+                            var _script = op.subScript;
+                            var outscript = new SmartContract.Debug.LogScript(op.subScript.hash);
+                            outscript.parent = this.lastScript;
+                            _nop.subScript = outscript;
+                            this.lastScript = outscript;
+                            //有可能造成影响
+                            if (op.stack != null) {
+
+                                for (var i = 0; i < op.stack.length; i++) {
+                                    if (i == op.stack.length - 1) {
+                                        runstate.CalcCalcStack2(op.stack[i], op.opresult);
+                                    }
+                                    else {
+                                        runstate.CalcCalcStack2(op.stack[i], null);
+                                    }
+                                }
+                            }
+                            runstate.PushExe(script.hash);
+                            if (this.stateClone[runstate.StateID] == undefined) {
+                                this.stateClone[runstate.StateID] = runstate.Clone();
+                            }
+                            this.ExecuteScript(runstate, _script);
+                            this.mapState[_nop.guid] = runstate.StateID;
+                        }
+                        else if (op.op == ThinNeo.OpCode.CALL)//造成栈影响 就是个jmp
+                        {
+                            var _lastScript = new SmartContract.Debug.LogScript(this.lastScript.hash);
+                            _lastScript.parent = this.lastScript;
+                            _nop.subScript = _lastScript;
+
+                            this.lastScript = _lastScript;
+                            runstate.PushExe(this.lastScript.hash);
+                            this.mapState[_nop.guid] = runstate.StateID;
+
+                            //runstate.callcount++;
+                        }
+                        else if (op.op == ThinNeo.OpCode.RET) {
+                            runstate.PopExe();
+
+                            //mapState[op] = runstate.StateID;
+                            //if (runstate.callcount > 0)
+                            //{
+                            //    runstate.callcount--;
+                            //}
+                            //if (runstate.callcount == 0)
+                            {
+                                this.lastScript = this.lastScript.parent;
+                            }
+                            if (this.stateClone[runstate.StateID] == undefined) {
+                                this.stateClone[runstate.StateID] = runstate.Clone();
+                            }
+                            this.mapState[_nop.guid] = runstate.StateID;
+                        }
+                        else {
+                            if (op.op == ThinNeo.OpCode.SYSCALL)//syscall比较独特，有些syscall 可以产生独立的log
+                            {
+                                var name = ThinNeo.Helper.Bytes2String(op.param);
+                                this.careinfo.push(new CareItem(name, runstate));
+                                //runstate.DoSysCall(op.op);
+                            }
+                            if (runstate.CalcCalcStack(op.op) == false) {
+                                if (op.stack != null) {
+
+                                    for (var i = 0; i < op.stack.length; i++) {
+                                        if (i == op.stack.length - 1) {
+                                            runstate.CalcCalcStack2(op.stack[i], op.opresult);
+                                        }
+                                        else {
+                                            runstate.CalcCalcStack2(op.stack[i], null);
+                                        }
+                                    }
+                                }
+                            }
+                            if (this.stateClone[runstate.StateID] == undefined) {
+                                this.stateClone[runstate.StateID] = runstate.Clone();
+                            }
+                            this.mapState[_nop.guid] = runstate.StateID;
+                        }
+                    }
+                    catch (err1) {
+                        _nop.error = true;
+                    }
+                }
+            }
+            catch (err) {
+                throw new Error("error in:" + err);
+            }
+        }
     }
 }

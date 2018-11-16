@@ -539,6 +539,20 @@ declare module ThinNeo {
         THROWIFNOT = 241
     }
 }
+declare namespace ThinNeo.VM {
+    class RandomAccessStack<T> {
+        private readonly list;
+        readonly Count: number;
+        Clear(): void;
+        GetItem(index: number): T;
+        Insert(index: number, item: T): void;
+        Peek(index?: number): T;
+        Pop(): T;
+        Push(item: T): void;
+        Remove(index: number): T;
+        Set(index: number, item: T): void;
+    }
+}
 declare namespace ThinNeo {
     class ScriptBuilder {
         writer: number[];
@@ -1071,15 +1085,13 @@ declare namespace ThinNeo.Debug {
     class DebugScript {
         srcfile: string;
         codes: ThinNeo.Compiler.Op[];
+        maps: ThinNeo.Debug.Helper.AddrMap;
     }
     class DebugTool {
-        pathScript: string;
         scripts: {
             [id: string]: DebugScript;
         };
         dumpInfo: SmartContract.Debug.DumpInfo;
-        LoadScript(scriptid: string): boolean;
-        Load(_pathlog: string, _pathscript: string, transid: string): void;
     }
 }
 declare module ThinNeo.SmartContract.Debug {
@@ -1127,6 +1139,9 @@ declare module ThinNeo.SmartContract.Debug {
         Clone(): LogScript;
     }
     class LogOp {
+        private static __guid;
+        private thisguid;
+        readonly guid: number;
         constructor(addr: number, op: ThinNeo.OpCode);
         addr: number;
         op: ThinNeo.OpCode;
@@ -1146,6 +1161,41 @@ declare module ThinNeo.SmartContract.Debug {
         curScript: LogScript;
         curOp: LogOp;
         static FromJson(json: {}): DumpInfo;
+    }
+}
+declare namespace ThinNeo.Debug {
+    class State {
+        private _StateID;
+        readonly StateID: number;
+        SetId(id: number): void;
+        ExeStack: ThinNeo.VM.RandomAccessStack<string>;
+        CalcStack: VM.RandomAccessStack<SmartContract.Debug.StackItem>;
+        AltStack: VM.RandomAccessStack<SmartContract.Debug.StackItem>;
+        PushExe(hash: string): void;
+        PopExe(): void;
+        CalcCalcStack(op: ThinNeo.OpCode): boolean;
+        CalcCalcStack2(stackop: ThinNeo.SmartContract.Debug.Op, item: ThinNeo.SmartContract.Debug.StackItem): void;
+        DoSysCall(): void;
+        Clone(): State;
+    }
+    class CareItem {
+        constructor(name: string, state: State);
+        name: string;
+        item: ThinNeo.SmartContract.Debug.StackItem;
+        ToString(): string;
+    }
+    class SimVM {
+        Execute(DumpInfo: SmartContract.Debug.DumpInfo): void;
+        lastScript: SmartContract.Debug.LogScript;
+        regenScript: SmartContract.Debug.LogScript;
+        stateClone: {
+            [id: number]: State;
+        };
+        mapState: {
+            [id: number]: number;
+        };
+        careinfo: Array<CareItem>;
+        ExecuteScript(runstate: State, script: SmartContract.Debug.LogScript): void;
     }
 }
 declare namespace Neo.IO.Caching {

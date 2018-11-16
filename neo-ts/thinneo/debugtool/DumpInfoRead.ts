@@ -8,7 +8,7 @@ module ThinNeo.SmartContract.Debug {
         FAULT = 1 << 1,
         BREAK = 1 << 2,
     }
-    enum OpType {
+    export enum OpType {
         Non,
         Clear,
         Insert,
@@ -217,6 +217,11 @@ module ThinNeo.SmartContract.Debug {
 
 
     export class LogOp {
+        private static __guid: number = 0;
+        private thisguid: number;
+        public get guid() {
+            return this.thisguid;
+        }
         constructor(addr: number, op: ThinNeo.OpCode) {
             this.addr = addr;
             this.op = op;
@@ -224,6 +229,8 @@ module ThinNeo.SmartContract.Debug {
 
                 console.log("what a fuck");
             }
+            LogOp.__guid++;
+            this.thisguid = LogOp.__guid;
         }
         public addr: number;//int
         public op: ThinNeo.OpCode;
@@ -350,6 +357,7 @@ module ThinNeo.SmartContract.Debug {
         }
         public Clone(): LogOp {
             let op = new LogOp(this.addr, this.op);
+            op.thisguid = this.thisguid;
             op.error = this.error;
             if (this.stack != null) {
                 op.stack = new Op[this.stack.length];
