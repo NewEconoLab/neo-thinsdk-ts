@@ -24,6 +24,7 @@ module NeoTest2
             this.addText("==llvmhex.txt 解析相关==");
             this.addMenuItem(new Test1_Lzma());
             this.addMenuItem(new Test1_Fullog_Read());
+            this.addMenuItem(new Test1_Fullog_SimVM());
 
         }
         addText(str: string)

@@ -193,7 +193,8 @@ namespace ThinNeo.Debug {
         public careinfo: Array<CareItem>;
         //加入outputscript，做一個補救，以前導出的log樹層次可能是錯的
         ExecuteScript(runstate: State, script: SmartContract.Debug.LogScript): void {
-            try {
+            //try 
+            {
                 runstate.PushExe(script.hash);
                 for (var i = 0; i < script.ops.length; i++)
                 //foreach(var op in script.ops)
@@ -212,12 +213,12 @@ namespace ThinNeo.Debug {
                             //有可能造成影响
                             if (op.stack != null) {
 
-                                for (var i = 0; i < op.stack.length; i++) {
-                                    if (i == op.stack.length - 1) {
-                                        runstate.CalcCalcStack2(op.stack[i], op.opresult);
+                                for (var j = 0; j < op.stack.length; j++) {
+                                    if (j == op.stack.length - 1) {
+                                        runstate.CalcCalcStack2(op.stack[j], op.opresult);
                                     }
                                     else {
-                                        runstate.CalcCalcStack2(op.stack[i], null);
+                                        runstate.CalcCalcStack2(op.stack[j], null);
                                     }
                                 }
                             }
@@ -267,12 +268,12 @@ namespace ThinNeo.Debug {
                             if (runstate.CalcCalcStack(op.op) == false) {
                                 if (op.stack != null) {
 
-                                    for (var i = 0; i < op.stack.length; i++) {
-                                        if (i == op.stack.length - 1) {
-                                            runstate.CalcCalcStack2(op.stack[i], op.opresult);
+                                    for (var k = 0; k < op.stack.length; k++) {
+                                        if (k == op.stack.length - 1) {
+                                            runstate.CalcCalcStack2(op.stack[k], op.opresult);
                                         }
                                         else {
-                                            runstate.CalcCalcStack2(op.stack[i], null);
+                                            runstate.CalcCalcStack2(op.stack[k], null);
                                         }
                                     }
                                 }
@@ -288,9 +289,9 @@ namespace ThinNeo.Debug {
                     }
                 }
             }
-            catch (err) {
-                throw new Error("error in:" + err);
-            }
+            //catch (err) {
+            //    throw new Error("error in:" + err);
+            //}
         }
     }
 }

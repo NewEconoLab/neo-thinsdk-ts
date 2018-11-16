@@ -360,7 +360,7 @@ module ThinNeo.SmartContract.Debug {
             op.thisguid = this.thisguid;
             op.error = this.error;
             if (this.stack != null) {
-                op.stack = new Op[this.stack.length];
+                op.stack = new Array<Op>(this.stack.length);
                 for (var i = 0; i < this.stack.length; i++) {
                     op.stack[i] = this.stack[i].Clone();
                 }
