@@ -368,7 +368,7 @@ module ThinNeo.SmartContract.Debug {
         }
     }
 
-    export class FullLog {
+    export class DumpInfo {
         public script: LogScript = null;
         public error: string = null;
         public states: VMState[];
@@ -444,24 +444,24 @@ module ThinNeo.SmartContract.Debug {
         //    System.IO.File.Delete(filename + ".json");
 
         //}
-        public static FromJson(json: {}): FullLog {
-            let fulllog = new FullLog();
+        public static FromJson(json: {}): DumpInfo {
+            let dumpinfo = new DumpInfo();
             if (json["error"] != undefined)
-                fulllog.error = json["error"] as string;
+                dumpinfo.error = json["error"] as string;
             if (json["VMState"] != undefined) {
                 var state = json["VMState"] as string;
                 var words = state.split(",");
-                fulllog.states = [];
+                dumpinfo.states = [];
                 for (var i = 0; i < words.length; i++) {
                     var item = words[i].replace(" ", "");
-                    fulllog.states.push(VMState[item]);
+                    dumpinfo.states.push(VMState[item]);
                 }
 
             }
             if (json["script"] != undefined) {
-                fulllog.script = LogScript.FromJson(json["script"]);
+                dumpinfo.script = LogScript.FromJson(json["script"]);
             }
-            return fulllog;
+            return dumpinfo;
         }
     }
 }

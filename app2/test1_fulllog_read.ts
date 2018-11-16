@@ -5,7 +5,7 @@ module NeoTest2 {
         constructor() {
         }
         getName(): string {
-            return "read fulllog";
+            return "read dumpinfo";
         }
         div: HTMLDivElement;
         addtxt(str: string) {
@@ -50,11 +50,11 @@ module NeoTest2 {
 
 
             if (unpackjson != null) {
-                let fulllog = ThinNeo.SmartContract.Debug.FullLog.FromJson(unpackjson);
+                let dumpinfo = ThinNeo.SmartContract.Debug.DumpInfo.FromJson(unpackjson);
                 this.addtxt("read fulllog struct.");
-                this.addtxt("run state:" + fulllog.states);
-                for (var i = 0; i < fulllog.states.length; i++) {
-                    this.addtxt("--->" + ThinNeo.SmartContract.Debug.VMState[fulllog.states[i]]);
+                this.addtxt("run state:" + dumpinfo.states);
+                for (var i = 0; i < dumpinfo.states.length; i++) {
+                    this.addtxt("--->" + ThinNeo.SmartContract.Debug.VMState[dumpinfo.states[i]]);
                 }
                 let content = document.createElement("div");
                 content.style.maxHeight = "500px";
@@ -63,7 +63,7 @@ module NeoTest2 {
                 let ul = document.createElement("ul");
                 content.appendChild(ul);
                 this.div.appendChild(content);
-                this.dumpScript(fulllog.script, ul);
+                this.dumpScript(dumpinfo.script, ul);
             }
         }
         dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: HTMLUListElement) {

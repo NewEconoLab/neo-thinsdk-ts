@@ -119,7 +119,11 @@
     <TypeScriptCompile Include="neo-ts\lzma\MEMORY.ts" />
     <TypeScriptCompile Include="neo-ts\lzma\OutWindow.ts" />
     <TypeScriptCompile Include="neo-ts\lzma\RangeDecoder.ts" />
-    <TypeScriptCompile Include="neo-ts\thinneo\debugtool\FullLogRead.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\debugtool\AddrMap.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\debugtool\DebugTool.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\debugtool\DumpInfoRead.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\debugtool\SimVM.ts" />
+    <TypeScriptCompile Include="neo-ts\thinneo\randomaccessstack.ts" />
     <TypeScriptCompile Include="wallet\htmlui\panelmgr.ts" />
     <TypeScriptCompile Include="wallet\htmlui\quickdom.ts" />
     <TypeScriptCompile Include="wallet\htmlui\treeview.ts" />

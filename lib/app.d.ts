@@ -1034,6 +1034,54 @@ declare module ThinNeo.Compiler {
         getCodeName(): string;
     }
 }
+declare namespace ThinNeo.Debug.Helper {
+    class MethodInfo {
+        name: string;
+        startAddr: number;
+        Add(line: number, addr: number): void;
+        Sort(): void;
+        addr2line: {
+            [id: number]: number;
+        };
+        line2addr: {
+            [id: number]: number;
+        };
+        line2addr_count: number;
+        line2addr_minkey: number;
+        line2addr_maxkey: number;
+        lines: Array<number>;
+        addrs: Array<number>;
+        GetAddr(line: number): number;
+        GetAddrBack(line: number): number;
+        GetLine(addr: number): number;
+        GetLineBack(addr: number): number;
+    }
+    class AddrMap {
+        methods: Array<MethodInfo>;
+        GetAddr(line: number): number;
+        GetAddrBack(line: number): number;
+        GetLine(addr: number): number;
+        GetLineBack(addr: number): number;
+        static FromJson(json: {
+            [id: string]: any;
+        }): AddrMap;
+    }
+}
+declare namespace ThinNeo.Debug {
+    class DebugScript {
+        srcfile: string;
+        codes: ThinNeo.Compiler.Op[];
+    }
+    class DebugTool {
+        pathScript: string;
+        scripts: {
+            [id: string]: DebugScript;
+        };
+        dumpInfo: SmartContract.Debug.DumpInfo;
+        LoadScript(scriptid: string): boolean;
+        Load(_pathlog: string, _pathscript: string, transid: string): void;
+    }
+}
 declare module ThinNeo.SmartContract.Debug {
     enum VMState {
         NONE = 0,
@@ -1091,13 +1139,13 @@ declare module ThinNeo.SmartContract.Debug {
         static FromJson(json: {}): LogOp;
         Clone(): LogOp;
     }
-    class FullLog {
+    class DumpInfo {
         script: LogScript;
         error: string;
         states: VMState[];
         curScript: LogScript;
         curOp: LogOp;
-        static FromJson(json: {}): FullLog;
+        static FromJson(json: {}): DumpInfo;
     }
 }
 declare namespace Neo.IO.Caching {
