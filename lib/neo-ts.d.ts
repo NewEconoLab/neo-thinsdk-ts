@@ -1059,9 +1059,11 @@ declare namespace ThinNeo.Debug.Helper {
         line2addr: {
             [id: number]: number;
         };
-        line2addr_count: number;
+        addr_count: number;
         line2addr_minkey: number;
         line2addr_maxkey: number;
+        addr2line_minkey: number;
+        addr2line_maxkey: number;
         lines: Array<number>;
         addrs: Array<number>;
         GetAddr(line: number): number;
