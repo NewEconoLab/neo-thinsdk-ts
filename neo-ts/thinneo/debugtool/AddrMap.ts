@@ -37,6 +37,7 @@ namespace ThinNeo.Debug.Helper {
         public lines: Array<number> = new Array<number>();
         public addrs: Array<number> = new Array<number>();
         public GetAddr(line: number): number {
+            if (this.line2addr_maxkey == undefined) return -1;
             if (line > this.line2addr_maxkey) return -1;
 
             for (var i = 0; ; i++) {
@@ -45,6 +46,7 @@ namespace ThinNeo.Debug.Helper {
             }
         }
         public GetAddrBack(line: number): number {
+            if (this.line2addr_minkey == undefined) return -1;
             if (this.line2addr_count == 0) return -1;
             if (line < this.line2addr_minkey) return -1;
 
@@ -53,7 +55,15 @@ namespace ThinNeo.Debug.Helper {
                     return this.line2addr[line + i];
             }
         }
+        public GetLineDirect(addr: number): number {
+            if (this.addr2line[addr] != undefined)
+                return this.addr2line[addr];
+            return -1;
+        }
+
         public GetLine(addr: number): number {
+            if (this.line2addr_maxkey == undefined) return -1;
+
             if (addr > this.line2addr_maxkey) return -1;
 
             for (var i = 0; ; i++) {
@@ -62,6 +72,8 @@ namespace ThinNeo.Debug.Helper {
             }
         }
         public GetLineBack(addr: number): number {
+            if (this.line2addr_minkey == undefined) return -1;
+
             if (this.line2addr_count == 0)
                 return -1;
             if (addr < this.line2addr_minkey) return -1;
@@ -109,6 +121,16 @@ namespace ThinNeo.Debug.Helper {
             }
             return -1;
         }
+        public GetLineDirect(addr: number): number {
+            for (var a = 0; a < this.methods.length; a++)
+            //foreach(var m in methods)
+            {
+                var m = this.methods[a];
+                var i = m.GetLineDirect(addr);
+                if (i > 0)
+                    return i;
+            }
+            return -1;        }
         public GetLineBack(addr: number): number {
 
             for (var _i = this.methods.length - 1; _i >= 0; _i--) {

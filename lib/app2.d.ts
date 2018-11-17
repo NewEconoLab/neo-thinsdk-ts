@@ -1067,6 +1067,7 @@ declare namespace ThinNeo.Debug.Helper {
         addrs: Array<number>;
         GetAddr(line: number): number;
         GetAddrBack(line: number): number;
+        GetLineDirect(addr: number): number;
         GetLine(addr: number): number;
         GetLineBack(addr: number): number;
     }
@@ -1075,6 +1076,7 @@ declare namespace ThinNeo.Debug.Helper {
         GetAddr(line: number): number;
         GetAddrBack(line: number): number;
         GetLine(addr: number): number;
+        GetLineDirect(addr: number): number;
         GetLineBack(addr: number): number;
         static FromJson(json: {
             [id: string]: any;
@@ -1266,6 +1268,28 @@ declare module NeoTest2 {
         div: HTMLDivElement;
         addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        testasync(): Promise<void>;
+    }
+}
+declare module NeoTest2 {
+    class Test2_AVM_Read implements ITestItem {
+        constructor();
+        getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
+        start(div: HTMLDivElement): void;
+        addtxt2(e: HTMLElement, str: string): void;
+        testasync(): Promise<void>;
+    }
+}
+declare module NeoTest2 {
+    class Test2_Map_Read implements ITestItem {
+        constructor();
+        getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
+        start(div: HTMLDivElement): void;
+        addtxt2(e: HTMLElement, str: string): void;
         testasync(): Promise<void>;
     }
 }

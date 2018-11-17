@@ -25,6 +25,9 @@ module NeoTest2
             this.addMenuItem(new Test1_Lzma());
             this.addMenuItem(new Test1_Fullog_Read());
             this.addMenuItem(new Test1_Fullog_SimVM());
+            this.addText("==avm相关==");
+            this.addMenuItem(new Test2_AVM_Read());
+            this.addMenuItem(new Test2_Map_Read());
 
         }
         addText(str: string)

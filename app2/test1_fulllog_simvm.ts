@@ -95,7 +95,7 @@ module NeoTest2 {
         }
         showOP(script: ThinNeo.SmartContract.Debug.LogScript, op: ThinNeo.SmartContract.Debug.LogOp): void {
             this.divInfo.innerText = "";
-            this.addtxtSub("this op is:" + op.guid + ":" + this.opcode2str(op.op));
+            this.addtxtSub("this op is:" + op.guid + ":" + op.GetHeader());
             this.addtxtSub("show " + script.hash + ".avm" + " addr:" + op.addr +". use this to map2 srccode.");
             let stateid = this.simVM.mapState[op.guid];
             let state = this.simVM.stateClone[stateid];

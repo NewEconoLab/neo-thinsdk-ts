@@ -1066,6 +1066,7 @@ declare namespace ThinNeo.Debug.Helper {
         addrs: Array<number>;
         GetAddr(line: number): number;
         GetAddrBack(line: number): number;
+        GetLineDirect(addr: number): number;
         GetLine(addr: number): number;
         GetLineBack(addr: number): number;
     }
@@ -1074,6 +1075,7 @@ declare namespace ThinNeo.Debug.Helper {
         GetAddr(line: number): number;
         GetAddrBack(line: number): number;
         GetLine(addr: number): number;
+        GetLineDirect(addr: number): number;
         GetLineBack(addr: number): number;
         static FromJson(json: {
             [id: string]: any;

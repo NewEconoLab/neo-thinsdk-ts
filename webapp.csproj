@@ -95,6 +95,8 @@
     <Content Include="wallet\panel.css" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="app2\app.ts" />
+    <TypeScriptCompile Include="app2\test2_map_read.ts" />
+    <TypeScriptCompile Include="app2\test2_avm_read.ts" />
     <TypeScriptCompile Include="app2\test1_fulllog_simvm.ts" />
     <TypeScriptCompile Include="app2\test1_fulllog_read.ts" />
     <TypeScriptCompile Include="app2\test1_lzma.ts" />
@@ -201,6 +203,9 @@
     <TypeScriptCompile Include="neo-ts\neo\Uint64.ts" />
     <TypeScriptCompile Include="neo-ts\neo\UintVariable.ts" />
     <TypeScriptCompile Include="neo-ts\thinneo\helper.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="res\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
