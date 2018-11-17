@@ -1230,148 +1230,68 @@ declare namespace Neo.IO.Caching {
         Deleted = 3
     }
 }
-declare module NeoTest {
+declare module NeoTest2 {
     interface ITestItem {
         getName(): string;
         start(div: HTMLDivElement): void;
     }
 }
-declare module NeoTest {
-    class Test_CheckAddress implements ITestItem {
+declare module NeoTest2 {
+    class Test1_Fullog_Read implements ITestItem {
         constructor();
         getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        testasync(): Promise<void>;
+        dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: HTMLUListElement): void;
     }
 }
-declare module NeoTest {
-    class Test_Hash2Address implements ITestItem {
+declare module NeoTest2 {
+    class Test1_Fullog_SimVM implements ITestItem {
         constructor();
         getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        simVM: ThinNeo.Debug.SimVM;
+        divInfo: HTMLDivElement;
+        addtxtSub(str: string): void;
+        testasync(): Promise<void>;
+        opcode2str(opcode: ThinNeo.OpCode): string;
+        showOP(script: ThinNeo.SmartContract.Debug.LogScript, op: ThinNeo.SmartContract.Debug.LogOp): void;
+        dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: HTMLUListElement): void;
     }
 }
-declare module NeoTest {
-    class Test_Pubkey2Address implements ITestItem {
+declare module NeoTest2 {
+    class Test1_Lzma implements ITestItem {
         constructor();
         getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        testasync(): Promise<void>;
     }
 }
-declare module NeoTest {
-    class Test_Sign implements ITestItem {
+declare module NeoTest2 {
+    class Test2_AVM_Read implements ITestItem {
         constructor();
         getName(): string;
-        privateKey: Uint8Array;
-        publicKey: Uint8Array;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        addtxt2(e: HTMLElement, str: string): void;
+        testasync(): Promise<void>;
     }
 }
-declare module NeoTest {
-    class Test_WifDecode implements ITestItem {
+declare module NeoTest2 {
+    class Test2_Map_Read implements ITestItem {
         constructor();
         getName(): string;
+        div: HTMLDivElement;
+        addtxt(str: string): void;
         start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_Nep2FromPrikey implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_Nep2ToPrikey implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_Nep6 implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_Nep6Gen implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_TransactionAnalysis implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_ASM2AVM implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_GetNep5Info implements ITestItem {
-        constructor();
-        getName(): string;
-        makeRpcUrl(url: string, method: string, ..._params: any[]): string;
-        makeRpcPostBody(method: string, ..._params: any[]): {};
-        nep5decimals: number;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_ScriptBuilder implements ITestItem {
-        constructor();
-        getName(): string;
-        start(div: HTMLDivElement): void;
-    }
-}
-declare module NeoTest {
-    class Test_MultiSign implements ITestItem {
-        getName(): string;
-        keys: Array<key>;
-        key: key;
-        bError: boolean;
-        tx: Tx;
-        start(div: HTMLDivElement): void;
-    }
-    class key {
-        multisignkey: boolean;
-        prikey: Uint8Array;
-        MKey_NeedCount: number;
-        MKey_Pubkeys: Array<Uint8Array>;
-        ToString(): string;
-        GetMultiContract(): Uint8Array;
-        GetAddress(): string;
-        AddPubkey(pubkey: Uint8Array): void;
-    }
-    class Tx {
-        txraw: ThinNeo.Transaction;
-        keyinfos: Map<string, KeyInfo>;
-        HasKeyInfo(): boolean;
-        HasAllKeyInfo(): boolean;
-        FillRaw(): void;
-        ToString(): string;
-        ExoprtKeyInfo(): {};
-        ImportKeyInfo(keys: Array<key>, json?: {}): void;
-        FromString(keys: Array<key>, info: string): void;
-    }
-    class KeyInfo {
-        keyaddress: string;
-        type: KeyType;
-        MultiSignKey: key;
-        pubKey: Uint8Array;
-        signdata: Array<Uint8Array>;
-    }
-    enum KeyType {
-        Unknow = 0,
-        Simple = 1,
-        MultiSign = 2
+        addtxt2(e: HTMLElement, str: string): void;
+        testasync(): Promise<void>;
     }
 }

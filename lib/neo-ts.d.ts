@@ -1,3 +1,179 @@
+/// <reference path="../neo-ts/lzma/LZMA.d.ts" />
+declare module nid {
+    class BitTreeDecoder {
+        probs: Uint16Array;
+        private numBits;
+        constructor(numBits: any);
+        init(): void;
+        decode(rc: RangeDecoder): number;
+        reverseDecode(rc: RangeDecoder): number;
+        static constructArray(numBits: number, len: number): Array<BitTreeDecoder>;
+    }
+}
+declare module nid {
+    class LenDecoder {
+        private choice;
+        private lowCoder;
+        private midCoder;
+        private highCoder;
+        constructor();
+        init(): void;
+        decode(rc: RangeDecoder, posState: number): number;
+    }
+}
+declare module nid {
+    class LZMA {
+        static LZMA_DIC_MIN: number;
+        static LZMA_RES_ERROR: number;
+        static LZMA_RES_FINISHED_WITH_MARKER: number;
+        static LZMA_RES_FINISHED_WITHOUT_MARKER: number;
+        static kNumBitModelTotalBits: number;
+        static kNumMoveBits: number;
+        static PROB_INIT_VAL: number;
+        static kNumPosBitsMax: number;
+        static kNumStates: number;
+        static kNumLenToPosStates: number;
+        static kNumAlignBits: number;
+        static kStartPosModelIndex: number;
+        static kEndPosModelIndex: number;
+        static kNumFullDistances: number;
+        static kMatchMinLen: number;
+        decoder: LzmaDecoder;
+        data: Uint8Array;
+        static INIT_PROBS(p: Uint16Array): void;
+        static BitTreeReverseDecode(probs: any, numBits: number, rc: RangeDecoder, offset?: number): number;
+        constructor();
+        decode(data: Uint8Array): Uint8Array;
+    }
+}
+declare module nid {
+    class RangeDecoder {
+        static kTopValue: number;
+        inStream: Uint8Array;
+        corrupted: boolean;
+        in_pos: number;
+        private range;
+        private code;
+        private rangeI;
+        private codeI;
+        private loc1;
+        private loc2;
+        private U32;
+        private U16;
+        constructor();
+        isFinishedOK(): boolean;
+        init(): void;
+        normalize(): void;
+        decodeDirectBits(numBits: number): number;
+        decodeBit(prob: Uint16Array, index: number): number;
+    }
+}
+declare module nid {
+    class OutWindow {
+        totalPos: number;
+        outStream: Uint8Array;
+        private buf;
+        private pos;
+        out_pos: number;
+        private size;
+        private isFull;
+        constructor();
+        create(dictSize: number): void;
+        putByte(b: any): void;
+        getByte(dist: number): number;
+        copyMatch(dist: any, len: any): void;
+        checkDistance(dist: any): boolean;
+        isEmpty(): boolean;
+    }
+}
+declare module nid {
+    class LzmaDecoder {
+        markerIsMandatory: boolean;
+        rangeDec: RangeDecoder;
+        outWindow: OutWindow;
+        lc: number;
+        pb: number;
+        lp: number;
+        dictSize: number;
+        dictSizeInProperties: number;
+        private litProbs;
+        private posSlotDecoder;
+        private alignDecoder;
+        private posDecoders;
+        private isMatch;
+        private isRep;
+        private isRepG0;
+        private isRepG1;
+        private isRepG2;
+        private isRep0Long;
+        private lenDecoder;
+        private repLenDecoder;
+        private loc1;
+        private loc2;
+        private matchBitI;
+        private matchByteI;
+        private bitI;
+        private symbolI;
+        private prevByteI;
+        private litStateI;
+        constructor();
+        init(): void;
+        create(): void;
+        private createLiterals;
+        private initLiterals;
+        private decodeLiteral;
+        private decodeDistance;
+        private initDist;
+        decodeProperties(properties: Uint8Array): void;
+        private updateState_Literal;
+        private updateState_ShortRep;
+        private updateState_Rep;
+        private updateState_Match;
+        decode(unpackSizeDefined: boolean, unpackSize: number): number;
+    }
+}
+declare module nid.utils {
+    import LZMA = nid.LZMA;
+    class LZMAHelper {
+        static decoder: LZMA;
+        static decoderAsync: Worker;
+        static callback: Function;
+        static ENCODE: number;
+        static DECODE: number;
+        static init(): void;
+        static encode(data: ArrayBuffer): ArrayBuffer;
+        static decode(data: ArrayBuffer): ArrayBuffer;
+        static encodeAsync(data: ArrayBuffer, _callback: Function): void;
+        static decodeAsync(data: ArrayBuffer, _callback: Function): void;
+    }
+}
+declare module nid {
+    class LZMAWorker {
+        static ENCODE: number;
+        static DECODE: number;
+        private decoder;
+        private command;
+        private time;
+        constructor();
+        private decode;
+    }
+}
+declare module nid.utils {
+    class MEMORY {
+        static u8Index: number;
+        static u16Index: number;
+        static u32Index: number;
+        static u8: Uint32Array;
+        static u16: Uint32Array;
+        static u32: Uint32Array;
+        static allocateUint8(len: number): void;
+        static allocateUint16(len: number): void;
+        static allocateUint32(len: number): void;
+        static getUint8(): number;
+        static getUint16(): number;
+        static getUint32(): number;
+    }
+}
 declare namespace Neo {
     abstract class UintVariable {
         protected _bits: Uint32Array;
@@ -40,14 +216,14 @@ declare namespace Neo {
         constructor(value: number | string | ArrayBuffer | Uint8Array);
         static add(x: number | BigInteger, y: number | BigInteger): BigInteger;
         add(other: number | BigInteger): BigInteger;
-        private static addTo(x, y, r);
+        private static addTo;
         bitLength(): number;
-        private static bitLengthInternal(w);
-        private clamp();
+        private static bitLengthInternal;
+        private clamp;
         static compare(x: number | BigInteger, y: number | BigInteger): number;
-        private static compareAbs(x, y);
+        private static compareAbs;
         compareTo(other: number | BigInteger): number;
-        private static create(sign, bits, clamp?);
+        private static create;
         static divide(x: number | BigInteger, y: number | BigInteger): BigInteger;
         divide(other: number | BigInteger): BigInteger;
         static divRem(x: number | BigInteger, y: number | BigInteger): {
@@ -57,13 +233,13 @@ declare namespace Neo {
         static equals(x: number | BigInteger, y: number | BigInteger): boolean;
         equals(other: number | BigInteger): boolean;
         static fromString(str: string, radix?: number): BigInteger;
-        private fromString(str, radix?);
+        private fromString;
         static fromUint8Array(arr: Uint8Array, sign?: number, littleEndian?: boolean): BigInteger;
         static fromUint8ArrayAutoSign(arr: Uint8Array, littleEndian?: boolean): BigInteger;
-        private fromUint8Array(arr, sign?, littleEndian?);
-        private fromUint64(i, sign);
-        private static getActualLength(arr);
-        private static getDoubleParts(dbl);
+        private fromUint8Array;
+        private fromUint64;
+        private static getActualLength;
+        private static getDoubleParts;
         getLowestSetBit(): number;
         isEven(): boolean;
         isZero(): boolean;
@@ -76,7 +252,7 @@ declare namespace Neo {
         modPow(exponent: number | BigInteger, modulus: number | BigInteger): BigInteger;
         static multiply(x: number | BigInteger, y: number | BigInteger): BigInteger;
         multiply(other: number | BigInteger): BigInteger;
-        private static multiplyTo(x, y, r, offset?);
+        private static multiplyTo;
         negate(): BigInteger;
         static parse(str: string): BigInteger;
         static pow(value: number | BigInteger, exponent: number): BigInteger;
@@ -88,7 +264,7 @@ declare namespace Neo {
         sign(): number;
         static subtract(x: number | BigInteger, y: number | BigInteger): BigInteger;
         subtract(other: number | BigInteger): BigInteger;
-        private static subtractTo(x, y, r?);
+        private static subtractTo;
         testBit(n: number): boolean;
         toInt32(): number;
         toString(radix?: number): string;
@@ -155,7 +331,7 @@ declare type PromiseExecutor<T> = (resolve: Action<T | PromiseLike<T>>, reject: 
 declare enum PromiseState {
     pending = 0,
     fulfilled = 1,
-    rejected = 2,
+    rejected = 2
 }
 declare class NeoPromise<T> implements PromiseLike<T> {
     private _state;
@@ -168,13 +344,13 @@ declare class NeoPromise<T> implements PromiseLike<T> {
     private _tag;
     constructor(executor: PromiseExecutor<T>);
     static all(iterable: NeoPromise<any>[]): NeoPromise<any[]>;
-    catch<TResult>(onRejected: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
-    private checkState();
-    private reject(reason);
+    catch<TResult>(onrejected: (reason: any) => PromiseLike<TResult>): PromiseLike<TResult>;
+    private checkState;
+    private reject;
     static reject(reason: any): PromiseLike<any>;
-    private resolve(value);
+    private resolve;
     static resolve<T>(value: T | PromiseLike<T>): PromiseLike<T>;
-    then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
+    then<TResult1 = T, TResult2 = never>(onFulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onRejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): PromiseLike<TResult1 | TResult2>;
 }
 declare namespace Neo {
     class Uint160 extends UintVariable {
@@ -359,7 +535,21 @@ declare module ThinNeo {
         NEWSTRUCT = 198,
         SWITCH = 208,
         THROW = 240,
-        THROWIFNOT = 241,
+        THROWIFNOT = 241
+    }
+}
+declare namespace ThinNeo.VM {
+    class RandomAccessStack<T> {
+        private readonly list;
+        readonly Count: number;
+        Clear(): void;
+        GetItem(index: number): T;
+        Insert(index: number, item: T): void;
+        Peek(index?: number): T;
+        Pop(): T;
+        Push(item: T): void;
+        Remove(index: number): T;
+        Set(index: number, item: T): void;
     }
 }
 declare namespace ThinNeo {
@@ -393,7 +583,7 @@ declare namespace ThinNeo {
         RegisterTransaction = 64,
         ContractTransaction = 128,
         PublishTransaction = 208,
-        InvocationTransaction = 209,
+        InvocationTransaction = 209
     }
     enum TransactionAttributeUsage {
         ContractHash = 0,
@@ -433,7 +623,7 @@ declare namespace ThinNeo {
         Remark12 = 252,
         Remark13 = 253,
         Remark14 = 254,
-        Remark15 = 255,
+        Remark15 = 255
     }
     class Attribute {
         usage: TransactionAttributeUsage;
@@ -515,7 +705,7 @@ declare namespace Neo.Cryptography {
         private _lastCipherblock;
         readonly mode: string;
         constructor(key: ArrayBuffer | ArrayBufferView, iv: ArrayBuffer | ArrayBufferView);
-        private static convertToInt32(bytes);
+        private static convertToInt32;
         decrypt(ciphertext: ArrayBuffer | ArrayBufferView): ArrayBuffer;
         decryptBlock(ciphertext: Uint8Array, plaintext: Uint8Array): void;
         encrypt(plaintext: ArrayBuffer | ArrayBufferView): ArrayBuffer;
@@ -546,7 +736,7 @@ declare namespace Neo.Cryptography {
     }
     class ECDsaCryptoKey extends CryptoKey {
         publicKey: ECPoint;
-        privateKey: Uint8Array;
+        privateKey?: Uint8Array;
         constructor(publicKey: ECPoint, privateKey?: Uint8Array);
     }
 }
@@ -567,13 +757,13 @@ declare namespace Neo.Cryptography {
     class ECDsa {
         private key;
         constructor(key: ECDsaCryptoKey);
-        private static calculateE(n, message);
+        private static calculateE;
         static generateKey(curve: ECCurve): {
             privateKey: ECDsaCryptoKey;
             publicKey: ECDsaCryptoKey;
         };
         sign(message: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-        private static sumOfTwoMultiplies(P, k, Q, l);
+        private static sumOfTwoMultiplies;
         verify(message: ArrayBuffer | ArrayBufferView, signature: ArrayBuffer | ArrayBufferView): boolean;
     }
 }
@@ -586,7 +776,7 @@ declare namespace Neo.Cryptography {
         compareTo(other: ECFieldElement): number;
         divide(other: ECFieldElement): ECFieldElement;
         equals(other: ECFieldElement): boolean;
-        private static fastLucasSequence(p, P, Q, k);
+        private static fastLucasSequence;
         multiply(other: ECFieldElement): ECFieldElement;
         negate(): ECFieldElement;
         sqrt(): ECFieldElement;
@@ -603,7 +793,7 @@ declare namespace Neo.Cryptography {
         static add(x: ECPoint, y: ECPoint): ECPoint;
         compareTo(other: ECPoint): number;
         static decodePoint(encoded: Uint8Array, curve: ECCurve): ECPoint;
-        private static decompressPoint(yTilde, X1, curve);
+        private static decompressPoint;
         static deserializeFrom(reader: IO.BinaryReader, curve: ECCurve): ECPoint;
         encodePoint(commpressed: boolean): Uint8Array;
         equals(other: ECPoint): boolean;
@@ -615,7 +805,7 @@ declare namespace Neo.Cryptography {
         static subtract(x: ECPoint, y: ECPoint): ECPoint;
         toString(): string;
         twice(): ECPoint;
-        private static windowNaf(width, k);
+        private static windowNaf;
     }
 }
 declare namespace Neo.Cryptography {
@@ -625,15 +815,15 @@ declare namespace Neo.Cryptography {
         private static _started;
         private static _stopped;
         private static _key;
-        private static addEntropy(data, strength);
-        static getRandomValues<T extends Int8Array | Uint8ClampedArray | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array>(array: T): T;
-        private static getWeakRandomValues(array);
-        private static processDeviceMotionEvent(event);
-        private static processEvent(event);
-        private static processMouseEvent(event);
-        private static processTouchEvent(event);
+        private static addEntropy;
+        static getRandomValues<T extends Int8Array | Uint8ClampedArray | Int16Array | Uint16Array | Uint8Array | Uint16Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array | DataView | null>(array: T): T;
+        private static getWeakRandomValues;
+        private static processDeviceMotionEvent;
+        private static processEvent;
+        private static processMouseEvent;
+        private static processTouchEvent;
         static startCollectors(): void;
-        private static stopCollectors();
+        private static stopCollectors;
     }
 }
 interface String {
@@ -657,15 +847,15 @@ declare namespace Neo.Cryptography {
         private static sr;
         private static hl;
         private static hr;
-        private static bytesToWords(bytes);
-        private static wordsToBytes(words);
-        private static processBlock(H, M, offset);
-        private static f1(x, y, z);
-        private static f2(x, y, z);
-        private static f3(x, y, z);
-        private static f4(x, y, z);
-        private static f5(x, y, z);
-        private static rotl(x, n);
+        private static bytesToWords;
+        private static wordsToBytes;
+        private static processBlock;
+        private static f1;
+        private static f2;
+        private static f3;
+        private static f4;
+        private static f5;
+        private static rotl;
         static computeHash(data: ArrayBuffer | ArrayBufferView): ArrayBuffer;
     }
 }
@@ -673,13 +863,13 @@ declare namespace Neo.Cryptography {
     class Sha256 {
         private static K;
         static computeHash(data: ArrayBuffer | ArrayBufferView): ArrayBuffer;
-        private static ROTR(n, x);
-        private static Σ0(x);
-        private static Σ1(x);
-        private static σ0(x);
-        private static σ1(x);
-        private static Ch(x, y, z);
-        private static Maj(x, y, z);
+        private static ROTR;
+        private static Σ0;
+        private static Σ1;
+        private static σ0;
+        private static σ1;
+        private static Ch;
+        private static Maj;
     }
 }
 declare namespace Neo.IO {
@@ -697,7 +887,7 @@ declare namespace Neo.IO {
         constructor(input: Stream);
         canRead(): number;
         close(): void;
-        private fillBuffer(buffer, count);
+        private fillBuffer;
         read(buffer: ArrayBuffer, index: number, count: number): number;
         readBoolean(): boolean;
         readByte(): number;
@@ -769,7 +959,7 @@ declare namespace Neo.IO {
     enum SeekOrigin {
         Begin = 0,
         Current = 1,
-        End = 2,
+        End = 2
     }
     abstract class Stream {
         private _array;
@@ -803,11 +993,11 @@ declare namespace Neo.IO {
         canSeek(): boolean;
         canWrite(): boolean;
         capacity(): number;
-        private findBuffer(position);
+        private findBuffer;
         length(): number;
         position(): number;
         read(buffer: ArrayBuffer, offset: number, count: number): number;
-        private readInternal(dst, srcPos);
+        private readInternal;
         seek(offset: number, origin: SeekOrigin): number;
         setLength(value: number): void;
         toArray(): ArrayBuffer;
@@ -842,7 +1032,7 @@ declare module ThinNeo.Compiler {
         None = 0,
         ByteArray = 1,
         String = 2,
-        Addr = 3,
+        Addr = 3
     }
     class Op {
         addr: number;
@@ -855,6 +1045,160 @@ declare module ThinNeo.Compiler {
         AsString(): string;
         AsAddr(): number;
         getCodeName(): string;
+    }
+}
+declare namespace ThinNeo.Debug.Helper {
+    class MethodInfo {
+        name: string;
+        startAddr: number;
+        Add(line: number, addr: number): void;
+        Sort(): void;
+        addr2line: {
+            [id: number]: number;
+        };
+        line2addr: {
+            [id: number]: number;
+        };
+        addr_count: number;
+        line2addr_minkey: number;
+        line2addr_maxkey: number;
+        addr2line_minkey: number;
+        addr2line_maxkey: number;
+        lines: Array<number>;
+        addrs: Array<number>;
+        GetAddr(line: number): number;
+        GetAddrBack(line: number): number;
+        GetLineDirect(addr: number): number;
+        GetLine(addr: number): number;
+        GetLineBack(addr: number): number;
+    }
+    class AddrMap {
+        methods: Array<MethodInfo>;
+        GetAddr(line: number): number;
+        GetAddrBack(line: number): number;
+        GetLine(addr: number): number;
+        GetLineDirect(addr: number): number;
+        GetLineBack(addr: number): number;
+        static FromJson(json: {
+            [id: string]: any;
+        }): AddrMap;
+    }
+}
+declare namespace ThinNeo.Debug {
+    class DebugScript {
+        srcfile: string;
+        codes: ThinNeo.Compiler.Op[];
+        maps: ThinNeo.Debug.Helper.AddrMap;
+    }
+    class DebugTool {
+        scripts: {
+            [id: string]: DebugScript;
+        };
+        dumpInfo: SmartContract.Debug.DumpInfo;
+    }
+}
+declare module ThinNeo.SmartContract.Debug {
+    enum VMState {
+        NONE = 0,
+        HALT = 1,
+        FAULT = 2,
+        BREAK = 4
+    }
+    enum OpType {
+        Non = 0,
+        Clear = 1,
+        Insert = 2,
+        Peek = 3,
+        Pop = 4,
+        Push = 5,
+        Remove = 6,
+        Set = 7
+    }
+    class Op {
+        constructor(type: OpType, ind?: number);
+        type: OpType;
+        ind: number;
+        Clone(): Op;
+    }
+    class StackItem {
+        type: string;
+        strvalue: string;
+        subItems: Array<StackItem>;
+        Clone(): StackItem;
+        AsInt(): number;
+        AsBigInteger(): Neo.BigInteger;
+        asBytes(): Uint8Array;
+        ToString(): string;
+        ToShortString(): string;
+        static FromJson(json: {}): StackItem;
+    }
+    class LogScript {
+        constructor(hash: string);
+        GetAllScriptName(names: Array<string>): number;
+        parent: LogScript;
+        hash: string;
+        ops: Array<LogOp>;
+        static FromJson(json: {}): LogScript;
+        Clone(): LogScript;
+    }
+    class LogOp {
+        private static __guid;
+        private thisguid;
+        readonly guid: number;
+        constructor(addr: number, op: ThinNeo.OpCode);
+        addr: number;
+        op: ThinNeo.OpCode;
+        error: boolean;
+        stack: Op[];
+        param: Uint8Array;
+        opresult: StackItem;
+        GetHeader(): string;
+        subScript: LogScript;
+        static FromJson(json: {}): LogOp;
+        Clone(): LogOp;
+    }
+    class DumpInfo {
+        script: LogScript;
+        error: string;
+        states: VMState[];
+        curScript: LogScript;
+        curOp: LogOp;
+        static FromJson(json: {}): DumpInfo;
+    }
+}
+declare namespace ThinNeo.Debug {
+    class State {
+        private _StateID;
+        readonly StateID: number;
+        SetId(id: number): void;
+        ExeStack: ThinNeo.VM.RandomAccessStack<string>;
+        CalcStack: VM.RandomAccessStack<SmartContract.Debug.StackItem>;
+        AltStack: VM.RandomAccessStack<SmartContract.Debug.StackItem>;
+        PushExe(hash: string): void;
+        PopExe(): void;
+        CalcCalcStack(op: ThinNeo.OpCode): boolean;
+        CalcCalcStack2(stackop: ThinNeo.SmartContract.Debug.Op, item: ThinNeo.SmartContract.Debug.StackItem): void;
+        DoSysCall(): void;
+        Clone(): State;
+    }
+    class CareItem {
+        constructor(name: string, state: State);
+        name: string;
+        item: ThinNeo.SmartContract.Debug.StackItem;
+        ToString(): string;
+    }
+    class SimVM {
+        Execute(DumpInfo: SmartContract.Debug.DumpInfo): void;
+        lastScript: SmartContract.Debug.LogScript;
+        regenScript: SmartContract.Debug.LogScript;
+        stateClone: {
+            [id: number]: State;
+        };
+        mapState: {
+            [id: number]: number;
+        };
+        careinfo: Array<CareItem>;
+        ExecuteScript(runstate: State, script: SmartContract.Debug.LogScript): void;
     }
 }
 declare namespace Neo.IO.Caching {
@@ -882,6 +1226,6 @@ declare namespace Neo.IO.Caching {
         None = 0,
         Added = 1,
         Changed = 2,
-        Deleted = 3,
+        Deleted = 3
     }
 }

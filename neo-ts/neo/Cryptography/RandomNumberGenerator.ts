@@ -22,7 +22,8 @@
                 RandomNumberGenerator.stopCollectors();
         }
 
-        public static getRandomValues<T extends Int8Array | Uint8ClampedArray | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array>(array: T): T
+
+        public static getRandomValues<T extends Int8Array | Uint8ClampedArray | Int16Array | Uint16Array | Uint8Array | Uint16Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array | DataView | null>(array: T): T
         {
             if (RandomNumberGenerator._strength < 256) throw new Error();
             if (RandomNumberGenerator._key == null)

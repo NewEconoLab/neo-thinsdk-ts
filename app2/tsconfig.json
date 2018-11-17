@@ -7,7 +7,7 @@
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "outFile": "../lib/app.js"
+    "outFile": "../lib/app2.js"
   },
   "references": [
     {
