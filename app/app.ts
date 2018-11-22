@@ -43,6 +43,7 @@ module NeoTest
             this.addText("NEO-ThinSDK(typescript)");
             this.addLink("Github", "https://github.com/NewEconoLab/neo-thinsdk-ts");
             this.addLink("TestPage2", "test2.html");
+            this.addLink("TestPage3", "test3.html");
             this.addText("基本签名运算Cryptography");
             this.addMenuItem(new Test_CheckAddress());
             this.addMenuItem(new Test_Hash2Address());

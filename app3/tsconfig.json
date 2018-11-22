@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "target": "es6",
+    "declaration": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outFile": "../lib/app3.js"
+  },
+  "references": [
+    {
+      "path": "../neo-ts",
+      "prepend": true
+    }
+  ]
+}
