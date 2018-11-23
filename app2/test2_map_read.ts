@@ -74,6 +74,7 @@ module NeoTest2 {
                     var op = oplist[i];
                     //var line = addr.GetLineDirect(op.addr); //只取有的
                     var line = addr.GetLineBack(op.addr);//尽量倒着取到对应的代码
+                    console.log(op.addr);
                     var strout = "--->" + op.toString();
 
                     var code = lines[line-1];

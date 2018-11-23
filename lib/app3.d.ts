@@ -1241,7 +1241,13 @@ declare module NeoTest2 {
     class Test3_Codemirror_CursorControl implements ITestItem {
         constructor();
         getName(): string;
+        stackarr: {
+            script: ThinNeo.SmartContract.Debug.LogScript;
+            op: ThinNeo.SmartContract.Debug.LogOp;
+        }[];
         dumpString: string;
+        addr: ThinNeo.Debug.Helper.AddrMap;
+        oplist: ThinNeo.Compiler.Op[];
         div: HTMLDivElement;
         host: HTMLTextAreaElement;
         option: CodeMirror.EditorConfiguration;
@@ -1250,7 +1256,7 @@ declare module NeoTest2 {
         addtxt(str: string): void;
         start(div: HTMLDivElement): void;
         addtxt2(str: string): void;
-        initCode(): Promise<void>;
+        initCode(hash: string): Promise<void>;
         testasync(): Promise<void>;
         dumpScript(script: ThinNeo.SmartContract.Debug.LogScript, level: number): void;
     }

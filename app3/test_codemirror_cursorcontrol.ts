@@ -8,12 +8,19 @@ module NeoTest2 {
         getName(): string {
             return "codemirror";
         }
+        stackarr:
+            {
+            script: ThinNeo.SmartContract.Debug.LogScript, op: ThinNeo.SmartContract.Debug.LogOp
+        }[] = [];
         dumpString: string;
+        addr: ThinNeo.Debug.Helper.AddrMap;
+        oplist: ThinNeo.Compiler.Op[];
         div: HTMLDivElement;
         host: HTMLTextAreaElement;
         option: CodeMirror.EditorConfiguration;
         codeEditor: CodeMirror.EditorFromTextArea;
         fulllogEditor: CodeMirror.EditorFromTextArea;
+        
         addtxt(str: string) {
             console.log(str);
             //var span = document.createElement("span");
@@ -27,7 +34,7 @@ module NeoTest2 {
             this.div.style.display = "flex";
             let div1 = document.createElement("div");
             let div2 = document.createElement("div");
-            div1.style.flex = "1";
+            div2.style.flex = "1";
             this.host = document.createElement("textarea");
             const host2 = document.createElement("textarea");
             div1.appendChild(host2);
@@ -39,32 +46,45 @@ module NeoTest2 {
             this.option.dragDrop = true;
             this.option.lineNumbers = true;
             this.option.extraKeys = { "Ctrl": "autocomplete" };
-            this.option.theme = "monokai";
+            //this.option.theme = "monokai";
+            this.option.readOnly = true;
             this.codeEditor = CodeMirror.fromTextArea(this.host, this.option);
             this.fulllogEditor = CodeMirror.fromTextArea(host2, this.option);
             this.codeEditor.setSize(800, 600)
             this.fulllogEditor.setSize("auto", 600);
             this.testasync();
-            this.initCode();
-            //this.testasync();
+
+            this.fulllogEditor.on("cursorActivity", (res) => {
+                let codeline = this.fulllogEditor.getCursor().line
+                if (this.stackarr[codeline]) {
+                    let script = this.stackarr[codeline].script;
+                    let op = this.stackarr[codeline].op;
+
+                    this.initCode(script.hash);
+                    let index = this.oplist[codeline];
+                    var line = this.addr.GetLineBack(index.addr);//尽量倒着取到对应的代码
+                    this.codeEditor.setCursor(line);
+                    this.codeEditor.addLineClass(line, "background", "cursor-line-highight");
+                }
+
+            })
 
         }
         addtxt2(str: string) {
-            console.log(str);
             if (this.dumpString) {
                 this.dumpString += "\n"+str;
             } else {
                 this.dumpString += str;
             }
-            this.fulllogEditor.setValue(this.dumpString);
         }
-        async initCode(): Promise<void> {
-            var filename = "res/0x50c995bf4754a29bd27a6fc1054134bed2246b5a";
+        async initCode(hash: string): Promise<void> {
+            var filename = "res/" + hash;
             var result = await fetch(filename + ".avm.bin", { "method": "get" });
             var hex = new Uint8Array(await result.arrayBuffer());
+            this.oplist = ThinNeo.Compiler.Avm2Asm.Trans(hex);
             var result2 = await fetch(filename + ".map.json", { "method": "get" });
             var mapstr = await result2.text();
-
+            this.addr = ThinNeo.Debug.Helper.AddrMap.FromJson(JSON.parse(mapstr));
             var result3 = await fetch(filename + ".cs.txt", { "method": "get" });
             this.codeEditor.setValue(await result3.text());
         }
@@ -74,7 +94,7 @@ module NeoTest2 {
             let lzma: nid.LZMA = new nid.LZMA();
             this.addtxt("new LZMA");
 
-            var result = await fetch("res/0x0000ec4f810fc65b81187ecbbd1e8a6bef6bbb645bd745f903de58ae2d895346.llvmhex.txt", { "method": "get" });
+            var result = await fetch("res/0xf8f8abba3c1c40429640868368cff6f160910ddefec44ea4a372dd3cc0710394.llvmhex.txt", { "method": "get" });
             var hexstr = await result.text();
             var srcbytes = hexstr.hexToBytes();
             this.addtxt("get llvmhex.");
@@ -114,12 +134,21 @@ module NeoTest2 {
                 this.addtxt2(space + "hash : " + script.hash);
             else
                 this.addtxt2("hash : " + script.hash);
+            this.stackarr.push(undefined);
             for (var i = 0; i < script.ops.length; i++) {
                 this.addtxt2(space + "op : " + script.ops[i].GetHeader());
+                this.stackarr.push({ script: script, op: script.ops[i] });
                 if (script.ops[i].subScript != null)
                     this.dumpScript(script.ops[i].subScript, level + 1);
             }
+            if (level === 1) {
+                this.fulllogEditor.setValue(this.dumpString);
+            }
         }
 
+    }
+
+    class AvmInfo {
+        map: string;
     }
 }

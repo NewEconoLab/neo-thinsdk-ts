@@ -346,6 +346,17 @@ declare namespace CodeMirror {
         /** This is similar to getTokenAt, but collects all tokens for a given line into an array. */
         getLineTokens(line: number, precise?: boolean): Token[];
 
+        /** 自己加上的说明 获得光标所在位置信息 */
+        getCursor(): Position;
+        /**
+         * 
+         * @param pos
+         * @param 
+         * @param ch
+         * @param 
+         * @param options
+         */
+        setCursor(line: number): void
         /** Returns the mode's parser state, if any, at the end of the given line number.
         If no line number is given, the state at the end of the document is returned.
         This can be useful for storing parsing errors in the state, or getting other kinds of contextual information for a line. */
@@ -796,6 +807,8 @@ declare namespace CodeMirror {
     interface Position {
         ch: number;
         line: number;
+        sticky: string;
+        xRel
     }
 
     interface EditorConfiguration {
