@@ -30,7 +30,8 @@ module NeoTest2 {
             e.appendChild(document.createElement("hr"));//newline
         }
         async testasync(): Promise<void> {
-            var filename = "res/0x50c995bf4754a29bd27a6fc1054134bed2246b5a";
+            //var filename = "res/0x50c995bf4754a29bd27a6fc1054134bed2246b5a";
+            var filename = "res/0x17f26389efc8fe0d9f2116f8ea474202b8d78280";
             var result = await fetch(filename + ".avm.bin", { "method": "get" });
             var hex = new Uint8Array(await result.arrayBuffer());
             this.addtxt("get .avm.");
@@ -80,6 +81,8 @@ module NeoTest2 {
                     var code = lines[line-1];
 
                     if (line >= 0) {
+                        console.log("-------------------------op.addr")
+                        console.log(op.addr)
                         strout += " line=" + line;
                         if (code != undefined)
                             strout += "src=" + code

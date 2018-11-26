@@ -11,7 +11,6 @@
 .cm-s-monokai .CodeMirror-cursor { border-left: 1px solid #f8f8f0; }
 .cursor-line-highight {
     border-bottom:2px solid #66d9ef;
-    background-color:azure;
     border-top:2px solid #66d9ef;
 }
 .cm-s-monokai span.cm-comment { color: #75715e; }

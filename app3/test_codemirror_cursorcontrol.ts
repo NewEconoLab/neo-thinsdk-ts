@@ -46,7 +46,7 @@ module NeoTest2 {
             this.option.dragDrop = true;
             this.option.lineNumbers = true;
             this.option.extraKeys = { "Ctrl": "autocomplete" };
-            //this.option.theme = "monokai";
+            this.option.theme = "monokai";
             this.option.readOnly = true;
             this.codeEditor = CodeMirror.fromTextArea(this.host, this.option);
             this.fulllogEditor = CodeMirror.fromTextArea(host2, this.option);
@@ -55,20 +55,23 @@ module NeoTest2 {
             this.testasync();
 
             this.fulllogEditor.on("cursorActivity", (res) => {
-                let codeline = this.fulllogEditor.getCursor().line
-                if (this.stackarr[codeline]) {
-                    let script = this.stackarr[codeline].script;
-                    let op = this.stackarr[codeline].op;
-
-                    this.initCode(script.hash);
-                    let index = this.oplist[codeline];
-                    var line = this.addr.GetLineBack(index.addr);//尽量倒着取到对应的代码
-                    this.codeEditor.setCursor(line);
-                    this.codeEditor.addLineClass(line, "background", "cursor-line-highight");
-                }
-
+                this.debug()
             })
 
+        }
+
+        async debug() {
+            let codeline = this.fulllogEditor.getCursor().line
+            if (this.stackarr[codeline]) {
+                let script = this.stackarr[codeline].script;
+                let op = this.stackarr[codeline].op;
+
+                await this.initCode(script.hash);
+                let index = this.oplist[codeline];
+                var line = this.addr.GetLineBack(op.addr);//尽量倒着取到对应的代码
+                this.codeEditor.setCursor(line);
+                this.codeEditor.addLineClass(line, "background", "cursor-line-highight");
+            }
         }
         addtxt2(str: string) {
             if (this.dumpString) {
@@ -77,6 +80,7 @@ module NeoTest2 {
                 this.dumpString += str;
             }
         }
+
         async initCode(hash: string): Promise<void> {
             var filename = "res/" + hash;
             var result = await fetch(filename + ".avm.bin", { "method": "get" });
@@ -94,7 +98,7 @@ module NeoTest2 {
             let lzma: nid.LZMA = new nid.LZMA();
             this.addtxt("new LZMA");
 
-            var result = await fetch("res/0xf8f8abba3c1c40429640868368cff6f160910ddefec44ea4a372dd3cc0710394.llvmhex.txt", { "method": "get" });
+            var result = await fetch("res/0x8988078975ea1d55603791b1548d6531a7010fb605611dec9a0c8711d85723cf.llvmhex.txt", { "method": "get" });
             var hexstr = await result.text();
             var srcbytes = hexstr.hexToBytes();
             this.addtxt("get llvmhex.");
@@ -137,6 +141,12 @@ module NeoTest2 {
             this.stackarr.push(undefined);
             for (var i = 0; i < script.ops.length; i++) {
                 this.addtxt2(space + "op : " + script.ops[i].GetHeader());
+                if (script.ops[i].GetHeader().includes("APPCALL")) {
+                    console.log("----------------------------"+script.ops[i].GetHeader())
+                    console.log(script.ops[i]);
+                    console.log(script.ops[i].param);
+                    console.log(script.ops[i].param.toHexString());
+                }
                 this.stackarr.push({ script: script, op: script.ops[i] });
                 if (script.ops[i].subScript != null)
                     this.dumpScript(script.ops[i].subScript, level + 1);

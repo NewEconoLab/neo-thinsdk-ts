@@ -1255,6 +1255,7 @@ declare module NeoTest2 {
         fulllogEditor: CodeMirror.EditorFromTextArea;
         addtxt(str: string): void;
         start(div: HTMLDivElement): void;
+        debug(): Promise<void>;
         addtxt2(str: string): void;
         initCode(hash: string): Promise<void>;
         testasync(): Promise<void>;

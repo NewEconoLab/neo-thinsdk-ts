@@ -1,0 +1,19 @@
+using Neo.SmartContract.Framework;
+using Neo.SmartContract.Framework.Services.Neo;
+using Neo.SmartContract.Framework.Services.System;
+using System;
+using System.ComponentModel;
+using System.Numerics;
+using Helper = Neo.SmartContract.Framework.Helper;
+
+namespace ContractTest
+{
+    public class ContractOne : SmartContract
+    {
+        public static object Main(string method,object[] args)
+        {
+            string magicStr = "201811261715vincent";
+            return "hello word";
+        }
+    }
+}
