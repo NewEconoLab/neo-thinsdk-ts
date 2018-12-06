@@ -166,6 +166,7 @@ declare module nid.utils {
         static u8: Uint32Array;
         static u16: Uint32Array;
         static u32: Uint32Array;
+        static reset(): void;
         static allocateUint8(len: number): void;
         static allocateUint16(len: number): void;
         static allocateUint32(len: number): void;

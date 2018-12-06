@@ -25,6 +25,8 @@ module NeoTest2 {
         }
         async testasync(): Promise<void> {
             let lzma: nid.LZMA = new nid.LZMA();
+            nid.utils.MEMORY.reset();//add a function for clear lzma Memory.
+
             this.addtxt("new LZMA");
 
             var result = await fetch("res/0x0000ec4f810fc65b81187ecbbd1e8a6bef6bbb645bd745f903de58ae2d895346.llvmhex.txt", { "method": "get" });

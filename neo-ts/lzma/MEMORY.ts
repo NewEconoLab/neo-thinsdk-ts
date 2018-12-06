@@ -7,8 +7,15 @@ module nid.utils
         static u32Index:number=0;
         static u8:Uint32Array;
         static u16:Uint32Array;
-        static u32:Uint32Array;
-
+        static u32: Uint32Array;
+        static reset(): void {
+            MEMORY.u8Index = 0;
+            MEMORY.u16Index = 0;
+            MEMORY.u32Index = 0;
+            MEMORY.u8 = null;
+            MEMORY.u16 = null;
+            MEMORY.u32 = null;
+        }
         static allocateUint8(len:number):void{
             MEMORY.u8 = new Uint8Array(len);
         }

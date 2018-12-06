@@ -25,6 +25,7 @@ module NeoTest2 {
         }
         async testasync(): Promise<void> {
             let lzma: nid.LZMA = new nid.LZMA();
+            nid.utils.MEMORY.reset();
             this.addtxt("new LZMA");
 
             var result = await fetch("res/0x0000ec4f810fc65b81187ecbbd1e8a6bef6bbb645bd745f903de58ae2d895346.llvmhex.txt", { "method": "get" });
@@ -35,7 +36,7 @@ module NeoTest2 {
             var unpackjsonstr: string = "";
             var unpackjson: {} = null;
             try {
-                var destbytes = lzma.decode(srcbytes);
+                var destbytes = new Uint8Array( lzma.decode(srcbytes).buffer);
                 this.addtxt("decode got: srcsize=" + srcbytes.length + " destsize=" + destbytes.length);
                 unpackjsonstr = ThinNeo.Helper.Bytes2String(destbytes);
                 console.log("jsonstr =" + unpackjsonstr);
