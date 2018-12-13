@@ -17,6 +17,8 @@ namespace Neo
 
         public static parse(str: string): Uint160
         {
+            if (str.length == 42)
+                str = str.replace("0x", "");
             if (str.length != 40) throw new RangeError();
             let x = str.hexToBytes();
             let y = new Uint8Array(x.length);

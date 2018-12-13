@@ -37,7 +37,7 @@ module NeoTest2 {
             this.addtxt("new LZMA");
 
             //var result = await fetch("res/0x0000ec4f810fc65b81187ecbbd1e8a6bef6bbb645bd745f903de58ae2d895346.llvmhex.txt", { "method": "get" });
-            var result = await fetch("res/0x8988078975ea1d55603791b1548d6531a7010fb605611dec9a0c8711d85723cf.llvmhex.txt", { "method": "get" });
+            var result = await fetch("res/0xd8cb60829a67d1628160ab1b32b009248460105ee932ea721b072c31dccbbc5b.llvmhex.txt", { "method": "get" });
             var hexstr = await result.text();
             var srcbytes = hexstr.hexToBytes();
             this.addtxt("get llvmhex.");
