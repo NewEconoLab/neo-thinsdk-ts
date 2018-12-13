@@ -1,4 +1,4 @@
-///<reference path="LZMA.d.ts" />
+///<reference path="lzmaDecoder.ts" />
 module nid
 {
     "use strict"
@@ -66,7 +66,7 @@ module nid
             //console.log("Dictionary Size in properties = "+this.decoder.dictSizeInProperties);
             //console.log("Dictionary Size for decoding  = "+this.decoder.dictSize);
             //return this.ucdata;
-            //ÕâÀï×öÁËÒ»¸öĞŞ¸Ä£¬ÎÒÃÇµÄÑ¹ËõÊÇ ÓÃ Ò»¸öint32×öunpacksize ±ØĞëÓĞ
+            //è¿™é‡Œåšäº†ä¸€ä¸ªä¿®æ”¹ï¼Œæˆ‘ä»¬çš„å‹ç¼©æ˜¯ ç”¨ ä¸€ä¸ªint32åšunpacksize å¿…é¡»æœ‰
         
             var unpackSize: number = 0;//UInt32
             var unpackSizeDefined: boolean = true;
