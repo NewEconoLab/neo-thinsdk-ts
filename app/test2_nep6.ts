@@ -85,8 +85,12 @@ module NeoTest {
                                     var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result as Uint8Array);
                                     var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                                     var hexkey = (result as Uint8Array).toHexString();
-                                    info2.textContent += info + "|" + address + " key=" + hexkey;
-                                }
+                                    var wif = ThinNeo.Helper.GetWifFromPrivateKey((result as Uint8Array));
+                                    info2.textContent += info + "|" + address + "\n"
+                                    info2.textContent += " key=" + hexkey + "\n";
+                                    info2.textContent += " wif=" + wif + "\n";
+                                    info2.textContent += " pubkey=" + pubkey.toHexString() + "\n";
+                             }
                                 else {
                                     info2.textContent += info + "|" + result;
                                 }
