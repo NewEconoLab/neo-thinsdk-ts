@@ -63,7 +63,7 @@ module NeoTest {
             //info2
             var info2 = document.createElement("textarea");
             div.appendChild(info2);
-            info2.style.width = "500px";
+            info2.style.width = "600px";
             info2.style.height = "100px";
             div.appendChild(document.createElement("hr"));//newline
 
