@@ -1,6 +1,6 @@
 ///<reference path="RangeDecoder.ts" />
 ///<reference path="OutWindow.ts" />
-
+///<reference path="lenDecoder.ts" />
 module nid
 {
 	/**

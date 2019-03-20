@@ -63,7 +63,7 @@ module NeoTest {
             //info2
             var info2 = document.createElement("textarea");
             div.appendChild(info2);
-            info2.style.width = "500px";
+            info2.style.width = "600px";
             info2.style.height = "100px";
             div.appendChild(document.createElement("hr"));//newline
 
@@ -85,8 +85,12 @@ module NeoTest {
                                     var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result as Uint8Array);
                                     var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                                     var hexkey = (result as Uint8Array).toHexString();
-                                    info2.textContent += info + "|" + address + " key=" + hexkey;
-                                }
+                                    var wif = ThinNeo.Helper.GetWifFromPrivateKey((result as Uint8Array));
+                                    info2.textContent += info + "|" + address + "\n"
+                                    info2.textContent += " key=" + hexkey + "\n";
+                                    info2.textContent += " wif=" + wif + "\n";
+                                    info2.textContent += " pubkey=" + pubkey.toHexString() + "\n";
+                             }
                                 else {
                                     info2.textContent += info + "|" + result;
                                 }
