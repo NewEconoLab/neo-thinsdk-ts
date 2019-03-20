@@ -642,6 +642,7 @@ declare namespace ThinNeo {
     class Witness {
         InvocationScript: Uint8Array;
         VerificationScript: Uint8Array;
+        scriptHash: Uint8Array;
         readonly Address: string;
     }
     interface IExtData {
@@ -679,8 +680,9 @@ declare namespace ThinNeo {
         GetMessage(): Uint8Array;
         GetRawData(): Uint8Array;
         AddWitness(signdata: Uint8Array, pubkey: Uint8Array, addrs: string): void;
-        AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array): void;
+        AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array, scripthash?: Uint8Array): void;
         GetHash(): Uint8Array;
+        GetTxid(): string;
     }
 }
 declare namespace Neo.Cryptography {

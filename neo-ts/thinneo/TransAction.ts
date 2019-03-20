@@ -115,12 +115,21 @@ namespace ThinNeo
     {
         public InvocationScript: Uint8Array;//设置参数脚本，通常是吧signdata push进去
         public VerificationScript: Uint8Array;//校验脚本，通常是 push 公钥, CheckSig 两条指令   验证的东西就是未签名的交易
+        public scriptHash:Uint8Array;
         //这个就是地址的脚本
         public get Address(): string
         {
-            var hash = ThinNeo.Helper.GetScriptHashFromScript(this.VerificationScript);
-            return ThinNeo.Helper.GetAddressFromScriptHash(hash);
+            // var hash = ThinNeo.Helper.GetScriptHashFromScript(this.VerificationScript);
+            // return ThinNeo.Helper.GetAddressFromScriptHash(hash);
+            if(this.scriptHash)
+                return ThinNeo.Helper.GetAddressFromScriptHash(this.scriptHash);
+            else
+            {
+                var hash = ThinNeo.Helper.GetScriptHashFromScript(this.VerificationScript);
+                return ThinNeo.Helper.GetAddressFromScriptHash(hash);
+            }
         }
+        
     }
 
 
@@ -513,14 +522,22 @@ namespace ThinNeo
         }
 
         //增加智能合约见证人
-        public AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array): void
+        public AddWitnessScript(vscript: Uint8Array, iscript: Uint8Array,scripthash?:Uint8Array): void
         {
-            var scripthash = ThinNeo.Helper.GetScriptHashFromScript(vscript);
             if (this.witnesses == null)
                 this.witnesses = [];
             var newwit = new Witness();
             newwit.VerificationScript = vscript;
             newwit.InvocationScript = iscript;
+
+            if(scripthash)
+            {
+                newwit.scriptHash = scripthash;
+            }
+            else
+            {
+                newwit.scriptHash = ThinNeo.Helper.GetScriptHashFromScript(vscript);
+            }
 
             for (var i = 0; i < this.witnesses.length; i++)
             {
@@ -535,8 +552,8 @@ namespace ThinNeo
                 _witnesses = [];
             _witnesses.push(newwit);
             _witnesses.sort((a, b) => {
-                var hash_a = ThinNeo.Helper.GetScriptHashFromScript(a.VerificationScript);
-                var hash_b = ThinNeo.Helper.GetScriptHashFromScript(b.VerificationScript);
+                var hash_a = a.scriptHash
+                var hash_b = b.scriptHash
                 for (let i = (hash_a.length - 1); i >= 0; i--) {
                     if (hash_a[i] > hash_b[i])
                         return 1;
@@ -556,6 +573,12 @@ namespace ThinNeo
             data = Neo.Cryptography.Sha256.computeHash(data);
             return new Uint8Array(data, 0, data.byteLength);
 
+        }
+
+        public GetTxid(): string
+        {
+            var tranhash = this.GetHash().clone().reverse().toHexString();
+            return tranhash;
         }
     }
 }
